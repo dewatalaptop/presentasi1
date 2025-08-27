@@ -86,8 +86,12 @@
             align-items: center;
         }
 
+        /* Perbaikan untuk tampilan mobile agar tombol tetap terlihat */
         @media (max-width: 768px) {
-            .slide-button { display: none; }
+            .slide-button {
+                padding: 10px 15px;
+                font-size: 1.2em;
+            }
             .slide-content-wrapper { padding: 20px; }
             .poin-highlight { font-size: 4em; }
         }
