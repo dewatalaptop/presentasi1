@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presentasi: Dolan Sawah Member System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
-        
         :root {
             --dark-bg: #1A1A1A; --text-light: #F0F0F0; --highlight-color: #00A38D; --poin-color: #F57C00;
             --slide-bg: #222; --card-bg: #2A2A2A; --card-shadow: 0 8px 30px rgba(0,0,0,0.5);
@@ -15,25 +17,24 @@
             --button-bg: #333; --button-hover: #444;
         }
 
+        *, *::before, *::after { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; background-color: var(--dark-bg); color: var(--text-light); overflow: hidden; }
         
         .slideshow-container { position: relative; height: 100vh; overflow: hidden; }
         .slide { 
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
             height: 100%; width: 100%; position: absolute; top: 0; left: 0;
-            background-color: var(--slide-bg); opacity: 0; transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-            transform: scale(0.9);
-            padding: 50px; box-sizing: border-box;
-            background-size: cover; /* Untuk gambar latar belakang slide */
-            background-position: center; /* Untuk gambar latar belakang slide */
+            background-color: var(--slide-bg); opacity: 0; transition: opacity 1s ease-in-out;
+            padding: 20px; box-sizing: border-box;
+            background-size: cover; background-position: center;
         }
-        .slide.active { opacity: 1; transform: scale(1); }
+        .slide.active { opacity: 1; z-index: 10; }
         .slide h1, .slide h2 { font-weight: 700; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .slide h1 { font-size: 4em; color: var(--text-light); }
-        .slide h2 { font-size: 2.5em; color: var(--highlight-color); margin-bottom: 20px; }
-        .slide p { font-size: 1.2em; max-width: 800px; line-height: 1.6; font-weight: 300; }
+        .slide h1 { font-size: clamp(2em, 5vw, 4em); color: var(--text-light); }
+        .slide h2 { font-size: clamp(1.5em, 3.5vw, 2.5em); color: var(--highlight-color); margin-bottom: 20px; }
+        .slide p { font-size: clamp(1em, 2vw, 1.2em); max-width: 800px; line-height: 1.6; font-weight: 300; }
         
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px; }
         .feature-card { background: var(--card-bg); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--card-shadow); 
             transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         }
@@ -42,13 +43,12 @@
         .feature-card h3 { font-size: 1.5em; margin: 0 0 10px; color: var(--text-light); }
         .feature-card p { font-size: 0.9em; margin: 0; line-height: 1.5; }
         
-        .poin-highlight { font-size: 5em; font-weight: 700; color: var(--poin-color); text-shadow: 0 0 10px var(--poin-color); }
+        .poin-highlight { font-size: clamp(3em, 10vw, 5em); font-weight: 700; color: var(--poin-color); text-shadow: 0 0 10px var(--poin-color); }
 
-        .navigation { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; }
+        .navigation { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; z-index: 20; }
         .nav-dot { width: 12px; height: 12px; border-radius: 50%; background-color: rgba(255,255,255,0.3); cursor: pointer; transition: background-color var(--transition-fast), transform var(--transition-fast); }
         .nav-dot.active { background-color: var(--highlight-color); transform: scale(1.2); }
 
-        /* Next/Prev Buttons */
         .slide-button {
             position: absolute; top: 50%; transform: translateY(-50%);
             background-color: var(--button-bg); color: var(--text-light);
@@ -57,45 +57,39 @@
             z-index: 100;
         }
         .slide-button:hover { background-color: var(--button-hover); }
-        .slide-button.prev { left: 30px; }
-        .slide-button.next { right: 30px; }
+        .slide-button.prev { left: 10px; }
+        .slide-button.next { right: 10px; }
 
         .fade-in { animation: fadeIn 1.5s ease-in-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .zoom-in { animation: zoomIn 1.5s ease-in-out forwards; }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* UI Image Styling */
         .ui-screenshot {
-            max-width: 90%; 
+            max-width: 100%; 
             height: auto; 
             border-radius: var(--border-radius); 
             box-shadow: var(--card-shadow); 
             margin-top: 30px;
             animation: fadeIn 1.5s ease-in-out forwards;
-            max-height: 400px; /* Batasi tinggi agar tidak terlalu besar */
-            object-fit: contain; /* Memastikan gambar tidak terpotong */
+            max-height: 400px;
+            object-fit: contain;
         }
         .slide-content-wrapper {
-            background-color: rgba(34, 34, 34, 0.8); /* Latar belakang semi-transparan untuk teks agar terbaca di atas gambar */
+            background-color: rgba(34, 34, 34, 0.8);
             padding: 30px 40px;
             border-radius: 15px;
             max-width: 900px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Mobile adaptation */
         @media (max-width: 768px) {
-            .slide h1 { font-size: 2.5em; }
-            .slide h2 { font-size: 1.8em; }
-            .slide p { font-size: 1em; padding: 0 10px; }
-            .features-grid { grid-template-columns: 1fr; gap: 20px; }
-            .feature-card { padding: 20px; }
-            .slide-button { padding: 10px 15px; font-size: 1.2em; }
-            .slide-button.prev { left: 10px; }
-            .slide-button.next { right: 10px; }
-            .ui-screenshot { max-height: 250px; margin-top: 20px; }
+            .slide-button { display: none; }
             .slide-content-wrapper { padding: 20px; }
+            .poin-highlight { font-size: 4em; }
         }
     </style>
 </head>
@@ -123,12 +117,12 @@
             <h2>Pendaftaran Member Cepat, Tanpa Ribet!</h2>
             <p>Dengan fitur pendaftaran super cepat, Team kasir bisa mendaftarkan member baru hanya dalam hitungan detik. Cukup masukkan nama, nomor HP, dan beberapa detail penting lainnya. Selesai! Selamat datang member baru di Dolan Sawah!</p>
             
-            <div class="feature-card fade-in" style="animation-delay: 0.5s; max-width: 500px;">
+            <div class="feature-card fade-in" style="animation-delay: 0.5s;">
                 <span class="material-symbols-outlined">person_add</span>
                 <h3>Daftar Instan</h3>
                 <p>Formulir minimalis, langsung terintegrasi ke database. Pelanggan tak perlu menunggu lama untuk menjadi bagian dari keluarga Dolan Sawah.</p>
             </div>
-            <img src="https://via.placeholder.com/600x350/00796B/FFFFFF?text=UI+Pendaftaran+Member" alt="Screenshot UI Pendaftaran Member" class="ui-screenshot fade-in" style="animation-delay: 1s;">
+            <img src="https://i.ibb.co/60qYhW9/UI-Pendaftaran-Member.png" alt="UI Pendaftaran Member" class="ui-screenshot fade-in" style="animation-delay: 1s;">
         </div>
     </div>
 
@@ -137,12 +131,12 @@
             <h2>Temukan Data Member dalam Sekejap Mata!</h2>
             <p>Lupakan buku catatan atau spreadsheet yang berantakan. Cukup ketik nomor HP, dan **BAM!** Seluruh data member, termasuk poin dan reward yang bisa diklaim, langsung muncul di layar.</p>
             
-            <div class="feature-card fade-in" style="animation-delay: 0.5s; max-width: 500px;">
+            <div class="feature-card fade-in" style="animation-delay: 0.5s;">
                 <span class="material-symbols-outlined">search</span>
                 <h3>Cari Efisien</h3>
                 <p>Data member yang akurat dan terperinci, siap kapan saja dibutuhkan. Ini adalah efisiensi di ujung jari.</p>
             </div>
-            <img src="https://via.placeholder.com/600x350/F57C00/FFFFFF?text=UI+Cari+Member+%26+Detail" alt="Screenshot UI Cari Member" class="ui-screenshot fade-in" style="animation-delay: 1s;">
+            <img src="https://i.ibb.co/y4L26cM/UI-Cari-Member-Detail.png" alt="UI Cari Member & Detail" class="ui-screenshot fade-in" style="animation-delay: 1s;">
         </div>
     </div>
 
@@ -151,12 +145,12 @@
             <h2>Poin Terkumpul Otomatis, Transaksi Jadi Lebih Bernilai!</h2>
             <p>Setiap transaksi otomatis mengubah nominal belanja menjadi poin yang berharga. Poin ini langsung tercatat di profil member. Ini bukan sihir, ini adalah teknologi canggih yang bekerja dengan algoritma sederhana.</p>
             <div class="poin-highlight fade-in" style="animation-delay: 0.5s;">POIN</div>
-            <div class="feature-card fade-in" style="animation-delay: 0.8s; max-width: 500px;">
+            <div class="feature-card fade-in" style="animation-delay: 0.8s;">
                 <span class="material-symbols-outlined">payments</span>
                 <h3>Transparansi & Akumulasi</h3>
                 <p>Member bisa langsung melihat poin yang terkumpul. Tidak ada lagi keraguan, hanya kepuasan yang mendorong mereka untuk terus bertransaksi.</p>
             </div>
-            <img src="https://via.placeholder.com/600x350/00796B/FFFFFF?text=UI+Input+Transaksi" alt="Screenshot UI Input Transaksi" class="ui-screenshot fade-in" style="animation-delay: 1s;">
+            <img src="https://i.ibb.co/y85cWcW/UI-Input-Transaksi.png" alt="UI Input Transaksi" class="ui-screenshot fade-in" style="animation-delay: 1s;">
         </div>
     </div>
 
@@ -165,7 +159,7 @@
             <h2>Tukarkan Poin, Klaim Reward Menarik!</h2>
             <p>Sistem ini tidak hanya mengumpulkan poin, tapi juga menawarkan hadiah yang menarik. Member bisa langsung menukar poin mereka dengan reward yang Anda tawarkan, meningkatkan pengalaman mereka di Dolan Sawah.</p>
             
-            <div class="features-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 800px;">
+            <div class="features-grid" style="max-width: 800px;">
                 <div class="feature-card fade-in" style="animation-delay: 0.5s;">
                     <span class="material-symbols-outlined">loyalty</span>
                     <h3>Reward Poin Fleksibel</h3>
@@ -177,7 +171,7 @@
                     <p>Tingkatkan loyalitas dengan memberikan reward spesial di hari istimewa mereka. Bangun hubungan pribadi yang tak terlupakan!</p>
                 </div>
             </div>
-            <img src="https://via.placeholder.com/600x350/F57C00/FFFFFF?text=UI+Klaim+Reward" alt="Screenshot UI Klaim Reward" class="ui-screenshot fade-in" style="animation-delay: 1s;">
+            <img src="https://i.ibb.co/s3YjB9P/UI-Klaim-Reward.png" alt="UI Klaim Reward" class="ui-screenshot fade-in" style="animation-delay: 1s;">
         </div>
     </div>
 
@@ -227,7 +221,6 @@
     const nextButton = document.querySelector('.next');
     let currentSlide = 0;
 
-    // Create navigation dots
     slides.forEach((_, index) => {
         const dot = document.createElement('span');
         dot.classList.add('nav-dot');
@@ -239,9 +232,9 @@
 
     function showSlide(index) {
         if (index < 0) {
-            index = slides.length - 1; // Loop back to last slide
+            index = slides.length - 1;
         } else if (index >= slides.length) {
-            index = 0; // Loop back to first slide
+            index = 0;
         }
         
         slides[currentSlide].classList.remove('active');
@@ -251,24 +244,12 @@
         
         slides[currentSlide].classList.add('active');
         navDots[currentSlide].classList.add('active');
-
-        // Re-apply animations for the new active slide
-        slides[currentSlide].querySelectorAll('.fade-in, .zoom-in').forEach(el => {
-            el.classList.remove('fade-in', 'zoom-in');
-            void el.offsetWidth; // Trigger reflow to restart animation
-            if (el.dataset.animation === 'fade-in') {
-                el.classList.add('fade-in');
-            } else if (el.dataset.animation === 'zoom-in') {
-                el.classList.add('zoom-in');
-            }
-        });
     }
 
     function changeSlide(direction) {
         showSlide(currentSlide + direction);
     }
 
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight' || e.key === ' ') {
             changeSlide(1);
@@ -277,18 +258,10 @@
         }
     });
 
-    // Store original animation classes for re-application
     document.addEventListener('DOMContentLoaded', () => {
-        slides.forEach(slide => {
-            slide.querySelectorAll('.fade-in, .zoom-in').forEach(el => {
-                if (el.classList.contains('fade-in')) el.dataset.animation = 'fade-in';
-                if (el.classList.contains('zoom-in')) el.dataset.animation = 'zoom-in';
-            });
-        });
-        showSlide(0); // Initialize first slide
+        showSlide(0);
     });
 </script>
 
 </body>
 </html>
-
