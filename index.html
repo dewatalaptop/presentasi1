@@ -23,40 +23,42 @@
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: var(--font-family);
             background-color: var(--bg-color);
             color: var(--text-color);
-            overflow: hidden;
-            height: 100vh;
+            /* Dihapus: overflow: hidden; agar bisa scroll di mobile */
         }
 
         .presentation-container {
             width: 100%;
-            height: 100%;
+            height: 100vh; /* Menggunakan 100vh untuk container */
             position: relative;
             perspective: 1200px;
+            overflow: hidden; /* Mencegah scroll di container utama */
+        }
+
+        .slides-wrapper {
+            width: 100%;
+            height: 100%;
+            transition: transform var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .slide {
-            position: absolute;
-            inset: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 5vw;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateZ(-100px);
-            transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateZ(0);
+            overflow-x: hidden; /* Sembunyikan overflow horizontal */
+            overflow-y: auto;  /* Izinkan scroll vertikal jika perlu */
         }
         
         /* Animation for slide elements */
@@ -66,10 +68,19 @@
             animation: fadeInUp 1s forwards cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .slides-wrapper.active-slide-0 .animated { animation: none; }
+        .slides-wrapper.active-slide-1 .animated { animation: none; }
+        /* ... tambahkan untuk semua slide jika perlu ... */
+
+        .slide.active .animated {
+            animation-name: fadeInUp; /* Pastikan animasi berjalan saat slide aktif */
+        }
+        
         .slide.active .animated.d1 { animation-delay: 0.3s; }
         .slide.active .animated.d2 { animation-delay: 0.6s; }
         .slide.active .animated.d3 { animation-delay: 0.9s; }
         .slide.active .animated.d4 { animation-delay: 1.2s; }
+
 
         @keyframes fadeInUp {
             to {
@@ -78,9 +89,9 @@
             }
         }
 
-        h1 { font-size: clamp(2.8rem, 7vw, 6rem); font-weight: 900; line-height: 1.1; }
+        h1 { font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 900; line-height: 1.1; }
         h2 { font-size: clamp(1.8rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.2; margin-top: 1rem;}
-        p { font-size: clamp(1.1rem, 2vw, 1.6rem); max-width: 800px; line-height: 1.7; margin-top: 1.5rem; font-weight: 300; color: rgba(245, 245, 245, 0.8);}
+        p { font-size: clamp(1rem, 2vw, 1.4rem); max-width: 800px; line-height: 1.7; margin-top: 1.5rem; font-weight: 300; color: rgba(245, 245, 245, 0.8);}
         .highlight { color: var(--accent-color); }
         .sub-heading {
             font-size: clamp(1rem, 1.8vw, 1.3rem);
@@ -269,17 +280,17 @@
         }
 
         .final-slide {
-             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1596752219082-b4.0.3&auto=format&fit=crop&w=1770&q=80') no-repeat center center;
+             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1596752219082-b4301a2e3792?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80') no-repeat center center;
              background-size: cover;
         }
 
         /* Navigation */
         .nav-controls {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             display: flex;
-            gap: 15px;
+            gap: 10px;
             z-index: 100;
         }
         .nav-btn {
@@ -287,8 +298,8 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: var(--text-color);
             font-size: 1.5rem;
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -318,168 +329,204 @@
             z-index: 100;
         }
         
+        /* === PERBAIKAN RESPONSIVE === */
         @media (max-width: 768px) {
-            .ecosystem-grid {
-                grid-template-columns: 1fr;
+            body {
+                overflow-y: auto; /* Izinkan scroll di body untuk mobile */
+            }
+
+            .presentation-container {
+                height: auto; /* Tinggi container mengikuti konten */
+                overflow: visible;
+                perspective: none;
+            }
+
+            .slides-wrapper {
+                display: flex;
+                flex-direction: column; /* Tampilkan slide secara vertikal */
+                transform: none !important; /* Nonaktifkan transisi transform JS */
+                height: auto;
+            }
+
+            .slide {
+                position: relative; /* Ubah dari absolute ke relative */
+                height: auto; /* Tinggi slide mengikuti konten */
+                min-height: 100vh; /* Pastikan slide minimal setinggi layar */
+                justify-content: flex-start; /* Mulai konten dari atas */
+                padding: 15vh 5vw; /* Beri padding atas bawah agar tidak menempel */
+                opacity: 1 !important; /* Semua slide harus terlihat */
+                visibility: visible !important;
+                transform: none !important;
+            }
+
+            .progress-bar {
+                display: none; /* Sembunyikan progress bar di mode scroll */
+            }
+
+            .nav-controls {
+                /* Posisi sudah bagus (fixed, bottom-right), tidak perlu diubah */
             }
         }
+        /* === AKHIR PERBAIKAN === */
+
     </style>
 </head>
 <body>
     
     <div class="presentation-container">
-        
-        <section class="slide active slide-intro">
-            <div class="animated d1"><h1>Ada alat.</h1></div>
-            <div class="animated d2"><h1>Lalu ada <span class="highlight">revolusi</span>.</h1></div>
-            <p class="animated d3">Ekosistem Digital Dolan Sawah</p>
-        </section>
+        <div class="slides-wrapper">
+            <section class="slide active slide-intro" id="slide-0">
+                <div class="animated d1"><h1>Ada alat.</h1></div>
+                <div class="animated d2"><h1>Lalu ada <span class="highlight">revolusi</span>.</h1></div>
+                <p class="animated d3">Ekosistem Digital Dolan Sawah</p>
+            </section>
 
-        <section class="slide">
-            <h2 class="animated d1">Setiap restoran di dunia menghadapi masalah yang sama.</h2>
-            <p class="animated d2">Kekacauan. Tebak-tebakan. Keuntungan yang hilang tanpa jejak. Hubungan dengan tamu yang hanya sebatas transaksi. Kita tahu ini. Kita merasakannya setiap hari.</p>
-        </section>
-        
-        <section class="slide">
-            <h2 class="animated d1">Cara lama... <span class="highlight">sudah mati</span>.</h2>
-            <p class="animated d2">Buku catatan. Stempel. Komunikasi dari mulut ke mulut. Mereka tidak hanya lambat. Mereka adalah penghalang terbesar kita untuk menjadi luar biasa.</p>
-        </section>
-        
-        <section class="slide">
-            <h1 class="animated d1">Jadi, kami memulai dari awal.</h1>
-            <h2 class="animated d2">Dengan satu pertanyaan sederhana:</h2>
-            <p class="animated d3">"Bagaimana jika setiap bagian dari restoran kita tidak hanya bekerja, tetapi bekerja <span class="highlight">bersama-sama</span> secara cerdas?"</p>
-        </section>
+            <section class="slide" id="slide-1">
+                <h2 class="animated d1">Setiap restoran di dunia menghadapi masalah yang sama.</h2>
+                <p class="animated d2">Kekacauan. Tebak-tebakan. Keuntungan yang hilang tanpa jejak. Hubungan dengan tamu yang hanya sebatas transaksi. Kita tahu ini. Kita merasakannya setiap hari.</p>
+            </section>
+            
+            <section class="slide" id="slide-2">
+                <h2 class="animated d1">Cara lama... <span class="highlight">sudah mati</span>.</h2>
+                <p class="animated d2">Buku catatan. Stempel. Komunikasi dari mulut ke mulut. Mereka tidak hanya lambat. Mereka adalah penghalang terbesar kita untuk menjadi luar biasa.</p>
+            </section>
+            
+            <section class="slide" id="slide-3">
+                <h1 class="animated d1">Jadi, kami memulai dari awal.</h1>
+                <h2 class="animated d2">Dengan satu pertanyaan sederhana:</h2>
+                <p class="animated d3">"Bagaimana jika setiap bagian dari restoran kita tidak hanya bekerja, tetapi bekerja <span class="highlight">bersama-sama</span> secara cerdas?"</p>
+            </section>
 
-        <section class="slide">
-            <div class="sub-heading animated d1">Fondasi Pertama</div>
-            <h2 class="animated d2">Kita harus menghentikan "kebocoran".</h2>
-            <p class="animated d3">Sebelum kita bisa berlari, kita harus memastikan fondasi kita kokoh. Keuntungan kita bocor dari tempat yang tak terlihat: dapur. Kami membangun alat untuk menutupnya.</p>
-            <div class="ui-snippet-container animated d4">
-                 <div class="ui-snippet">
-                    <div class="browser-mockup-body">
-                        <h4><i class="fas fa-chart-pie"></i> Laporan Analisa Stok</h4>
-                        <table class="mock-table">
-                            <thead>
-                                <tr><th>Menu</th><th>Terjual (POS)</th><th>Seharusnya</th><th>Dicatat Manual</th><th>Selisih</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>Ayam Bakar</td><td>35</td><td>35.0</td><td>38.0</td><td class="discrepancy plus">+3.0</td></tr>
-                                <tr><td>Nasi Goreng Spesial</td><td>52</td><td>52.0</td><td>50.0</td><td class="discrepancy">-2.0</td></tr>
-                                <tr><td>Es Teh Manis</td><td>110</td><td>110.0</td><td>110.0</td><td>0.0</td></tr>
-                            </tbody>
-                        </table>
-                        <p class="mockup-desc"><strong>Ayam Bakar (Selisih +3.0):</strong> Produksi tercatat lebih banyak dari penjualan. Apakah ada porsi untuk staf atau salah input?<br><strong>Nasi Goreng (Selisih -2.0):</strong> Ada penjualan yang tidak tercatat produksinya. Inilah potensi kerugian yang kini terlihat jelas.</p>
+            <section class="slide" id="slide-4">
+                <div class="sub-heading animated d1">Fondasi Pertama</div>
+                <h2 class="animated d2">Kita harus menghentikan "kebocoran".</h2>
+                <p class="animated d3">Sebelum kita bisa berlari, kita harus memastikan fondasi kita kokoh. Keuntungan kita bocor dari tempat yang tak terlihat: dapur. Kami membangun alat untuk menutupnya.</p>
+                <div class="ui-snippet-container animated d4">
+                     <div class="ui-snippet">
+                        <div class="browser-mockup-body">
+                            <h4><i class="fas fa-chart-pie"></i> Laporan Analisa Stok</h4>
+                            <table class="mock-table">
+                                <thead>
+                                    <tr><th>Menu</th><th>Terjual (POS)</th><th>Seharusnya</th><th>Dicatat Manual</th><th>Selisih</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Ayam Bakar</td><td>35</td><td>35.0</td><td>38.0</td><td class="discrepancy plus">+3.0</td></tr>
+                                    <tr><td>Nasi Goreng Spesial</td><td>52</td><td>52.0</td><td>50.0</td><td class="discrepancy">-2.0</td></tr>
+                                    <tr><td>Es Teh Manis</td><td>110</td><td>110.0</td><td>110.0</td><td>0.0</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="mockup-desc"><strong>Ayam Bakar (Selisih +3.0):</strong> Produksi tercatat lebih banyak dari penjualan. Apakah ada porsi untuk staf atau salah input?<br><strong>Nasi Goreng (Selisih -2.0):</strong> Ada penjualan yang tidak tercatat produksinya. Inilah potensi kerugian yang kini terlihat jelas.</p>
+                        </div>
+                     </div>
+                </div>
+                <p class="animated d4" style="margin-top: 1rem; font-size:1rem; color: rgba(245,245,245,0.6);"><strong>ORC (Operational Report and Control):</strong> Mengungkap setiap gram bahan yang terbuang dengan menghubungkan penjualan langsung ke stok. Mengubah kerugian tak terlihat menjadi profit yang nyata.</p>
+            </section>
+
+            <section class="slide" id="slide-5">
+                <div class="sub-heading animated d1">Pintu Gerbang</div>
+                <h2 class="animated d2">Kita harus menata kekacauan di pintu depan.</h2>
+                <p class="animated d3">Fondasi kuat, tapi pintu masuk berantakan. Miskomunikasi, salah catat, dan pengalaman tamu yang buruk dimulai dari sini. Jadi, kami membangun sebuah pusat kendali.</p>
+                 <div class="ui-snippet-container animated d4">
+                     <div class="ui-snippet" style="padding: 20px;">
+                        <div class="mockup-header">Agustus 2025</div>
+                        <div class="mockup-calendar-days">
+                            <div class="mockup-calendar-day">27</div><div class="mockup-calendar-day">28</div><div class="mockup-calendar-day">29</div><div class="mockup-calendar-day has-res">30</div><div class="mockup-calendar-day today">31</div><div class="mockup-calendar-day">1</div><div class="mockup-calendar-day">2</div>
+                            <div class="mockup-calendar-day">3</div><div class="mockup-calendar-day">4</div><div class="mockup-calendar-day selected has-res">5</div><div class="mockup-calendar-day">6</div><div class="mockup-calendar-day">7</div><div class="mockup-calendar-day">8</div><div class="mockup-calendar-day has-res">9</div>
+                        </div>
+                     </div>
+                </div>
+                <p class="animated d4" style="margin-top: 1rem; font-size:1rem; color: rgba(245,245,245,0.6);"><strong>Sistem Reservasi:</strong> Satu sumber kebenaran. Kalender cerdas yang menyatukan semua staf, memastikan setiap tamu disambut dengan sempurna, tanpa kesalahan.</p>
+            </section>
+
+            <section class="slide" id="slide-6">
+                <h1 class="animated d1">Kita membangun mesin yang efisien.</h1>
+                <h2 class="animated d2">Tapi sebuah mesin... terasa dingin.</h2>
+                <p class="animated d3">Operasional kita lancar. Tapi bisnis ini bukan tentang operasional. Ini tentang <span class="highlight">manusia</span>.</p>
+            </section>
+
+            <section class="slide" id="slide-7">
+                <div class="sub-heading animated d1">Jabat Tangan Digital</div>
+                <h2 class="animated d2">Mengubah transaksi menjadi hubungan.</h2>
+                <p class="animated d3">Bagaimana kita mengingat setiap tamu? Menghargai kesetiaan mereka? Merayakan momen spesial mereka? Kami membangun sebuah jembatan.</p>
+                 <div class="ui-snippet-container animated d4">
+                     <div class="ui-snippet">
+                        <label>Poin Terkumpul</label>
+                        <div class="ui-display points">15</div>
+                        <label style="margin-top:1rem;">Nominal Transaksi (Rp)</label>
+                        <div class="ui-input">150000</div>
+                        <div class="ui-button">Simpan Transaksi</div>
+                     </div>
+                </div>
+                 <p class="animated d4" style="margin-top: 1rem; font-size:1rem; color: rgba(245,245,245,0.6);"><strong>Sistem Member:</strong> Mengenali, menghargai, dan mengundang kembali. Setiap rupiah menjadi apresiasi. Setiap kunjungan memperkuat ikatan. Ini adalah jantung dari komunitas kita.</p>
+            </section>
+            
+            <section class="slide" id="slide-8">
+                <h1 class="animated d1">Inilah yang telah kita bangun.</h1>
+                <h2 class="animated d2">Sebuah <span class="highlight">Ekosistem</span>.</h2>
+                <div class="ecosystem-grid">
+                    <div class="ecosystem-card animated d2">
+                        <i class="fas fa-cogs"></i>
+                        <h3>ORC: Kontrol Penuh</h3>
+                        <p>Fondasi profitabilitas. Mengendalikan setiap biaya dari dapur, mengubah data menjadi keuntungan.</p>
                     </div>
-                 </div>
-            </div>
-            <p class="animated d4" style="margin-top: 1rem; font-size:1rem; color: rgba(245,245,245,0.6);"><strong>ORC (Operational Report and Control):</strong> Mengungkap setiap gram bahan yang terbuang dengan menghubungkan penjualan langsung ke stok. Mengubah kerugian tak terlihat menjadi profit yang nyata.</p>
-        </section>
-
-        <section class="slide">
-            <div class="sub-heading animated d1">Pintu Gerbang</div>
-            <h2 class="animated d2">Kita harus menata kekacauan di pintu depan.</h2>
-            <p class="animated d3">Fondasi kuat, tapi pintu masuk berantakan. Miskomunikasi, salah catat, dan pengalaman tamu yang buruk dimulai dari sini. Jadi, kami membangun sebuah pusat kendali.</p>
-             <div class="ui-snippet-container animated d4">
-                 <div class="ui-snippet" style="padding: 20px;">
-                    <div class="mockup-header">Agustus 2025</div>
-                    <div class="mockup-calendar-days">
-                        <div class="mockup-calendar-day">27</div><div class="mockup-calendar-day">28</div><div class="mockup-calendar-day">29</div><div class="mockup-calendar-day has-res">30</div><div class="mockup-calendar-day today">31</div><div class="mockup-calendar-day">1</div><div class="mockup-calendar-day">2</div>
-                        <div class="mockup-calendar-day">3</div><div class="mockup-calendar-day">4</div><div class="mockup-calendar-day selected has-res">5</div><div class="mockup-calendar-day">6</div><div class="mockup-calendar-day">7</div><div class="mockup-calendar-day">8</div><div class="mockup-calendar-day has-res">9</div>
+                    <div class="ecosystem-card animated d3">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3>Reservasi: Efisiensi Total</h3>
+                        <p>Pintu gerbang yang sempurna. Mengeliminasi kekacauan dan memberikan pengalaman profesional sejak awal.</p>
                     </div>
-                 </div>
-            </div>
-            <p class="animated d4" style="margin-top: 1rem; font-size:1rem; color: rgba(245,245,245,0.6);"><strong>Sistem Reservasi:</strong> Satu sumber kebenaran. Kalender cerdas yang menyatukan semua staf, memastikan setiap tamu disambut dengan sempurna, tanpa kesalahan.</p>
-        </section>
-
-        <section class="slide">
-            <h1 class="animated d1">Kita membangun mesin yang efisien.</h1>
-            <h2 class="animated d2">Tapi sebuah mesin... terasa dingin.</h2>
-            <p class="animated d3">Operasional kita lancar. Tapi bisnis ini bukan tentang operasional. Ini tentang <span class="highlight">manusia</span>.</p>
-        </section>
-
-        <section class="slide">
-            <div class="sub-heading animated d1">Jabat Tangan Digital</div>
-            <h2 class="animated d2">Mengubah transaksi menjadi hubungan.</h2>
-            <p class="animated d3">Bagaimana kita mengingat setiap tamu? Menghargai kesetiaan mereka? Merayakan momen spesial mereka? Kami membangun sebuah jembatan.</p>
-             <div class="ui-snippet-container animated d4">
-                 <div class="ui-snippet">
-                    <label>Poin Terkumpul</label>
-                    <div class="ui-display points">15</div>
-                    <label style="margin-top:1rem;">Nominal Transaksi (Rp)</label>
-                    <div class="ui-input">150000</div>
-                    <div class="ui-button">Simpan Transaksi</div>
-                 </div>
-            </div>
-             <p class="animated d4" style="margin-top: 1rem; font-size:1rem; color: rgba(245,245,245,0.6);"><strong>Sistem Member:</strong> Mengenali, menghargai, dan mengundang kembali. Setiap rupiah menjadi apresiasi. Setiap kunjungan memperkuat ikatan. Ini adalah jantung dari komunitas kita.</p>
-        </section>
-        
-        <section class="slide">
-            <h1 class="animated d1">Inilah yang telah kita bangun.</h1>
-            <h2 class="animated d2">Sebuah <span class="highlight">Ekosistem</span>.</h2>
-            <div class="ecosystem-grid">
-                <div class="ecosystem-card animated d2">
-                    <i class="fas fa-cogs"></i>
-                    <h3>ORC: Kontrol Penuh</h3>
-                    <p>Fondasi profitabilitas. Mengendalikan setiap biaya dari dapur, mengubah data menjadi keuntungan.</p>
+                     <div class="ecosystem-card animated d4">
+                        <i class="fas fa-users"></i>
+                        <h3>Member: Loyalitas Sejati</h3>
+                        <p>Jantung komunitas. Membangun hubungan jangka panjang dan mengubah pelanggan menjadi penggemar.</p>
+                    </div>
                 </div>
-                <div class="ecosystem-card animated d3">
-                    <i class="fas fa-calendar-check"></i>
-                    <h3>Reservasi: Efisiensi Total</h3>
-                    <p>Pintu gerbang yang sempurna. Mengeliminasi kekacauan dan memberikan pengalaman profesional sejak awal.</p>
-                </div>
-                 <div class="ecosystem-card animated d4">
-                    <i class="fas fa-users"></i>
-                    <h3>Member: Loyalitas Sejati</h3>
-                    <p>Jantung komunitas. Membangun hubungan jangka panjang dan mengubah pelanggan menjadi penggemar.</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="slide">
-            <h1 class="animated d1">Jadi, apakah ini tujuan akhirnya?</h1>
-            <h2 class="animated d2">Menjadi restoran yang paling efisien dan dicintai?</h2>
-            <p class="animated d3"><span class="highlight">Bukan.</span> Ini baru permulaan.</p>
-        </section>
-        
-        <section class="slide">
-            <h1 class="animated d1">Dengan fondasi ini... Kita bisa mengubah segalanya.</h1>
-            <h2 class="animated d2">Kita berhenti menjual makanan.</h2>
-            <h2 class="animated d3" style="margin-top:0;">Kita mulai menjual <span class="highlight">pengalaman yang tak terlupakan</span>.</h2>
-        </section>
+            <section class="slide" id="slide-9">
+                <h1 class="animated d1">Jadi, apakah ini tujuan akhirnya?</h1>
+                <h2 class="animated d2">Menjadi restoran yang paling efisien dan dicintai?</h2>
+                <p class="animated d3"><span class="highlight">Bukan.</span> Ini baru permulaan.</p>
+            </section>
+            
+            <section class="slide" id="slide-10">
+                <h1 class="animated d1">Dengan fondasi ini... Kita bisa mengubah segalanya.</h1>
+                <h2 class="animated d2">Kita berhenti menjual makanan.</h2>
+                <h2 class="animated d3" style="margin-top:0;">Kita mulai menjual <span class="highlight">pengalaman yang tak terlupakan</span>.</h2>
+            </section>
 
-        <section class="slide">
-             <div class="sub-heading animated d1">The Next Chapter</div>
-            <h2 class="animated d2">Dari Tempat Makan menjadi <span class="highlight">Tujuan Petualangan</span>.</h2>
-            <p class="animated d3">Ekosistem digital ini bukan tujuan akhir. Ia adalah landasan peluncuran untuk visi yang lebih besar. Memberi kita kebebasan untuk berinovasi, untuk bermimpi, untuk melampaui piring saji.</p>
-            <div class="ecosystem-grid" style="margin-top:2rem;">
-                 <div class="ecosystem-card animated d3" style="border-color: #e67e22;">
-                    <i class="fas fa-jeep" style="color: #e67e22;"></i>
-                    <h3>Jeep Adventure</h3>
-                    <p>Mengubah pemandangan menjadi adrenalin.</p>
+            <section class="slide" id="slide-11">
+                 <div class="sub-heading animated d1">The Next Chapter</div>
+                <h2 class="animated d2">Dari Tempat Makan menjadi <span class="highlight">Tujuan Petualangan</span>.</h2>
+                <p class="animated d3">Ekosistem digital ini bukan tujuan akhir. Ia adalah landasan peluncuran untuk visi yang lebih besar. Memberi kita kebebasan untuk berinovasi, untuk bermimpi, untuk melampaui piring saji.</p>
+                <div class="ecosystem-grid" style="margin-top:2rem;">
+                     <div class="ecosystem-card animated d3" style="border-color: #e67e22;">
+                        <i class="fas fa-jeep" style="color: #e67e22;"></i>
+                        <h3>Jeep Adventure</h3>
+                        <p>Mengubah pemandangan menjadi adrenalin.</p>
+                    </div>
+                     <div class="ecosystem-card animated d4" style="border-color: #e67e22;">
+                        <i class="fas fa-people-arrows" style="color: #e67e22;"></i>
+                        <h3>Outbound Experience</h3>
+                        <p>Mengubah area kita menjadi arena kolaborasi.</p>
+                    </div>
                 </div>
-                 <div class="ecosystem-card animated d4" style="border-color: #e67e22;">
-                    <i class="fas fa-people-arrows" style="color: #e67e22;"></i>
-                    <h3>Outbound Experience</h3>
-                    <p>Mengubah area kita menjadi arena kolaborasi.</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="slide">
-            <h2 class="animated d1">Lihat bagaimana semuanya terhubung.</h2>
-            <p class="animated d2">Pelanggan memesan paket <span class="highlight">Jeep Adventure</span> melalui <strong>Sistem Reservasi</strong> kita yang handal. Tim kita menyiapkan segalanya dengan efisien karena <strong>ORC</strong> menjaga operasional. Setelah pengalaman luar biasa, mereka mendapatkan poin di <strong>Sistem Member</strong>, membuat mereka ingin kembali lagi dan menceritakan kisahnya.</p>
-            <p class="animated d3" style="font-weight:700; margin-top:2rem;">Ini bukan lagi sekadar alur kerja. Ini adalah siklus penciptaan kenangan.</p>
-        </section>
-        
-        <section class="slide final-slide">
-            <h1 class="animated d1">Kita tidak lagi membangun aplikasi.</h1>
-            <h2 class="animated d2">Kita membangun <span class="highlight">masa depan</span> dari Dolan Sawah.</h2>
-        </section>
-        
-        <section class="slide">
-            <h1>Terima Kasih.</h1>
-        </section>
+            <section class="slide" id="slide-12">
+                <h2 class="animated d1">Lihat bagaimana semuanya terhubung.</h2>
+                <p class="animated d2">Pelanggan memesan paket <span class="highlight">Jeep Adventure</span> melalui <strong>Sistem Reservasi</strong> kita yang handal. Tim kita menyiapkan segalanya dengan efisien karena <strong>ORC</strong> menjaga operasional. Setelah pengalaman luar biasa, mereka mendapatkan poin di <strong>Sistem Member</strong>, membuat mereka ingin kembali lagi dan menceritakan kisahnya.</p>
+                <p class="animated d3" style="font-weight:700; margin-top:2rem;">Ini bukan lagi sekadar alur kerja. Ini adalah siklus penciptaan kenangan.</p>
+            </section>
+            
+            <section class="slide final-slide" id="slide-13">
+                <h1 class="animated d1">Kita tidak lagi membangun aplikasi.</h1>
+                <h2 class="animated d2">Kita membangun <span class="highlight">masa depan</span> dari Dolan Sawah.</h2>
+            </section>
+            
+            <section class="slide" id="slide-14">
+                <h1>Terima Kasih.</h1>
+            </section>
+        </div>
 
         <div class="nav-controls">
             <button id="prev-btn" class="nav-btn" title="Previous Slide">&#8592;</button>
@@ -491,21 +538,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const slidesWrapper = document.querySelector('.slides-wrapper');
             const slides = document.querySelectorAll('.slide');
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const progressBar = document.querySelector('.progress-bar');
             
             let currentSlide = 0;
+            const isMobile = window.innerWidth <= 768;
 
             function showSlide(index) {
-                if (index < 0 || index >= slides.length) return;
+                if (isMobile) {
+                    // Di mode mobile, kita scroll ke slide yang sesuai
+                    const targetSlide = document.getElementById(`slide-${index}`);
+                    if(targetSlide) {
+                       targetSlide.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    // Di mode desktop, kita menggunakan transform
+                    if (index < 0 || index >= slides.length) return;
+                    
+                    // Reset animations by removing the class
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    
+                    // Add active class to the new slide to trigger animations
+                    slides[index].classList.add('active');
 
-                slides.forEach((slide, i) => {
-                    slide.classList.remove('active');
-                });
+                    slidesWrapper.style.transform = `translateY(-${index * 100}vh)`;
+                }
                 
-                slides[index].classList.add('active');
                 currentSlide = index;
                 updateNav();
             }
@@ -532,18 +593,38 @@
             nextBtn.addEventListener('click', next);
             prevBtn.addEventListener('click', prev);
             
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight' || e.key === ' ') {
-                    e.preventDefault();
-                    next();
-                } else if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    prev();
-                }
-            });
+            // Nonaktifkan navigasi keyboard di mobile untuk menghindari konflik dengan scroll
+            if (!isMobile) {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        next();
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        prev();
+                    }
+                });
+            }
 
             // Initialize
-            showSlide(0);
+            if (!isMobile) {
+                showSlide(0);
+            } else {
+                // Untuk mobile, tombol prev dinonaktifkan di awal
+                updateNav();
+                // Menambahkan event listener untuk update tombol saat scroll
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const slideIndex = parseInt(entry.target.id.split('-')[1]);
+                            currentSlide = slideIndex;
+                            updateNav();
+                        }
+                    });
+                }, { threshold: 0.5 }); // 0.5 berarti 50% slide terlihat
+
+                slides.forEach(slide => observer.observe(slide));
+            }
         });
     </script>
 </body>
