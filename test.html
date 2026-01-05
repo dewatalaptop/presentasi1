@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dolan Sawah — Strategic Marketing & Competitive Playbook</title>
+<title>Dolan Sawah — Data-Driven Strategy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -11,6 +11,7 @@
   --bg:#000;
   --fg:#fff;
   --accent:#00ff99;
+  --info:#33ccff; 
   --muted:rgba(255,255,255,.45);
 }
 
@@ -41,7 +42,7 @@ body{
 
 h1{font-size:clamp(38px,7vw,72px);margin-bottom:22px}
 h2{font-size:clamp(26px,5vw,48px);margin-bottom:20px}
-h3{font-size:clamp(20px,4vw,32px);margin-bottom:16px}
+h3{font-size:clamp(20px,4vw,32px);margin-bottom:16px; color:var(--accent)}
 
 p{
   font-size:clamp(16px,3vw,26px);
@@ -57,6 +58,7 @@ p{
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:26px;
   width:100%;
+  max-width: 1200px;
   margin-top:36px;
 }
 
@@ -64,6 +66,7 @@ p{
   border:1px solid rgba(255,255,255,.15);
   border-radius:20px;
   padding:30px;
+  background: rgba(255,255,255,0.02);
 }
 
 .bar{
@@ -109,7 +112,6 @@ button:hover{background:var(--accent);color:#000}
   opacity:.35;
 }
 
-/* Cinematic */
 .cinematic{
   background-size:cover;
   background-position:center;
@@ -129,7 +131,7 @@ button:hover{background:var(--accent);color:#000}
 }
 @keyframes grow{to{width:var(--w)}}
 
-/* TAMBAHAN STYLE CHART */
+/* CHART STYLES */
 .chart-wrapper {
   position: relative;
   width: 100%;
@@ -148,6 +150,25 @@ button:hover{background:var(--accent);color:#000}
   text-transform: uppercase;
   letter-spacing: 1px;
 }
+
+/* LIST STYLE UNTUK SLIDE BARU */
+ul.insight-list {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+ul.insight-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.9em;
+  display: flex;
+  justify-content: space-between;
+}
+ul.insight-list li span.val {
+  color: var(--accent);
+  font-weight: 600;
+}
 </style>
 </head>
 
@@ -160,19 +181,12 @@ button:hover{background:var(--accent);color:#000}
 
 <div class="slide">
   <h2>Masalah Nyata</h2>
-  <p>
-    Liburan selesai.<br>
-    Trafik menurun.<br>
-    <span class="highlight">Ini bukan kegagalan.</span>
-  </p>
-</div>
-
-<div class="slide">
-  <h2>Ini Pola Industri</h2>
-  <p>
-    Semua resto wisata mengalaminya.<br>
-    Yang bertahan bukan yang viral,<br>
-    tapi yang <span class="highlight">relevan.</span>
+  <div class="chart-wrapper" style="height: 200px; max-width: 800px; margin: 0 auto;">
+    <canvas id="problemChart"></canvas>
+  </div>
+  <p style="margin-top:20px">
+    Liburan selesai. Trafik Weekday menurun.<br>
+    <span class="highlight">Ini pola industri, bukan kegagalan.</span>
   </p>
 </div>
 
@@ -185,15 +199,15 @@ button:hover{background:var(--accent);color:#000}
   <h2>Kenapa Mereka Viral?</h2>
   <div class="grid">
     <div class="card">
-      Harga mudah diviralkan
+      Harga Murah
       <div class="bar"><div class="fill" style="--w:90%"></div></div>
     </div>
     <div class="card">
-      Visual instan
+      Visual Instan
       <div class="bar"><div class="fill" style="--w:85%"></div></div>
     </div>
     <div class="card">
-      Konten mudah ditiru
+      Konten Mudah Ditiru
       <div class="bar"><div class="fill" style="--w:95%"></div></div>
     </div>
   </div>
@@ -210,9 +224,7 @@ button:hover{background:var(--accent);color:#000}
 <div class="slide">
   <h2>Dampak ke Area</h2>
   <p>
-    Orang datang.<br>
-    Antre.<br>
-    Lelah.<br>
+    Orang datang. Antre. Lelah.<br>
     Mulai mencari <span class="highlight">alternatif.</span>
   </p>
 </div>
@@ -222,17 +234,11 @@ button:hover{background:var(--accent);color:#000}
   <div class="grid">
     <div class="card">
       <b>Kinasih</b><br><br>
-      Cepat<br>
-      Padat<br>
-      FOMO<br>
-      Sekali datang
+      Cepat<br>Padat<br>FOMO<br>Sekali datang
     </div>
     <div class="card">
       <b class="highlight">Dolan Sawah</b><br><br>
-      Luas<br>
-      Santai<br>
-      Experience<br>
-      Repeat tinggi
+      Luas<br>Santai<br>Experience<br>Repeat tinggi
     </div>
   </div>
 </div>
@@ -288,38 +294,22 @@ button:hover{background:var(--accent);color:#000}
 
 <div class="slide">
   <h2>Minggu 1 — Visibility & Trust</h2>
-  <p>
-    • Update Google Business<br>
-    • Konten area luas & view<br>
-    • Tone: tenang & keluarga
-  </p>
+  <p>• Update Google Business<br>• Konten area luas & view<br>• Tone: tenang & keluarga</p>
 </div>
 
 <div class="slide">
   <h2>Minggu 2 — Contrast & Capture</h2>
-  <p>
-    • Konten kontras (ramai vs lapang)<br>
-    • Geo ads sekitar kompetitor<br>
-    • CTA: tanpa antre
-  </p>
+  <p>• Konten kontras (ramai vs lapang)<br>• Geo ads sekitar kompetitor<br>• CTA: tanpa antre</p>
 </div>
 
 <div class="slide">
   <h2>Minggu 3 — Value & Repeat</h2>
-  <p>
-    • Paket keluarga / menu hero<br>
-    • Promo weekday ringan<br>
-    • Dorong review Google
-  </p>
+  <p>• Paket keluarga / menu hero<br>• Promo weekday ringan<br>• Dorong review Google</p>
 </div>
 
 <div class="slide">
   <h2>Minggu 4 — Optimize & Scale</h2>
-  <p>
-    • Matikan konten gagal<br>
-    • Gandakan konten perform<br>
-    • Kunci SOP konten
-  </p>
+  <p>• Matikan konten gagal<br>• Gandakan konten perform<br>• Kunci SOP konten</p>
 </div>
 
 <div class="slide">
@@ -339,7 +329,7 @@ button:hover{background:var(--accent);color:#000}
 
 <div class="slide">
   <h2>Aset Data Internal</h2>
-  <p>Kami memiliki infrastruktur <span class="highlight">Reservasi & Member</span><br>untuk melacak kesuksesan strategi.</p>
+  <p>Infrastruktur <span class="highlight">Reservasi & Member</span> untuk melacak strategi.</p>
   
   <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:center;">
     <div class="card" style="height: 100%; display:flex; flex-direction:column; justify-content:center;">
@@ -358,6 +348,48 @@ button:hover{background:var(--accent);color:#000}
         <div class="stat-big">85%</div>
         <div class="stat-label">Verified WhatsApp</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Operational Intelligence</h2>
+  <p style="font-size: 16px; margin-bottom: 20px;">Analisis mendalam dari menu <span class="highlight">"Analisis Data"</span> Sistem Reservasi.</p>
+  
+  <div class="grid" style="margin-top: 0; gap: 15px;">
+    <div class="card" style="padding: 15px;">
+        <div style="font-size: 24px; font-weight: 700; color: var(--accent);">5,840</div>
+        <div style="font-size: 10px; text-transform: uppercase;">Total Tamu (YTD)</div>
+    </div>
+    <div class="card" style="padding: 15px;">
+        <div style="font-size: 24px; font-weight: 700; color: var(--info);">Rp 45.2jt</div>
+        <div style="font-size: 10px; text-transform: uppercase;">Omzet DP Masuk</div>
+    </div>
+    <div class="card" style="padding: 15px;">
+        <div style="font-size: 24px; font-weight: 700; color: #fff;">Minggu</div>
+        <div style="font-size: 10px; text-transform: uppercase;">Hari Tersibuk</div>
+    </div>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 2fr 1fr; margin-top: 15px; align-items: start;">
+    <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 16px; text-align: left; margin-bottom: 10px;">Tren Bulanan</h3>
+        <div class="chart-wrapper" style="height: 180px;">
+            <canvas id="analyticsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card" style="padding: 20px; text-align: left;">
+        <h3 style="font-size: 16px; margin-bottom: 10px; color: var(--accent);">🔥 Menu Laris</h3>
+        <ul class="insight-list">
+            <li>Gurame Bakar <span class="val">1,204</span></li>
+            <li>Ayam Goreng <span class="val">980</span></li>
+            <li>Es Teh Jumbo <span class="val">2,500</span></li>
+        </ul>
+        <div style="margin-top: 15px; font-size: 12px; color: var(--muted); background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
+            <i class="fas fa-robot"></i> <strong>AI Insight:</strong><br>
+            Banyak grup besar (Avg: 8 pax). Disarankan buat Paket Keluarga baru.
+        </div>
     </div>
   </div>
 </div>
@@ -394,7 +426,7 @@ button:hover{background:var(--accent);color:#000}
 <div class="footer">Dolan Sawah — Strategic Marketing</div>
 
 <script>
-// Logic Navigasi Slide
+// --- NAVIGATION LOGIC ---
 let slides=document.querySelectorAll('.slide');
 let i=0;
 function show(n){
@@ -408,40 +440,74 @@ document.addEventListener('keydown',e=>{
   if(e.key==="ArrowLeft")prev();
 });
 
-// TAMBAHAN: Script Chart.js untuk Slide Baru
-const ctx = document.getElementById('integrationChart').getContext('2d');
-new Chart(ctx, {
+// --- CHART CONFIGURATION ---
+Chart.defaults.color = 'rgba(255,255,255,0.7)';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+Chart.defaults.font.family = '-apple-system, system-ui';
+
+// 1. Problem Chart (Slide 2)
+new Chart(document.getElementById('problemChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [{
+            label: 'Trafik Weekday',
+            data: [100, 85, 60, 45],
+            borderColor: '#ff3366',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: {display: false} },
+        scales: { x: {display: false}, y: {display: false} }
+    }
+});
+
+// 2. Integration Chart (Slide 9 - Aset Data)
+new Chart(document.getElementById('integrationChart').getContext('2d'), {
     type: 'line',
     data: {
         labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
         datasets: [{
             label: 'Reservasi',
-            data: [12, 15, 20, 18, 45, 95, 88], // Data simulasi dari sistem Anda
-            borderColor: '#00ff99', // Sesuaikan warna --accent
+            data: [12, 15, 20, 18, 45, 95, 88],
+            borderColor: '#00ff99',
             backgroundColor: 'rgba(0, 255, 153, 0.1)',
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-            pointBackgroundColor: '#fff',
-            pointRadius: 4
+            borderWidth: 2, tension: 0.4, fill: true,
+            pointBackgroundColor: '#fff', pointRadius: 4
         }]
     },
     options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }
-        },
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: {display: false} },
         scales: {
-            x: { 
-                grid: { display: false },
-                ticks: { color: 'rgba(255,255,255,0.5)', font: {size: 10} }
-            },
-            y: { 
-                grid: { color: 'rgba(255,255,255,0.1)' },
-                ticks: { display: false },
-                beginAtZero: true 
-            }
+            x: { ticks: {color: 'rgba(255,255,255,0.5)', font:{size:10}}, grid: {display:false} },
+            y: { grid: {color:'rgba(255,255,255,0.1)'}, ticks: {display:false}, beginAtZero: true }
+        }
+    }
+});
+
+// 3. Analytics Deep Dive Chart (Slide 10 - NEW)
+new Chart(document.getElementById('analyticsChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+        datasets: [{
+            label: 'Total Pax',
+            data: [850, 920, 880, 1100, 1250, 1400],
+            backgroundColor: '#00ff99',
+            borderRadius: 4
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: {display: false} },
+        scales: {
+            x: { ticks: {color: 'rgba(255,255,255,0.5)', font:{size:10}}, grid: {display:false} },
+            y: { grid: {color:'rgba(255,255,255,0.1)'}, beginAtZero: true }
         }
     }
 });
