@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dolan Sawah — Competitive Strategy & Positioning</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#000;
+  --fg:#fff;
+  --accent:#00ff99;
+  --muted:rgba(255,255,255,.45);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  overflow:hidden;
+}
+
+.slide{
+  display:none;
+  min-height:100vh;
+  padding:clamp(28px,7vw,96px);
+  text-align:center;
+  align-items:center;
+  justify-content:center;
+}
+.slide.active{
+  display:flex;
+  flex-direction:column;
+  animation:fade .6s ease;
+}
+
+h1{font-size:clamp(38px,7vw,72px);margin-bottom:22px}
+h2{font-size:clamp(26px,5vw,48px);margin-bottom:20px}
+h3{font-size:clamp(20px,4vw,32px);margin-bottom:16px}
+p{
+  font-size:clamp(16px,3vw,26px);
+  max-width:980px;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+.highlight{color:var(--accent);font-weight:600}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:26px;
+  width:100%;
+  margin-top:36px;
+}
+
+.card{
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:30px;
+}
+
+.bar{
+  height:10px;
+  background:rgba(255,255,255,.15);
+  border-radius:6px;
+  margin-top:14px;
+  overflow:hidden;
+}
+.fill{
+  height:100%;
+  width:0;
+  background:var(--accent);
+  animation:grow 1.2s ease forwards;
+}
+
+.controls{
+  position:fixed;
+  bottom:22px;
+  right:22px;
+  display:flex;
+  gap:10px;
+}
+button{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  padding:12px 18px;
+  border-radius:28px;
+  cursor:pointer;
+}
+button:hover{background:var(--accent);color:#000}
+
+.footer{
+  position:fixed;
+  bottom:22px;
+  left:22px;
+  font-size:12px;
+  opacity:.35;
+}
+
+.cinematic{
+  background-size:cover;
+  background-position:center;
+  position:relative;
+}
+.cinematic::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.6);
+}
+.cinematic>*{position:relative;z-index:2}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:none}
+}
+@keyframes grow{to{width:var(--w)}}
+</style>
+</head>
+
+<body>
+
+<!-- ================= OPENING ================= -->
+<div class="slide active">
+  <h1>Dolan Sawah</h1>
+  <p>Competitive Strategy & Brand Positioning</p>
+</div>
+
+<div class="slide">
+  <h2>Masalah Nyata</h2>
+  <p>
+    Liburan selesai.<br>
+    Trafik menurun.<br>
+    <span class="highlight">Ini bukan kegagalan.</span>
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Ini Pola Industri</h2>
+  <p>
+    Semua resto wisata mengalami hal yang sama.<br>
+    Yang bertahan bukan yang paling viral,<br>
+    tapi yang <span class="highlight">paling relevan.</span>
+  </p>
+</div>
+
+<!-- ================= COMPETITOR ================= -->
+<div class="slide">
+  <h1>Warung Kinasih</h1>
+  <p>
+    Dekat secara lokasi.<br>
+    Sangat jauh secara model bisnis.
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Kenapa Mereka Viral?</h2>
+  <div class="grid">
+    <div class="card">
+      Harga mudah diviralkan
+      <div class="bar"><div class="fill" style="--w:90%"></div></div>
+    </div>
+    <div class="card">
+      Visual instan
+      <div class="bar"><div class="fill" style="--w:85%"></div></div>
+    </div>
+    <div class="card">
+      Konten mudah ditiru
+      <div class="bar"><div class="fill" style="--w:95%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Hal Penting</h2>
+  <p>
+    Mereka tidak menjual rasa.<br>
+    Mereka menjual <span class="highlight">sensasi pertama.</span>
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Dampak ke Area</h2>
+  <p>
+    Orang datang ke kawasan ini.<br>
+    Antre.<br>
+    Lelah.<br>
+    Mulai mencari <span class="highlight">alternatif.</span>
+  </p>
+</div>
+
+<!-- ================= COMPARISON ================= -->
+<div class="slide">
+  <h2>Perbandingan Jujur</h2>
+  <div class="grid">
+    <div class="card">
+      <b>Kinasih</b><br><br>
+      Cepat<br>
+      Padat<br>
+      FOMO<br>
+      Sekali datang
+    </div>
+    <div class="card">
+      <b class="highlight">Dolan Sawah</b><br><br>
+      Luas<br>
+      Santai<br>
+      Experience<br>
+      Repeat tinggi
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Kesalahan Umum</h2>
+  <p>
+    Mencoba meniru viral.<br>
+    Padahal kita menang di <span class="highlight">kenyamanan.</span>
+  </p>
+</div>
+
+<!-- ================= POSITIONING ================= -->
+<div class="slide">
+  <h1>Positioning Baru</h1>
+  <p class="highlight">
+    “Tempat kembali setelah resto viral.”
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Makna Positioning</h2>
+  <p>
+    Kita tidak melawan Kinasih.<br>
+    Kita melengkapi perjalanan pelanggan.
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Strategi Kontras</h2>
+  <p>
+    Mereka padat → kita lapang.<br>
+    Mereka cepat → kita santai.<br>
+    Mereka sekali → kita berulang.
+  </p>
+</div>
+
+<!-- ================= STRATEGY ================= -->
+<div class="slide">
+  <h1>Strategi Menghadapi Kompetitor</h1>
+  <p>Bukan agresif.<br><span class="highlight">Presisi.</span></p>
+</div>
+
+<div class="slide">
+  <h2>1. Geo Targeting</h2>
+  <p>
+    Tangkap traffic di sekitar Kinasih.<br>
+    Saat mereka lelah antre.
+  </p>
+</div>
+
+<div class="slide">
+  <h2>2. Konten Kontras</h2>
+  <p>
+    Tanpa sindiran.<br>
+    Tunjukkan ruang, keluarga, ketenangan.
+  </p>
+</div>
+
+<div class="slide">
+  <h2>3. Menu Anti Fatigue</h2>
+  <p>
+    Paket keluarga.<br>
+    Visual penuh.<br>
+    Mudah diputuskan.
+  </p>
+</div>
+
+<!-- ================= KPI ================= -->
+<div class="slide">
+  <h1>Marketing KPI</h1>
+  <p>Tanpa data,<br>strategi hanya opini.</p>
+</div>
+
+<div class="slide">
+  <h2>KPI Utama</h2>
+  <div class="grid">
+    <div class="card">Traffic Weekday<div class="bar"><div class="fill" style="--w:70%"></div></div></div>
+    <div class="card">Avg Transaction<div class="bar"><div class="fill" style="--w:60%"></div></div></div>
+    <div class="card">Repeat Customer<div class="bar"><div class="fill" style="--w:55%"></div></div></div>
+    <div class="card">Google Rating<div class="bar"><div class="fill" style="--w:85%"></div></div></div>
+  </div>
+</div>
+
+<!-- ================= BRAND ================= -->
+<div class="slide">
+  <h1>Brand Manifesto</h1>
+  <p>Kami tidak mengejar viral.</p>
+</div>
+
+<div class="slide">
+  <p>
+    Kami percaya makan adalah pengalaman.<br><br>
+    Ruang untuk keluarga.<br>
+    Waktu untuk berbincang.<br>
+    Tempat untuk kembali.
+  </p>
+</div>
+
+<!-- ================= CINEMATIC ================= -->
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1528605248644-14dd04022da1')">
+  <h1>Dolan Sawah</h1>
+  <p>Lebih dari sekadar makan.</p>
+</div>
+
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836')">
+  <h1>Penutup</h1>
+  <p><span class="highlight">Viral lewat. Experience tinggal.</span></p>
+</div>
+
+<div class="controls">
+  <button onclick="prev()">◀</button>
+  <button onclick="next()">▶</button>
+</div>
+<div class="footer">Dolan Sawah — Strategic Marketing</div>
+
+<script>
+let slides=document.querySelectorAll('.slide');
+let i=0;
+function show(n){slides.forEach(s=>s.classList.remove('active'));slides[n].classList.add('active')}
+function next(){i=(i+1)%slides.length;show(i)}
+function prev(){i=(i-1+slides.length)%slides.length;show(i)}
+document.addEventListener('keydown',e=>{
+  if(e.key==="ArrowRight"||e.key===" ")next();
+  if(e.key==="ArrowLeft")prev();
+});
+</script>
+
+</body>
+</html>
