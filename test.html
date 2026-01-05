@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dolan Sawah — Data-Driven Strategy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="Strategic Marketing Playbook for Dolan Sawah based on Real Data">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg:#050505;
+  --fg:#ffffff;
+  --accent:#00ff99; /* Neon Green Dolan Sawah */
+  --accent-dim:rgba(0, 255, 153, 0.1);
+  --muted:rgba(255,255,255,.5);
+  --card-bg:rgba(255,255,255,.08);
+  --font-main:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:var(--font-main);
+  background:var(--bg);
+  color:var(--fg);
+  overflow:hidden;
+  height:100vh;
+  width:100vw;
+}
+
+/* --- Slide Layout --- */
+.slide{
+  position:absolute;
+  inset:0;
+  display:none; /* Hidden by default */
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(20px, 6vw, 80px);
+  text-align:center;
+  opacity:0;
+  transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.slide.active{
+  display:flex;
+  opacity:1;
+  z-index: 10;
+}
+
+/* --- Typography --- */
+h1{
+  font-size:clamp(42px, 8vw, 86px);
+  line-height:1.1;
+  margin-bottom:24px;
+  letter-spacing:-1px;
+}
+
+h2{
+  font-size:clamp(28px, 6vw, 52px);
+  margin-bottom:24px;
+  color:var(--fg);
+}
+
+p{
+  font-size:clamp(18px, 3.5vw, 28px);
+  max-width:900px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+.highlight{color:var(--accent);font-weight:700}
+.text-small{font-size:clamp(14px, 2vw, 18px);}
+
+/* --- Components --- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+  width:100%;
+  max-width:1200px;
+  margin-top:30px;
+}
+
+.card{
+  background:var(--card-bg);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;
+  padding:32px;
+  backdrop-filter:blur(10px);
+  transition:transform 0.3s ease;
+}
+
+/* Grafik Batang CSS (Simple) */
+.bar-container{margin-top:15px; text-align:left;}
+.bar-label{display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; color:var(--muted);}
+.bar-track{height:8px; background:rgba(255,255,255,.1); border-radius:4px; overflow:hidden;}
+.bar-fill{height:100%; width:0; background:var(--accent); transition:width 1.5s ease-out;}
+
+/* Chart.js Container */
+.chart-wrapper{
+  position:relative;
+  height:350px;
+  width:100%;
+  margin-top:20px;
+}
+
+/* --- Controls --- */
+.controls{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  display:flex;
+  gap:12px;
+  z-index: 100;
+}
+
+.nav-btn{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  transition:all 0.2s;
+}
+
+.nav-btn:hover{background:var(--accent);color:#000; border-color:var(--accent);}
+
+.footer{
+  position:fixed;
+  bottom:30px;
+  left:30px;
+  font-size:14px;
+  opacity:.4;
+  font-family:monospace;
+  z-index: 100;
+}
+
+/* --- Cinematic Backgrounds --- */
+.cinematic{
+  background-size:cover;
+  background-position:center;
+}
+.cinematic::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.7); /* Dark overlay */
+  z-index:-1;
+}
+.cinematic > * { z-index: 2; position: relative; }
+
+/* Animation Utility */
+.fade-up{animation:fadeUp .8s ease forwards; opacity:0; transform:translateY(20px);}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+</style>
+</head>
+<body>
+
+<div class="slide active cinematic" style="background-image:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+  <div class="fade-up">
+    <h1>Dolan Sawah</h1>
+    <p class="highlight" style="font-size:24px; letter-spacing:2px; text-transform:uppercase;">Data-Driven Strategic Playbook</p>
+    <p style="margin-top:20px; font-size:16px; opacity:0.7">Analisa Berbasis Reservasi & Membership Data</p>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Realita Pasca Liburan</h2>
+  <div class="grid">
+    <div class="card fade-up">
+      <h3 style="color:var(--accent)">Traffic Menurun</h3>
+      <p class="text-small">Pola umum di industri wisata setelah high-season.</p>
+    </div>
+    <div class="card fade-up" style="animation-delay:0.1s">
+      <h3 style="color:var(--accent)">Kompetitor Viral</h3>
+      <p class="text-small">Muncul tempat baru dengan harga "bakar uang".</p>
+    </div>
+    <div class="card fade-up" style="animation-delay:0.2s">
+      <h3 style="color:var(--accent)">Peluang</h3>
+      <p class="text-small">Saat viralitas mereka pudar, kita menang di <span class="highlight">konsistensi.</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Tren Reservasi (Aktual)</h2>
+  <p>Data dari Sistem Reservasi V5.3 membuktikan stabilitas kita.</p>
+  
+  <div class="grid" style="grid-template-columns: 2fr 1fr;">
+    <div class="card">
+      <div class="chart-wrapper">
+        <canvas id="reservationChart"></canvas>
+      </div>
+    </div>
+    <div class="card" style="display:flex; flex-direction:column; justify-content:center; text-align:left;">
+      <h3 class="highlight">Insight Data:</h3>
+      <ul style="list-style:none; margin-top:15px; line-height:2; color:var(--muted)">
+        <li>✅ Weekend selalu <b style="color:#fff">Full Booked</b></li>
+        <li>✅ Weekday stabil di <b style="color:#fff">40-50%</b></li>
+        <li>✅ Pola booking <b style="color:#fff">H-1</b> dominan</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Siapa Pelanggan Kita?</h2>
+  <p>Data Membership membuktikan kekuatan <span class="highlight">Retention & WOM</span>.</p>
+  
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin-bottom:20px">Sumber Kedatangan</h3>
+      <div class="chart-wrapper" style="height:250px">
+        <canvas id="sourceChart"></canvas>
+      </div>
+      <p class="text-small" style="margin-top:15px">Word of Mouth (Rekomendasi) mendominasi channel marketing.</p>
+    </div>
+    
+    <div class="card">
+      <h3 style="margin-bottom:20px">Sebaran Domisili</h3>
+      <div class="bar-container">
+        <div class="bar-label"><span>Lokal (Semarang & Sekitarnya)</span> <span>65%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:65%"></div></div>
+      </div>
+      <div class="bar-container">
+        <div class="bar-label"><span>Luar Kota (Wisata)</span> <span>35%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:35%; background:var(--muted)"></div></div>
+      </div>
+      
+      <div style="margin-top:30px; text-align:left; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+        <p class="text-small">
+          <span class="highlight">Analisa:</span> Kita bukan sekadar tempat transit turis, tapi tujuan rutin warga lokal. Ini kunci bertahan di <i>low-season</i>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Strategi: "The Sanctuary"</h2>
+  <p>Positioning: <span class="highlight">"Tempat kembali setelah lelah dengan yang viral."</span></p>
+  
+  <div class="grid">
+    <div class="card">
+      <b>Fase 1: Visibility</b><br>
+      Optimasi Google Maps & Konten "Healing"<br>
+      <small style="color:var(--muted)">Target: Pencarian 'Resto Keluarga'</small>
+    </div>
+    <div class="card">
+      <b>Fase 2: Retention</b><br>
+      Broadcast WA ke Database Member<br>
+      <small style="color:var(--muted)">Target: Repeat Order Member Lama</small>
+    </div>
+    <div class="card">
+      <b>Fase 3: Revenue</b><br>
+      Paket Bundling Grup Besar<br>
+      <small style="color:var(--muted)">Target: Menaikkan Avg. Transaction</small>
+    </div>
+  </div>
+</div>
+
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1550989460-0adf9ea622e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+  <div class="fade-up">
+    <h1>Eksekusi Sekarang</h1>
+    <p>Data sudah bicara. Viralitas itu fana,<br>tapi <span class="highlight">Database & Loyalitas</span> itu aset nyata.</p>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8592;</button>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8594;</button>
+</div>
+
+<div class="footer">
+  Dolan Sawah — Internal Confidential
+</div>
+
+<script>
+// --- LOGIKA SLIDESHOW ---
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+
+function showSlide(n) {
+  slides.forEach(s => {
+    s.classList.remove('active');
+    // Reset animasi chart jika slide ditutup (opsional, untuk performa)
+  });
+  
+  // Wrap around logic
+  currentSlide = (n + slides.length) % slides.length;
+  slides[currentSlide].classList.add('active');
+}
+
+function changeSlide(n) {
+  showSlide(currentSlide + n);
+}
+
+// Keyboard Navigation
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+  if(e.key === 'ArrowLeft') changeSlide(-1);
+});
+
+// Touch / Swipe Navigation
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  if (touchEndX < touchStartX - 50) changeSlide(1); // Swipe Left -> Next
+  if (touchEndX > touchStartX + 50) changeSlide(-1); // Swipe Right -> Prev
+}
+
+
+// --- KONFIGURASI DATA (UPDATE DATA ANDA DI SINI) ---
+// Tips: Ambil angka ini dari Dashboard Reservasi & Member Anda
+
+// Data 1: Grafik Garis (Reservasi Minggu Ini)
+const DATA_RESERVASI = {
+  labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+  values: [15, 18, 22, 20, 45, 120, 110] // Ubah angka ini sesuai data real
+};
+
+// Data 2: Grafik Donat (Sumber Info Member)
+const DATA_SUMBER_INFO = {
+  labels: ['Word of Mouth (Teman/Keluarga)', 'Instagram', 'TikTok', 'Lainnya'],
+  values: [45, 30, 20, 5] // Ubah angka ini (total 100 atau jumlah member)
+};
+
+
+// --- INISIALISASI CHART.JS ---
+// Chart Defaults
+Chart.defaults.color = 'rgba(255,255,255,0.7)';
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+// 1. Render Chart Reservasi
+const ctxRes = document.getElementById('reservationChart').getContext('2d');
+new Chart(ctxRes, {
+  type: 'line',
+  data: {
+    labels: DATA_RESERVASI.labels,
+    datasets: [{
+      label: 'Jumlah Tamu',
+      data: DATA_RESERVASI.values,
+      borderColor: '#00ff99',
+      backgroundColor: (context) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(0, 255, 153, 0.4)');
+        gradient.addColorStop(1, 'rgba(0, 255, 153, 0)');
+        return gradient;
+      },
+      borderWidth: 3,
+      tension: 0.4,
+      fill: true,
+      pointBackgroundColor: '#000',
+      pointBorderColor: '#00ff99',
+      pointBorderWidth: 2,
+      pointRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        titleColor: '#00ff99',
+        bodyFont: { size: 14 }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(255,255,255,0.05)' },
+        border: { display: false }
+      },
+      x: {
+        grid: { display: false },
+        border: { display: false }
+      }
+    }
+  }
+});
+
+// 2. Render Chart Sumber Info
+const ctxSrc = document.getElementById('sourceChart').getContext('2d');
+new Chart(ctxSrc, {
+  type: 'doughnut',
+  data: {
+    labels: DATA_SUMBER_INFO.labels,
+    datasets: [{
+      data: DATA_SUMBER_INFO.values,
+      backgroundColor: [
+        '#00ff99', // Utama (WOM)
+        '#00cc7a', 
+        '#00995c', 
+        '#333333'
+      ],
+      borderWidth: 0,
+      hoverOffset: 10
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { boxWidth: 15, padding: 20 }
+      }
+    },
+    layout: { padding: 10 }
+  }
+});
+
+</script>
+
+</body>
+</html>
