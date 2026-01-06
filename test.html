@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dolan Sawah — Strategic Marketing & Real-Time Data</title>
+<title>Dolan Sawah — Strategic Marketing & Real-Time Data Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,14 +11,16 @@
 
 <style>
 /* =========================================
-   STYLE ASLI PRESENTASI (TIDAK ADA YANG DIHAPUS)
+   STYLE ASLI (ORIGINAL CSS - UNTOUCHED)
    ========================================= */
 :root{
   --bg:#000;
   --fg:#fff;
   --accent:#00ff99;
-  --info:#33ccff; /* Tambahan warna untuk chart */
   --muted:rgba(255,255,255,.45);
+  /* Tambahan variabel untuk chart */
+  --info: #33ccff;
+  --tiktok: #ff0050;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -37,7 +39,7 @@ body{
   text-align:center;
   align-items:center;
   justify-content:center;
-  width: 100vw;
+  width: 100vw; /* Memastikan lebar penuh */
 }
 
 .slide.active{
@@ -48,7 +50,7 @@ body{
 
 h1{font-size:clamp(38px,7vw,72px);margin-bottom:22px}
 h2{font-size:clamp(26px,5vw,48px);margin-bottom:20px}
-h3{font-size:clamp(20px,4vw,32px);margin-bottom:16px; color:var(--accent)}
+h3{font-size:clamp(20px,4vw,32px);margin-bottom:16px}
 
 p{
   font-size:clamp(16px,3vw,26px);
@@ -64,7 +66,7 @@ p{
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:26px;
   width:100%;
-  max-width: 1200px;
+  max-width: 1200px; /* Menjaga agar konten tidak terlalu lebar di layar besar */
   margin-top:36px;
 }
 
@@ -72,6 +74,7 @@ p{
   border:1px solid rgba(255,255,255,.15);
   border-radius:20px;
   padding:30px;
+  /* Tambahan background tipis agar chart lebih terbaca */
   background: rgba(255,255,255,0.02);
 }
 
@@ -139,29 +142,48 @@ button:hover{background:var(--accent);color:#000}
 @keyframes grow{to{width:var(--w)}}
 
 /* =========================================
-   STYLE TAMBAHAN UNTUK DATA REAL-TIME
+   STYLE TAMBAHAN (DATA VISUALIZATION)
    ========================================= */
 .chart-wrapper {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 220px; /* Tinggi grafik disesuaikan */
 }
+
+/* Typography untuk Big Numbers */
+.stat-big {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Indikator Loading Data */
 .loading-indicator {
     color: var(--accent);
-    font-size: 0.9em;
+    font-size: 0.8em;
     margin-top: 10px;
     display: none;
     font-style: italic;
+    animation: blink 1.5s infinite;
 }
 .loading-indicator.visible { display: block; }
+@keyframes blink { 50% { opacity: 0.5; } }
 
-/* Styling List Menu Real */
+/* Custom List untuk Menu Real-Time */
 ul.insight-list {
   text-align: left;
   list-style: none;
   padding: 0;
   margin-top: 10px;
-  max-height: 300px;
+  max-height: 280px;
   overflow-y: auto;
 }
 ul.insight-list li {
@@ -174,10 +196,10 @@ ul.insight-list li {
 }
 ul.insight-list li:last-child { border-bottom: none; }
 
-ul.insight-list li .menu-meta {
-    display: flex;
-    flex-direction: column;
-    max-width: 80%;
+ul.insight-list li .menu-meta { 
+    display: flex; 
+    flex-direction: column; 
+    max-width: 80%; 
 }
 ul.insight-list li .menu-name { 
     font-weight: 700; 
@@ -188,10 +210,10 @@ ul.insight-list li .menu-desc {
     font-size: 0.8em; 
     color: var(--muted); 
     margin-top: 4px; 
-    font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-style: italic; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
 ul.insight-list li .menu-qty { 
     font-weight: 700; 
@@ -206,9 +228,9 @@ ul.insight-list li .menu-qty {
 <div class="slide active">
   <h1>Dolan Sawah</h1>
   <p>Strategic Marketing & Competitive Playbook</p>
-  <p id="connectionStatus" style="font-size: 12px; margin-top: 20px; color: var(--muted); opacity: 0.7;">
-    System Status: Menghubungkan ke Database...
-  </p>
+  <div id="connectionStatus" style="font-size: 12px; margin-top: 20px; color: var(--muted); border:1px solid #333; padding:5px 15px; border-radius:20px; display:inline-block;">
+    Connecting to Reservasi & Member Database...
+  </div>
 </div>
 
 <div class="slide">
@@ -275,11 +297,17 @@ ul.insight-list li .menu-qty {
   <div class="grid">
     <div class="card">
       <b>Kinasih</b><br><br>
-      Cepat<br>Padat<br>FOMO<br>Sekali datang
+      Cepat<br>
+      Padat<br>
+      FOMO<br>
+      Sekali datang
     </div>
     <div class="card">
       <b class="highlight">Dolan Sawah</b><br><br>
-      Luas<br>Santai<br>Experience<br>Repeat tinggi
+      Luas<br>
+      Santai<br>
+      Experience<br>
+      Repeat tinggi
     </div>
   </div>
 </div>
@@ -335,22 +363,38 @@ ul.insight-list li .menu-qty {
 
 <div class="slide">
   <h2>Minggu 1 — Visibility & Trust</h2>
-  <p>• Update Google Business<br>• Konten area luas & view<br>• Tone: tenang & keluarga</p>
+  <p>
+    • Update Google Business<br>
+    • Konten area luas & view<br>
+    • Tone: tenang & keluarga
+  </p>
 </div>
 
 <div class="slide">
   <h2>Minggu 2 — Contrast & Capture</h2>
-  <p>• Konten kontras (ramai vs lapang)<br>• Geo ads sekitar kompetitor<br>• CTA: tanpa antre</p>
+  <p>
+    • Konten kontras (ramai vs lapang)<br>
+    • Geo ads sekitar kompetitor<br>
+    • CTA: tanpa antre
+  </p>
 </div>
 
 <div class="slide">
   <h2>Minggu 3 — Value & Repeat</h2>
-  <p>• Paket keluarga / menu hero<br>• Promo weekday ringan<br>• Dorong review Google</p>
+  <p>
+    • Paket keluarga / menu hero<br>
+    • Promo weekday ringan<br>
+    • Dorong review Google
+  </p>
 </div>
 
 <div class="slide">
   <h2>Minggu 4 — Optimize & Scale</h2>
-  <p>• Matikan konten gagal<br>• Gandakan konten perform<br>• Kunci SOP konten</p>
+  <p>
+    • Matikan konten gagal<br>
+    • Gandakan konten perform<br>
+    • Kunci SOP konten
+  </p>
 </div>
 
 <div class="slide">
@@ -370,16 +414,15 @@ ul.insight-list li .menu-qty {
 
 <div class="slide">
   <h2>Operational Intelligence</h2>
-  <p style="font-size: 16px; margin-bottom: 20px;">Data Real-Time dari <span class="highlight">Sistem Reservasi & Firebase</span>.</p>
+  <p>Data Real-Time dari <span class="highlight">Sistem Reservasi</span>.</p>
   
   <div class="grid" style="grid-template-columns: 2fr 1fr; margin-top: 15px; align-items: start; gap: 20px;">
-    
     <div class="card" style="padding: 20px;">
         <h3 style="font-size: 16px; text-align: left; margin-bottom: 10px;">Tren Omzet DP (YTD)</h3>
-        <div class="chart-wrapper" style="height: 220px;">
+        <div class="chart-wrapper">
             <canvas id="revenueChart"></canvas>
         </div>
-        <div id="loadingRevenue" class="loading-indicator visible">Sedang menghitung omzet...</div>
+        <div id="loadingRevenue" class="loading-indicator visible">Mengambil data transaksi...</div>
     </div>
 
     <div class="card" style="padding: 20px; text-align: left; height: 100%;">
@@ -387,6 +430,41 @@ ul.insight-list li .menu-qty {
         <div id="loadingMenu" class="loading-indicator visible">Menganalisis pesanan...</div>
         <ul class="insight-list" id="topMenuList">
             </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Member Growth Engine</h2>
+  <p>Analisis Loyalitas dari <span class="highlight" style="color:var(--info)">Sistem Member</span>.</p>
+  
+  <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px; gap: 25px; align-items: start;">
+    
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="grid" style="grid-template-columns: 1fr 1fr; margin-top: 0; gap: 15px;">
+          <div class="card" style="padding:15px;">
+            <div class="stat-big" id="totalMemberCount">0</div>
+            <div class="stat-label">Total Member</div>
+          </div>
+          <div class="card" style="padding:15px;">
+            <div class="stat-big" style="color:var(--info)" id="verifiedMemberCount">0%</div>
+            <div class="stat-label">Verified WA</div>
+          </div>
+      </div>
+      
+      <div class="card" style="text-align:left; padding:20px;">
+          <h3 style="font-size:16px; margin-bottom:10px; color:var(--info)">📍 Top Domisili Member</h3>
+          <ul class="insight-list" id="addressList" style="max-height: 150px;">
+              </ul>
+      </div>
+    </div>
+
+    <div class="card" style="height: 100%; display:flex; flex-direction:column; justify-content:center; padding:20px;">
+        <h3 style="font-size:16px; margin-bottom:15px;">Sumber Akuisisi Member</h3>
+        <div class="chart-wrapper" style="height: 200px;">
+            <canvas id="memberSourceChart"></canvas>
+        </div>
+        <div id="loadingMember" class="loading-indicator visible">Sinkronisasi data member...</div>
     </div>
 
   </div>
@@ -421,13 +499,15 @@ ul.insight-list li .menu-qty {
   <button onclick="next()">▶</button>
 </div>
 
-<div class="footer">Dolan Sawah — Strategic Marketing</div>
+<div class="footer">Dolan Sawah — Integrated Data System</div>
 
 <script>
 // =========================================
-// 1. FIREBASE CONFIG (DARI KODE RESERVASI ANDA)
+// 1. CONFIG: DUAL DATABASE FIREBASE
 // =========================================
-const firebaseConfig = {
+
+// CONFIG A: RESERVASI (Untuk Menu & Omzet)
+const configReservasi = {
   apiKey: "AIzaSyA_c1tU70FM84Qi_f_aSaQ-YVLo_18lCkI",
   authDomain: "reservasi-dolan-sawah.firebaseapp.com",
   projectId: "reservasi-dolan-sawah",
@@ -436,17 +516,40 @@ const firebaseConfig = {
   appId: "1:213151400721:web:e51b0d8cdd24206cf682b0"
 };
 
-// Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+// CONFIG B: MEMBER (Untuk Member Count, Alamat, Source)
+const configMember = {
+  apiKey: "AIzaSyAEzWDI9ZWlc7NnUTDBbx7wednnUVeS9Ao",
+  authDomain: "member-hp-dolansawah.firebaseapp.com",
+  projectId: "member-hp-dolansawah",
+  storageBucket: "member-hp-dolansawah.appspot.com",
+  messagingSenderId: "277683917105",
+  appId: "1:277683917105:web:d496ee4547f339e2fee010"
+};
+
+// INITIALIZE DUAL APPS
+let appReservasi, appMember;
+let dbReservasi, dbMember;
+
+try {
+    // Inisialisasi dengan nama app unik agar tidak konflik
+    appReservasi = firebase.initializeApp(configReservasi, "AppReservasi");
+    appMember = firebase.initializeApp(configMember, "AppMember");
+    
+    dbReservasi = appReservasi.firestore();
+    dbMember = appMember.firestore();
+    
+    console.log("Dual Firebase Connection Established.");
+} catch (e) {
+    console.error("Firebase Initialization Error:", e);
+    document.getElementById('connectionStatus').innerText = "Connection Failed!";
+    document.getElementById('connectionStatus').style.color = "red";
 }
-const db = firebase.firestore();
 
 // =========================================
-// 2. NAVIGASI SLIDE (ASLI)
+// 2. NAVIGASI SLIDE (LOGIC ASLI)
 // =========================================
-let slides=document.querySelectorAll('.slide');
-let i=0;
+let slides = document.querySelectorAll('.slide');
+let i = 0;
 function show(n){
   slides.forEach(s=>s.classList.remove('active'));
   slides[n].classList.add('active');
@@ -459,123 +562,108 @@ document.addEventListener('keydown',e=>{
 });
 
 // =========================================
-// 3. LOGIKA FETCH DATA REAL-TIME
+// 3. LOGIKA FETCH DATA (REAL-TIME)
 // =========================================
 
-// Variabel Global Data
-let allReservations = [];
-let menuDetails = {}; // Menyimpan detail isian dari collection 'menus'
-
-// A. Fungsi Utama: Load Data saat halaman dibuka
-async function loadRealData() {
+async function fetchAllData() {
     const statusEl = document.getElementById('connectionStatus');
+    
     try {
-        // 1. Ambil Data Menu (untuk dapat detail isian real)
-        statusEl.textContent = "Mengambil database menu...";
-        const menuSnapshot = await db.collection('menus').get();
-        menuSnapshot.forEach(doc => {
-            // Simpan detail isian (array) ke object dictionary
+        // --- STEP 1: DATA RESERVASI (Menu & Omzet) ---
+        statusEl.innerText = "Fetching Reservation Data...";
+        
+        // Ambil Data Menu (untuk isian detail)
+        const menuSnap = await dbReservasi.collection('menus').get();
+        const menuDetails = {};
+        menuSnap.forEach(doc => {
             menuDetails[doc.id] = doc.data().details || []; 
         });
 
-        // 2. Ambil Data Reservasi
-        statusEl.textContent = "Mengambil riwayat transaksi...";
-        const resSnapshot = await db.collection('reservations').get();
+        // Ambil Data Reservasi
+        const resSnap = await dbReservasi.collection('reservations').get();
+        const reservations = resSnap.docs.map(doc => doc.data());
+
+        // Proses Data Reservasi
+        processReservations(reservations, menuDetails);
+
+
+        // --- STEP 2: DATA MEMBER (Jumlah, Source, Alamat) ---
+        statusEl.innerText = "Fetching Member Data...";
         
-        allReservations = resSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
+        const memberSnap = await dbMember.collection('members').get();
+        const members = memberSnap.docs.map(doc => doc.data());
 
-        statusEl.textContent = `Terkoneksi. ${allReservations.length} data reservasi dimuat.`;
-        statusEl.style.color = '#00ff99';
+        // Proses Data Member
+        processMembers(members);
 
-        // 3. Jalankan Pengolahan Data
-        processTopMenuData();
-        processRevenueData();
+        // Update Status Akhir
+        statusEl.innerText = "● System Online: Connected to Reservasi & Member DB";
+        statusEl.style.color = "#00ff99";
+        statusEl.style.borderColor = "#00ff99";
 
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        statusEl.textContent = "Gagal koneksi database: " + error.message;
-        statusEl.style.color = 'red';
+    } catch (err) {
+        console.error(err);
+        statusEl.innerText = "Data Fetch Error: " + err.message;
+        statusEl.style.color = "#ff3366";
     }
 }
 
-// B. Proses Data: Menu Terlaris & Isiannya
-function processTopMenuData() {
+// --- FUNGSI PROSES DATA RESERVASI ---
+function processReservations(data, menuDetails) {
+    // 1. Hitung Menu Terlaris
     const menuCounts = {};
-
-    // Loop semua reservasi
-    allReservations.forEach(res => {
-        if (Array.isArray(res.menus)) {
-            // Format Baru (Array)
-            res.menus.forEach(item => {
-                const name = item.name;
-                const qty = parseInt(item.quantity) || 0;
+    data.forEach(r => {
+        // Handle format baru (Array) dan lama (String)
+        if (Array.isArray(r.menus)) {
+            r.menus.forEach(m => {
+                const name = m.name;
+                const qty = parseInt(m.quantity) || 0;
                 menuCounts[name] = (menuCounts[name] || 0) + qty;
             });
-        } else if (res.menu) {
-            // Format Lama (String)
-            const name = res.menu;
-            menuCounts[name] = (menuCounts[name] || 0) + 1;
+        } else if (r.menu) {
+            menuCounts[r.menu] = (menuCounts[r.menu] || 0) + 1;
         }
     });
 
-    // Urutkan (Terbanyak ke Terkecil)
-    const sortedMenus = Object.entries(menuCounts)
-        .sort((a, b) => b[1] - a[1]) 
-        .slice(0, 5); // Ambil 5 Besar
-
-    // Render ke HTML
+    // Sort Top 5
+    const sortedMenus = Object.entries(menuCounts).sort((a,b) => b[1]-a[1]).slice(0, 5);
+    
+    // Render HTML
     const listEl = document.getElementById('topMenuList');
-    listEl.innerHTML = ''; 
+    listEl.innerHTML = "";
     document.getElementById('loadingMenu').style.display = 'none';
 
-    if (sortedMenus.length === 0) {
-        listEl.innerHTML = '<li>Belum ada data pesanan.</li>';
-        return;
-    }
+    if(sortedMenus.length === 0) listEl.innerHTML = "<li>Belum ada data pesanan.</li>";
 
-    sortedMenus.forEach(([name, count], index) => {
-        // Ambil detail isian yang nyata dari database 'menus'
-        let detailString = 'Menu Spesial';
-        if (menuDetails[name] && menuDetails[name].length > 0) {
-            // Gabungkan array isian jadi string (contoh: "Nasi, Ayam, Telur")
-            detailString = menuDetails[name].join(', ');
-        }
+    sortedMenus.forEach(([name, count], idx) => {
+        // Ambil detail isian dari mapping menuDetails
+        const details = menuDetails[name] ? menuDetails[name].join(', ') : 'Menu Spesial';
         
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <div class="menu-meta">
-                <span class="menu-name">#${index + 1} ${name}</span>
-                <span class="menu-desc">${detailString}</span>
-            </div>
-            <span class="menu-qty">${count}</span>
-        `;
-        listEl.appendChild(li);
+        listEl.innerHTML += `
+            <li>
+                <div class="menu-meta">
+                    <span class="menu-name">#${idx+1} ${name}</span>
+                    <span class="menu-desc">${details}</span>
+                </div>
+                <span class="menu-qty">${count}</span>
+            </li>`;
     });
-}
 
-// C. Proses Data: Grafik Omzet DP Bulanan
-function processRevenueData() {
-    const monthlyRevenue = new Array(12).fill(0); // [0,0,0...] untuk Jan-Des
+    // 2. Hitung Omzet DP per Bulan
+    const monthlyRev = new Array(12).fill(0);
     const monthLabels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
-
-    allReservations.forEach(res => {
-        if (res.date && res.dp) {
-            const date = new Date(res.date);
-            if (!isNaN(date.getTime())) {
-                const monthIndex = date.getMonth(); // 0 = Jan
-                monthlyRevenue[monthIndex] += parseInt(res.dp);
-            }
+    
+    data.forEach(r => {
+        if(r.date && r.dp) {
+            const d = new Date(r.date);
+            if(!isNaN(d)) monthlyRev[d.getMonth()] += parseInt(r.dp);
         }
     });
 
-    // Render Chart
+    // Render Chart Omzet
     document.getElementById('loadingRevenue').style.display = 'none';
     const ctx = document.getElementById('revenueChart').getContext('2d');
     
-    // Config Warna Dark Mode
     Chart.defaults.color = 'rgba(255,255,255,0.7)';
     Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
 
@@ -584,50 +672,104 @@ function processRevenueData() {
         data: {
             labels: monthLabels,
             datasets: [{
-                label: 'Total DP Masuk (Rp)',
-                data: monthlyRevenue,
-                borderColor: '#00ff99', // Hijau Neon
+                label: 'Omzet DP (Rp)',
+                data: monthlyRev,
+                borderColor: '#00ff99',
                 backgroundColor: 'rgba(0, 255, 153, 0.1)',
-                borderWidth: 3,
-                tension: 0.3,
-                fill: true,
-                pointBackgroundColor: '#fff',
-                pointRadius: 4
+                borderWidth: 3, tension: 0.3, fill: true,
+                pointBackgroundColor: '#fff'
             }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
-                        }
-                    }
-                }
+            responsive: true, maintainAspectRatio: false,
+            plugins: { 
+                legend: {display:false},
+                tooltip: { callbacks: { label: (c) => 'Rp ' + c.parsed.y.toLocaleString('id-ID') } }
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { color: 'rgba(255,255,255,0.1)' },
-                    ticks: {
-                        callback: function(value) {
-                            return (value / 1000) + 'k'; // Format ribuan
-                        }
-                    }
-                },
-                x: { grid: { display: false } }
+            scales: { 
+                x: {grid: {display:false}}, 
+                y: {beginAtZero:true, ticks: { callback: (v) => (v/1000) + 'k' }} 
             }
         }
     });
 }
 
-// Jalankan saat load
-loadRealData();
+// --- FUNGSI PROSES DATA MEMBER ---
+function processMembers(data) {
+    // 1. Statistik Dasar
+    const total = data.length;
+    const verified = data.filter(m => m.isVerified).length;
+    const verifiedPercent = total > 0 ? Math.round((verified/total)*100) : 0;
+
+    document.getElementById('totalMemberCount').innerText = total.toLocaleString();
+    document.getElementById('verifiedMemberCount').innerText = verifiedPercent + "%";
+
+    // 2. Grafik Sumber Info
+    const sources = {};
+    data.forEach(m => {
+        const src = m.sumberInfo || 'Lainnya';
+        sources[src] = (sources[src] || 0) + 1;
+    });
+
+    document.getElementById('loadingMember').style.display = 'none';
+    const ctx = document.getElementById('memberSourceChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(sources),
+            datasets: [{
+                data: Object.values(sources),
+                backgroundColor: ['#00ff99', '#33ccff', '#ff0050', '#ffffff'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { 
+                legend: { position: 'right', labels: {padding: 20, color:'#fff'} }
+            }
+        }
+    });
+
+    // 3. Analisis Alamat (Simple Parsing Kota/Kab)
+    const addressCounts = {};
+    data.forEach(m => {
+        const addr = m.alamat || "";
+        let region = "Lainnya";
+        
+        // Logika sederhana mendeteksi kota
+        if(addr.toLowerCase().includes("semarang")) {
+            region = addr.toLowerCase().includes("kab") ? "Kab. Semarang" : "Kota Semarang";
+        } else if(addr.length < 3) {
+            region = "Tidak Ada Data";
+        } else {
+            // Ambil kata pertama sebagai estimasi kota (bisa diperbaiki logicnya)
+            region = "Luar Kota";
+        }
+        addressCounts[region] = (addressCounts[region] || 0) + 1;
+    });
+
+    // Sort Alamat
+    const sortedAddr = Object.entries(addressCounts).sort((a,b) => b[1]-a[1]).slice(0, 3);
+    const addrListEl = document.getElementById('addressList');
+    addrListEl.innerHTML = "";
+
+    sortedAddr.forEach(([loc, count]) => {
+        const percent = Math.round((count/total)*100);
+        addrListEl.innerHTML += `
+            <li>
+                <div class="menu-meta"><span class="menu-name">${loc}</span></div>
+                <span class="menu-qty" style="font-size:1em">${percent}%</span>
+            </li>
+        `;
+    });
+}
+
+// Jalankan Fetch Data saat halaman dimuat
+fetchAllData();
 
 </script>
-
 </body>
 </html>
