@@ -15,9 +15,9 @@
    ========================================================================== */
 :root {
   /* Color Palette - Neon Cyberpunk Style */
-  --bg-color: #050505;
+  --bg-color: #000000; /* Deep Black for Jobs Style */
   --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-muted: rgba(255, 255, 255, 0.6);
   
   /* Brand Colors */
   --accent-green: #00ff99;  /* Growth/Positive */
@@ -26,9 +26,9 @@
   --accent-purple: #bc13fe; /* Premium/Member */
 
   /* UI Components */
-  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-bg: rgba(255, 255, 255, 0.08);
   --card-border: 1px solid rgba(255, 255, 255, 0.1);
-  --glass-blur: blur(10px);
+  --glass-blur: blur(20px);
 }
 
 * {
@@ -38,19 +38,20 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-main);
-  overflow: hidden; /* Mencegah scrollbar, menggunakan slide */
+  overflow: hidden; 
   height: 100vh;
   width: 100vw;
+  perspective: 1000px; /* Essential for 3D effects */
 }
 
 /* ==========================================================================
-   2. SLIDE LAYOUT & ANIMATION
+   2. SLIDE LAYOUT & CINEMATIC ANIMATION (STEVE JOBS STYLE)
    ========================================================================== */
 .slide {
-  display: none; /* Default hidden */
+  display: none; 
   height: 100vh;
   width: 100vw;
   padding: clamp(20px, 5vw, 60px);
@@ -61,53 +62,92 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  opacity: 0;
+  /* Default state pre-animation */
+  transform: scale(1.1) translateY(20px); 
+  filter: blur(10px);
+  transition: 
+    opacity 0.8s ease, 
+    transform 1.0s cubic-bezier(0.19, 1, 0.22, 1), 
+    filter 0.8s ease;
 }
 
+/* State Aktif */
 .slide.active {
   display: flex;
-  animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0);
   z-index: 10;
 }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Staggered Animation for Inner Elements (Cascading Effect) */
+.slide.active h1,
+.slide.active h2,
+.slide.active p,
+.slide.active .grid,
+.slide.active .dashboard-wrapper {
+  animation: appleFadeUp 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Delay urutan muncul agar dramatis */
+.slide.active h1 { animation-delay: 0.1s; }
+.slide.active h2 { animation-delay: 0.1s; }
+.slide.active h3 { animation-delay: 0.2s; }
+.slide.active p  { animation-delay: 0.3s; }
+.slide.active .grid { animation-delay: 0.5s; }
+.slide.active .dashboard-wrapper { animation-delay: 0.2s; }
+
+@keyframes appleFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==========================================================================
    3. TYPOGRAPHY
    ========================================================================== */
 h1 {
-  font-size: clamp(36px, 6vw, 72px);
+  font-size: clamp(48px, 7vw, 96px); /* Lebih besar untuk impact */
   margin-bottom: 25px;
-  line-height: 1.1;
-  letter-spacing: -1px;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  font-weight: 700;
+  background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 h2 {
-  font-size: clamp(24px, 4vw, 42px);
+  font-size: clamp(32px, 5vw, 56px);
   margin-bottom: 30px;
   font-weight: 600;
   color: #eeeeee;
+  letter-spacing: -1px;
 }
 
 h3 {
   font-size: 18px;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   color: var(--accent-green);
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   width: 100%;
+  font-weight: 600;
 }
 
 p {
-  font-size: clamp(16px, 2vw, 24px);
-  max-width: 900px;
-  line-height: 1.6;
+  font-size: clamp(20px, 2.5vw, 32px);
+  max-width: 1000px;
+  line-height: 1.5;
   color: var(--text-muted);
+  font-weight: 400;
 }
 
-.highlight { color: var(--accent-green); font-weight: 700; }
+.highlight { color: var(--accent-green); font-weight: 600; }
 .text-blue { color: var(--accent-blue); }
 .text-red { color: var(--accent-red); }
 
@@ -117,10 +157,10 @@ p {
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
+  gap: 30px;
   width: 100%;
-  max-width: 1200px;
-  margin-top: 30px;
+  max-width: 1300px;
+  margin-top: 40px;
 }
 
 .card {
@@ -128,26 +168,33 @@ p {
   border: var(--card-border);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: 20px;
-  padding: 30px;
+  border-radius: 24px;
+  padding: 35px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.4s ease, background 0.4s ease;
+}
+
+.card:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-5px);
 }
 
 /* Visual Bar Progress */
 .progress-bar {
-  height: 8px;
+  height: 10px;
   background: rgba(255,255,255,0.1);
-  border-radius: 4px;
-  margin-top: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
   overflow: hidden;
 }
 .progress-fill {
   height: 100%;
   width: 0;
   background: var(--accent-green);
-  transition: width 1.5s ease-out;
+  transition: width 2s cubic-bezier(0.22, 1, 0.36, 1); /* Smoother fill */
+  box-shadow: 0 0 10px var(--accent-green);
 }
 
 /* ==========================================================================
@@ -155,15 +202,15 @@ p {
    ========================================================================== */
 .dashboard-wrapper {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
   text-align: left;
 }
 
 .chart-container {
   position: relative;
-  height: 250px;
+  height: 300px;
   width: 100%;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 /* UX: Loading Overlay for Charts */
@@ -173,11 +220,13 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.4);
     font-size: 14px;
     color: var(--text-muted);
     z-index: 5;
-    transition: opacity 0.3s;
+    transition: opacity 0.5s;
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
 }
 .chart-loading.hidden {
     opacity: 0;
@@ -187,44 +236,51 @@ p {
 /* KPI Boxes (Big Numbers) */
 .kpi-container {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 25px;
+  margin-bottom: 25px;
 }
 
 .kpi-box {
   flex: 1;
-  background: rgba(0,0,0,0.3);
-  padding: 20px;
-  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  padding: 25px;
+  border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.05);
 }
 
 .kpi-value {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
   color: #fff;
   margin-bottom: 5px;
+  letter-spacing: -1px;
 }
 
 .kpi-label {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
   color: var(--text-muted);
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-weight: 500;
 }
 
 /* List Styles for Menu/Ranking */
 ul.data-list {
   list-style: none;
-  max-height: 250px;
+  max-height: 280px;
   overflow-y: auto;
+  padding-right: 10px;
 }
+ul.data-list::-webkit-scrollbar { width: 5px; }
+ul.data-list::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; }
+
 ul.data-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 1.1rem;
 }
 ul.data-list li:last-child { border-bottom: none; }
 
@@ -233,62 +289,77 @@ ul.data-list li:last-child { border-bottom: none; }
    ========================================================================== */
 .controls {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 40px;
+  right: 40px;
   display: flex;
-  gap: 15px;
+  gap: 20px;
   z-index: 100;
+  opacity: 0.6;
+  transition: opacity 0.3s;
 }
+.controls:hover { opacity: 1; }
 
 .btn-nav {
-  width: 50px; height: 50px;
+  width: 60px; height: 60px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(20,20,20,0.8);
   color: #fff;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
 }
 .btn-nav:hover {
-  background: var(--accent-green);
+  transform: scale(1.1);
+  background: #fff;
   color: #000;
-  border-color: var(--accent-green);
+  border-color: #fff;
 }
 
 .footer {
   position: fixed;
-  bottom: 30px;
-  left: 30px;
-  font-size: 12px;
+  bottom: 40px;
+  left: 40px;
+  font-size: 13px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 20px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .status-dot {
-  width: 8px; height: 8px;
+  width: 10px; height: 10px;
   border-radius: 50%;
   background: #555;
   box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+  transition: background 0.3s;
 }
-.status-dot.online { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); }
+.status-dot.online { background: var(--accent-green); box-shadow: 0 0 15px var(--accent-green); }
 .status-dot.error { background: var(--accent-red); }
 
 /* Backgrounds */
 .cinematic {
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 .cinematic::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
   z-index: 1;
 }
-.cinematic > * { position: relative; z-index: 2; }
+.cinematic > * { position: relative; z-index: 2; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 </style>
 </head>
 
@@ -297,7 +368,7 @@ ul.data-list li:last-child { border-bottom: none; }
 <div class="slide active">
   <h1>Dolan Sawah</h1>
   <p>Strategic Marketing & Competitive Playbook</p>
-  <div style="margin-top: 20px; padding: 8px 20px; border: 1px solid var(--text-muted); border-radius: 30px; font-size: 12px;">
+  <div style="margin-top: 30px; padding: 10px 25px; border: 1px solid var(--text-muted); border-radius: 50px; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
     System Version 3.1 (Enhanced Logic)
   </div>
 </div>
@@ -363,11 +434,11 @@ ul.data-list li:last-child { border-bottom: none; }
   <h2>Perbandingan Jujur</h2>
   <div class="grid">
     <div class="card">
-      <b style="color:var(--accent-red)">Kinasih</b><br><br>
+      <b style="color:var(--accent-red); font-size:1.5rem;">Kinasih</b><br><br>
       Cepat<br>Padat<br>FOMO<br>Sekali datang
     </div>
-    <div class="card">
-      <b class="highlight">Dolan Sawah</b><br><br>
+    <div class="card" style="border-color: var(--accent-green);">
+      <b class="highlight" style="font-size:1.5rem;">Dolan Sawah</b><br><br>
       Luas<br>Santai<br>Experience<br>Repeat tinggi
     </div>
   </div>
@@ -489,7 +560,7 @@ ul.data-list li:last-child { border-bottom: none; }
             </div>
             <div class="kpi-box">
                 <div class="kpi-label">Data Status</div>
-                <div class="kpi-value" style="font-size:1.2rem; margin-top:10px; color:#aaa;">Synced</div>
+                <div class="kpi-value" style="font-size:1.5rem; margin-top:10px; color:#aaa;">Synced</div>
             </div>
         </div>
 
@@ -533,7 +604,7 @@ ul.data-list li:last-child { border-bottom: none; }
 
         <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:center;">
             <div class="card">
-                <div class="chart-container" style="height: 300px;">
+                <div class="chart-container" style="height: 350px;">
                     <div id="loader-source" class="chart-loading"><span>Mengambil Data Member...</span></div>
                     <canvas id="chartSource"></canvas>
                 </div>
@@ -545,9 +616,9 @@ ul.data-list li:last-child { border-bottom: none; }
                     <div class="kpi-value text-blue" id="valTotalMember">0</div>
                 </div>
                 
-                <div class="card" style="padding:20px;">
-                    <h3 style="font-size:14px; color:#fff;">Marketing Insight:</h3>
-                    <p style="font-size:16px;">
+                <div class="card" style="padding:25px;">
+                    <h3 style="font-size:14px; color:#fff; margin-bottom:15px;">Marketing Insight:</h3>
+                    <p style="font-size:18px; line-height:1.6;">
                         • Dominasi <span class="highlight">TikTok/IG</span> menandakan konten viral bekerja.<br>
                         • Dominasi <span class="text-blue">Google Maps</span> menandakan SEO lokal kuat.<br>
                         • Fokuskan budget iklan pada kanal dengan persentase tertinggi.
@@ -563,16 +634,16 @@ ul.data-list li:last-child { border-bottom: none; }
         <h2>📍 Growth Engine: Geo-Location</h2>
         <p>Peta sebaran domisili pelanggan untuk penargetan iklan.</p>
 
-        <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-bottom:20px;">
-            <div class="card" style="padding:15px; text-align:center;">
+        <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap:20px; margin-bottom:20px;">
+            <div class="card" style="padding:20px; text-align:center;">
                 <div class="kpi-label">Kota Semarang</div>
                 <div class="kpi-value highlight" id="geo1">0%</div>
             </div>
-            <div class="card" style="padding:15px; text-align:center;">
+            <div class="card" style="padding:20px; text-align:center;">
                 <div class="kpi-label">Kabupaten</div>
                 <div class="kpi-value text-blue" id="geo2">0%</div>
             </div>
-            <div class="card" style="padding:15px; text-align:center;">
+            <div class="card" style="padding:20px; text-align:center;">
                 <div class="kpi-label">Luar Kota</div>
                 <div class="kpi-value text-red" id="geo3">0%</div>
             </div>
@@ -580,7 +651,7 @@ ul.data-list li:last-child { border-bottom: none; }
 
         <div class="card">
             <h3>Visualisasi Sebaran Wilayah</h3>
-            <div class="chart-container" style="height: 200px;">
+            <div class="chart-container" style="height: 250px;">
                 <div id="loader-geo" class="chart-loading"><span>Memetakan Lokasi...</span></div>
                 <canvas id="chartGeo"></canvas>
             </div>
@@ -602,12 +673,12 @@ ul.data-list li:last-child { border-bottom: none; }
   </p>
 </div>
 
-<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1528605248644-14dd04022da1')">
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=2070&auto=format&fit=crop');">
   <h1>Dolan Sawah</h1>
   <p>Lebih dari sekadar makan.</p>
 </div>
 
-<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836')">
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1628189445173-9a3d4f4044c3?q=80&w=2070&auto=format&fit=crop');">
   <h1>Penutup</h1>
   <p><span class="highlight">Viral lewat. Experience tinggal.</span></p>
 </div>
@@ -652,13 +723,13 @@ const configMember = {
 
 // Global Variables
 let dbReservasi, dbMember;
-let chartInstances = {}; // Menyimpan instance chart agar bisa di-resize (Point 2B)
+let chartInstances = {}; // Menyimpan instance chart agar bisa di-resize
 
 // =======================================================
-// 2. HELPER FUNCTIONS (Point 2C & Point 4)
+// 2. HELPER FUNCTIONS
 // =======================================================
 
-// Fix 2C: Robust Date Parser (Handle Firestore Timestamp & String)
+// Robust Date Parser (Handle Firestore Timestamp & String)
 function parseDateHelper(dateInput) {
     if (!dateInput) return null;
     
@@ -679,7 +750,7 @@ function parseDateHelper(dateInput) {
     return null;
 }
 
-// Fix 4: Professional IDR Formatting
+// Professional IDR Formatting
 function formatRupiah(number) {
     return new Intl.NumberFormat('id-ID', { 
         style: 'currency', 
@@ -773,7 +844,6 @@ function processRevenue(data) {
 
     data.forEach(r => {
         if(r.date && r.dp) {
-            // Apply Fix 2C: Gunakan helper date parser
             const d = parseDateHelper(r.date);
             const val = parseInt(r.dp);
             
@@ -784,7 +854,7 @@ function processRevenue(data) {
         }
     });
 
-    // Update KPI (Fix 4: Better Formatting)
+    // Update KPI
     document.getElementById('valTotalRes').innerText = data.length.toLocaleString('id-ID');
     document.getElementById('valTotalRev').innerText = formatRupiah(totalRev);
 
@@ -798,11 +868,12 @@ function processRevenue(data) {
                 label: 'Omzet DP',
                 data: revenueData,
                 borderColor: '#00ff99',
-                backgroundColor: 'rgba(0, 255, 153, 0.1)',
+                backgroundColor: 'rgba(0, 255, 153, 0.15)',
                 borderWidth: 3,
                 tension: 0.4,
                 fill: true,
-                pointRadius: 4,
+                pointRadius: 5,
+                pointHoverRadius: 8,
                 pointBackgroundColor: '#fff'
             }]
         },
@@ -811,8 +882,12 @@ function processRevenue(data) {
             maintainAspectRatio: false,
             plugins: { legend: {display: false} },
             scales: {
-                y: { grid: {color:'rgba(255,255,255,0.1)'}, ticks: {callback: v => (v/1000) + 'k', color:'#888'} },
+                y: { grid: {color:'rgba(255,255,255,0.05)'}, ticks: {callback: v => (v/1000) + 'k', color:'#888'} },
                 x: { grid: {display:false}, ticks: {color:'#ccc'} }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
             }
         }
     });
@@ -854,12 +929,12 @@ function processMenu(data) {
     chartInstances.menu = new Chart(document.getElementById('chartMenu'), {
         type: 'bar',
         data: {
-            labels: sorted.map(i => i[0].substring(0, 12) + '...'),
+            labels: sorted.map(i => i[0].substring(0, 15) + (i[0].length>15 ? '...' : '')),
             datasets: [{
                 label: 'Qty',
                 data: sorted.map(i => i[1]),
                 backgroundColor: '#33ccff',
-                borderRadius: 4
+                borderRadius: 6
             }]
         },
         options: {
@@ -868,8 +943,12 @@ function processMenu(data) {
             maintainAspectRatio: false,
             plugins: { legend: {display: false} },
             scales: {
-                x: { grid: {color:'rgba(255,255,255,0.1)'}, ticks: {color:'#888'} },
-                y: { grid: {display:false}, ticks: {color:'#fff'} }
+                x: { grid: {color:'rgba(255,255,255,0.05)'}, ticks: {color:'#888'} },
+                y: { grid: {display:false}, ticks: {color:'#fff', font:{size:11}} }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
             }
         }
     });
@@ -899,16 +978,21 @@ function processMemberStats(data) {
                 data: Object.values(sources),
                 backgroundColor: ['#E1306C', '#000000', '#4285F4', '#888'],
                 borderColor: '#222',
-                borderWidth: 2
+                borderWidth: 3
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'right', labels: {color:'#fff', padding:15} }
+                legend: { position: 'bottom', labels: {color:'#fff', padding:20, usePointStyle:true} }
             },
-            layout: { padding: 20 }
+            layout: { padding: 10 },
+            cutout: '60%',
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
         }
     });
 }
@@ -937,7 +1021,7 @@ function processGeo(data) {
             datasets: [{
                 data: [geo['Semarang'], geo['Kabupaten'], geo['Luar Kota']],
                 backgroundColor: ['#00ff99', '#33ccff', '#ff0050'],
-                borderRadius: 6
+                borderRadius: 8
             }]
         },
         options: {
@@ -945,8 +1029,12 @@ function processGeo(data) {
             maintainAspectRatio: false,
             plugins: { legend: {display: false} },
             scales: {
-                y: { grid: {color:'rgba(255,255,255,0.1)'}, ticks: {color:'#888'} },
+                y: { grid: {color:'rgba(255,255,255,0.05)'}, ticks: {color:'#888'} },
                 x: { grid: {display:false}, ticks: {color:'#fff'} }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutBack'
             }
         }
     });
@@ -961,7 +1049,12 @@ let currentSlide = 0;
 function showSlide(n) {
     slides.forEach(s => {
         s.classList.remove('active');
-        s.style.display = 'none'; 
+        
+        // Delay display none agar transisi keluar (fade out) sempat terlihat
+        // Namun untuk kesederhanaan logika flow, kita set display none setelah delay CSS
+        setTimeout(() => {
+             if (!s.classList.contains('active')) s.style.display = 'none';
+        }, 800); 
     });
     
     currentSlide = (n + slides.length) % slides.length;
@@ -969,20 +1062,20 @@ function showSlide(n) {
     const activeSlide = slides[currentSlide];
     activeSlide.style.display = 'flex'; 
     
-    // Trigger animation
-    setTimeout(() => {
-        activeSlide.classList.add('active');
-        
-        // Fix 2B: Force Resize Chart pada elemen tersembunyi
-        // Kita loop semua chart, jika canvasnya ada di slide ini, kita resize
-        Object.values(chartInstances).forEach(chart => {
-            if (activeSlide.contains(chart.canvas)) {
-                chart.resize(); 
-                chart.update('none'); // Update tanpa animasi ulang yang mengganggu
-            }
-        });
-
-    }, 10);
+    // Trigger animation frame
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            activeSlide.classList.add('active');
+            
+            // Force Resize Chart pada elemen tersembunyi
+            Object.values(chartInstances).forEach(chart => {
+                if (activeSlide.contains(chart.canvas)) {
+                    chart.resize(); 
+                    chart.update('none'); 
+                }
+            });
+        }, 50); // Small delay to ensure display:flex is registered
+    });
 }
 
 function nextSlide() { showSlide(currentSlide + 1); }
