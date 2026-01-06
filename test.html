@@ -2,21 +2,23 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dolan Sawah — Data-Driven Strategy</title>
+<title>Dolan Sawah — Strategic Marketing & Real-Time Data</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <style>
 /* =========================================
-   CORE STYLES
+   STYLE ASLI PRESENTASI (TIDAK ADA YANG DIHAPUS)
    ========================================= */
 :root{
   --bg:#000;
   --fg:#fff;
   --accent:#00ff99;
-  --info:#33ccff; 
+  --info:#33ccff; /* Tambahan warna untuk chart */
   --muted:rgba(255,255,255,.45);
-  --danger:#ff3366;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -31,7 +33,7 @@ body{
 .slide{
   display:none;
   min-height:100vh;
-  padding:clamp(20px,5vw,80px);
+  padding:clamp(28px,7vw,96px);
   text-align:center;
   align-items:center;
   justify-content:center;
@@ -116,6 +118,7 @@ button:hover{background:var(--accent);color:#000}
   opacity:.35;
 }
 
+/* Cinematic */
 .cinematic{
   background-size:cover;
   background-position:center;
@@ -135,63 +138,66 @@ button:hover{background:var(--accent);color:#000}
 }
 @keyframes grow{to{width:var(--w)}}
 
-/* CHART & STATS STYLES */
+/* =========================================
+   STYLE TAMBAHAN UNTUK DATA REAL-TIME
+   ========================================= */
 .chart-wrapper {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 250px;
 }
-.stat-big {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent);
-  line-height: 1;
-  margin-bottom: 5px;
+.loading-indicator {
+    color: var(--accent);
+    font-size: 0.9em;
+    margin-top: 10px;
+    display: none;
+    font-style: italic;
 }
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+.loading-indicator.visible { display: block; }
 
-/* LIST STYLE UPDATE */
+/* Styling List Menu Real */
 ul.insight-list {
   text-align: left;
   list-style: none;
   padding: 0;
-  margin-top: 5px;
+  margin-top: 10px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 ul.insight-list li {
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.85em;
+  font-size: 0.9em;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 ul.insight-list li:last-child { border-bottom: none; }
 
-/* Kolom Kiri: Nama & Detail Menu */
-ul.insight-list li .menu-info {
-  display: flex;
-  flex-direction: column;
+ul.insight-list li .menu-meta {
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
 }
-ul.insight-list li .menu-name {
-  font-weight: 600;
-  color: #fff;
-  font-size: 0.95em;
+ul.insight-list li .menu-name { 
+    font-weight: 700; 
+    color: #fff; 
+    font-size: 1em; 
 }
-ul.insight-list li .menu-detail {
-  font-size: 0.8em;
-  color: var(--muted);
-  margin-top: 2px;
-  font-style: italic;
+ul.insight-list li .menu-desc { 
+    font-size: 0.8em; 
+    color: var(--muted); 
+    margin-top: 4px; 
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
-/* Kolom Kanan: Nilai/Rank */
-ul.insight-list li .val { color: var(--accent); font-weight: 700; font-size: 1.1em; }
-ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
+ul.insight-list li .menu-qty { 
+    font-weight: 700; 
+    color: var(--accent); 
+    font-size: 1.2em; 
+}
 </style>
 </head>
 
@@ -200,21 +206,22 @@ ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
 <div class="slide active">
   <h1>Dolan Sawah</h1>
   <p>Strategic Marketing & Competitive Playbook</p>
-</div>
-
-<div class="slide">
-  <h2>Masalah Nyata</h2>
-  <div class="chart-wrapper" style="height: 200px; max-width: 800px; margin: 0 auto;">
-    <canvas id="problemChart"></canvas>
-  </div>
-  <p style="margin-top:20px">
-    Liburan selesai. Trafik Weekday menurun.<br>
-    <span class="highlight">Ini pola industri, bukan kegagalan.</span>
+  <p id="connectionStatus" style="font-size: 12px; margin-top: 20px; color: var(--muted); opacity: 0.7;">
+    System Status: Menghubungkan ke Database...
   </p>
 </div>
 
 <div class="slide">
-  <h2>Pola Industri</h2>
+  <h2>Masalah Nyata</h2>
+  <p>
+    Liburan selesai.<br>
+    Trafik menurun.<br>
+    <span class="highlight">Ini bukan kegagalan.</span>
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Ini Pola Industri</h2>
   <p>
     Semua resto wisata mengalaminya.<br>
     Yang bertahan bukan yang viral,<br>
@@ -256,7 +263,9 @@ ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
 <div class="slide">
   <h2>Dampak ke Area</h2>
   <p>
-    Orang datang. Antre. Lelah.<br>
+    Orang datang.<br>
+    Antre.<br>
+    Lelah.<br>
     Mulai mencari <span class="highlight">alternatif.</span>
   </p>
 </div>
@@ -265,10 +274,12 @@ ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
   <h2>Perbandingan Jujur</h2>
   <div class="grid">
     <div class="card">
-      <b>Kinasih</b><br><br>Cepat<br>Padat<br>FOMO<br>Sekali datang
+      <b>Kinasih</b><br><br>
+      Cepat<br>Padat<br>FOMO<br>Sekali datang
     </div>
     <div class="card">
-      <b class="highlight">Dolan Sawah</b><br><br>Luas<br>Santai<br>Experience<br>Repeat tinggi
+      <b class="highlight">Dolan Sawah</b><br><br>
+      Luas<br>Santai<br>Experience<br>Repeat tinggi
     </div>
   </div>
 </div>
@@ -358,104 +369,26 @@ ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
 </div>
 
 <div class="slide">
-  <h2>Aset Data Internal</h2>
-  <p>Infrastruktur <span class="highlight">Reservasi & Member</span> kami siap melacak performa.</p>
-  
-  <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:center;">
-    <div class="card" style="height: 100%; display:flex; flex-direction:column; justify-content:center;">
-      <div class="chart-wrapper">
-        <canvas id="integrationChart"></canvas>
-      </div>
-      <p style="font-size:12px; margin-top:10px;">Tren Reservasi Minggu Ini</p>
-    </div>
-
-    <div style="display:flex; flex-direction:column; gap:20px;">
-      <div class="card">
-        <div class="stat-big">1,240</div>
-        <div class="stat-label">Total Database Member</div>
-      </div>
-      <div class="card">
-        <div class="stat-big">85%</div>
-        <div class="stat-label">Verified WhatsApp</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="slide">
   <h2>Operational Intelligence</h2>
-  <p style="font-size: 16px; margin-bottom: 20px;">Analisis <span class="highlight">Menu Manual, Alamat & Retensi</span>.</p>
+  <p style="font-size: 16px; margin-bottom: 20px;">Data Real-Time dari <span class="highlight">Sistem Reservasi & Firebase</span>.</p>
   
-  <div class="grid" style="margin-top: 0; gap: 15px; grid-template-columns: 1fr 1fr 1fr;">
-    <div class="card" style="padding: 15px;">
-        <div style="font-size: 20px; font-weight: 700; color: var(--accent);">342</div>
-        <div style="font-size: 9px; text-transform: uppercase;">Member Kembali (Repeat)</div>
-    </div>
-    <div class="card" style="padding: 15px;">
-        <div style="font-size: 20px; font-weight: 700; color: var(--info);">Rp 45.2jt</div>
-        <div style="font-size: 9px; text-transform: uppercase;">Omzet Transaksi Member</div>
-    </div>
-    <div class="card" style="padding: 15px;">
-        <div style="font-size: 20px; font-weight: 700; color: #fff;">28%</div>
-        <div style="font-size: 9px; text-transform: uppercase;">Retention Rate</div>
-    </div>
-  </div>
-
-  <div class="grid" style="grid-template-columns: 1.5fr 1fr; margin-top: 15px; align-items: start; gap: 15px;">
-    <div class="card" style="padding: 15px; height: 100%;">
-        <h3 style="font-size: 14px; text-align: left; margin-bottom: 5px;">Transaksi Member (Per Bulan)</h3>
-        <div class="chart-wrapper" style="height: 160px;">
-            <canvas id="transactionChart"></canvas>
+  <div class="grid" style="grid-template-columns: 2fr 1fr; margin-top: 15px; align-items: start; gap: 20px;">
+    
+    <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 16px; text-align: left; margin-bottom: 10px;">Tren Omzet DP (YTD)</h3>
+        <div class="chart-wrapper" style="height: 220px;">
+            <canvas id="revenueChart"></canvas>
         </div>
+        <div id="loadingRevenue" class="loading-indicator visible">Sedang menghitung omzet...</div>
     </div>
 
-    <div style="display:flex; flex-direction:column; gap:10px;">
-        
-        <div class="card" style="padding: 15px; text-align: left;">
-            <h3 style="font-size: 14px; margin-bottom: 5px; color: var(--accent);">🔥 Menu Laris (Manual Input)</h3>
-            <ul class="insight-list">
-                <li>
-                    <div class="menu-info">
-                        <span class="menu-name">Paket Liwet (4 Org)</span>
-                        <span class="menu-detail">Nasi Liwet, Ayam Suwir, Areh, Telur</span>
-                    </div>
-                    <span class="val">#1</span>
-                </li>
-                <li>
-                    <div class="menu-info">
-                        <span class="menu-name">Ayam Bakar Madu</span>
-                        <span class="menu-detail">Sambal Korek, Lalapan, Tahu Tempe</span>
-                    </div>
-                    <span class="val">#2</span>
-                </li>
-                <li>
-                    <div class="menu-info">
-                        <span class="menu-name">Snack Platter</span>
-                        <span class="menu-detail">Mendoan, Tahu Walik, Pisang Goreng</span>
-                    </div>
-                    <span class="val">#3</span>
-                </li>
+    <div class="card" style="padding: 20px; text-align: left; height: 100%;">
+        <h3 style="font-size: 16px; margin-bottom: 10px; color: var(--accent);">🔥 Menu Terlaris</h3>
+        <div id="loadingMenu" class="loading-indicator visible">Menganalisis pesanan...</div>
+        <ul class="insight-list" id="topMenuList">
             </ul>
-        </div>
-        
-        <div class="card" style="padding: 15px; text-align: left;">
-            <h3 style="font-size: 14px; margin-bottom: 5px; color: var(--info);">📍 Domisili Member</h3>
-            <ul class="insight-list">
-                <li>
-                    <span style="font-size: 0.9em;"><span class="loc-icon">●</span> Kota Semarang</span>
-                    <span style="color:white; font-weight:600;">55%</span>
-                </li>
-                <li>
-                    <span style="font-size: 0.9em;"><span class="loc-icon">●</span> Kab. Semarang</span>
-                    <span style="color:white; font-weight:600;">30%</span>
-                </li>
-                <li>
-                    <span style="font-size: 0.9em;"><span class="loc-icon">●</span> Luar Kota</span>
-                    <span style="color:white; font-weight:600;">15%</span>
-                </li>
-            </ul>
-        </div>
     </div>
+
   </div>
 </div>
 
@@ -491,7 +424,27 @@ ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
 <div class="footer">Dolan Sawah — Strategic Marketing</div>
 
 <script>
-// --- NAVIGATION LOGIC ---
+// =========================================
+// 1. FIREBASE CONFIG (DARI KODE RESERVASI ANDA)
+// =========================================
+const firebaseConfig = {
+  apiKey: "AIzaSyA_c1tU70FM84Qi_f_aSaQ-YVLo_18lCkI",
+  authDomain: "reservasi-dolan-sawah.firebaseapp.com",
+  projectId: "reservasi-dolan-sawah",
+  storageBucket: "reservasi-dolan-sawah.appspot.com",
+  messagingSenderId: "213151400721",
+  appId: "1:213151400721:web:e51b0d8cdd24206cf682b0"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+// =========================================
+// 2. NAVIGASI SLIDE (ASLI)
+// =========================================
 let slides=document.querySelectorAll('.slide');
 let i=0;
 function show(n){
@@ -505,77 +458,175 @@ document.addEventListener('keydown',e=>{
   if(e.key==="ArrowLeft")prev();
 });
 
-// --- CHART CONFIGURATION ---
-Chart.defaults.color = 'rgba(255,255,255,0.7)';
-Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
-Chart.defaults.font.family = '-apple-system, system-ui';
+// =========================================
+// 3. LOGIKA FETCH DATA REAL-TIME
+// =========================================
 
-// 1. Problem Chart (Slide 2)
-new Chart(document.getElementById('problemChart').getContext('2d'), {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
-        datasets: [{
-            label: 'Trafik Weekday',
-            data: [100, 85, 60, 45],
-            borderColor: '#ff3366',
-            borderWidth: 2,
-            tension: 0.4,
-            pointRadius: 0
-        }]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: {display: false} },
-        scales: { x: {display: false}, y: {display: false} }
+// Variabel Global Data
+let allReservations = [];
+let menuDetails = {}; // Menyimpan detail isian dari collection 'menus'
+
+// A. Fungsi Utama: Load Data saat halaman dibuka
+async function loadRealData() {
+    const statusEl = document.getElementById('connectionStatus');
+    try {
+        // 1. Ambil Data Menu (untuk dapat detail isian real)
+        statusEl.textContent = "Mengambil database menu...";
+        const menuSnapshot = await db.collection('menus').get();
+        menuSnapshot.forEach(doc => {
+            // Simpan detail isian (array) ke object dictionary
+            menuDetails[doc.id] = doc.data().details || []; 
+        });
+
+        // 2. Ambil Data Reservasi
+        statusEl.textContent = "Mengambil riwayat transaksi...";
+        const resSnapshot = await db.collection('reservations').get();
+        
+        allReservations = resSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        statusEl.textContent = `Terkoneksi. ${allReservations.length} data reservasi dimuat.`;
+        statusEl.style.color = '#00ff99';
+
+        // 3. Jalankan Pengolahan Data
+        processTopMenuData();
+        processRevenueData();
+
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        statusEl.textContent = "Gagal koneksi database: " + error.message;
+        statusEl.style.color = 'red';
     }
-});
+}
 
-// 2. Integration Chart (Slide 10)
-new Chart(document.getElementById('integrationChart').getContext('2d'), {
-    type: 'line',
-    data: {
-        labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-        datasets: [{
-            label: 'Reservasi',
-            data: [12, 15, 20, 18, 45, 95, 88],
-            borderColor: '#00ff99',
-            backgroundColor: 'rgba(0, 255, 153, 0.1)',
-            borderWidth: 2, tension: 0.4, fill: true,
-            pointBackgroundColor: '#fff', pointRadius: 4
-        }]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: {display: false} },
-        scales: {
-            x: { ticks: {color: 'rgba(255,255,255,0.5)', font:{size:10}}, grid: {display:false} },
-            y: { grid: {color:'rgba(255,255,255,0.1)'}, ticks: {display:false}, beginAtZero: true }
+// B. Proses Data: Menu Terlaris & Isiannya
+function processTopMenuData() {
+    const menuCounts = {};
+
+    // Loop semua reservasi
+    allReservations.forEach(res => {
+        if (Array.isArray(res.menus)) {
+            // Format Baru (Array)
+            res.menus.forEach(item => {
+                const name = item.name;
+                const qty = parseInt(item.quantity) || 0;
+                menuCounts[name] = (menuCounts[name] || 0) + qty;
+            });
+        } else if (res.menu) {
+            // Format Lama (String)
+            const name = res.menu;
+            menuCounts[name] = (menuCounts[name] || 0) + 1;
         }
-    }
-});
+    });
 
-// 3. Transaction Chart (Slide 11 - UPDATED WITH MONTHLY DATA)
-new Chart(document.getElementById('transactionChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
-        datasets: [{
-            label: 'Total Transaksi',
-            data: [120, 145, 132, 160, 185, 210], 
-            backgroundColor: '#33ccff',
-            borderRadius: 3
-        }]
-    },
-    options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: {display: false} },
-        scales: {
-            x: { ticks: {color: 'rgba(255,255,255,0.5)', font:{size:10}}, grid: {display:false} },
-            y: { grid: {color:'rgba(255,255,255,0.1)'}, beginAtZero: true }
-        }
+    // Urutkan (Terbanyak ke Terkecil)
+    const sortedMenus = Object.entries(menuCounts)
+        .sort((a, b) => b[1] - a[1]) 
+        .slice(0, 5); // Ambil 5 Besar
+
+    // Render ke HTML
+    const listEl = document.getElementById('topMenuList');
+    listEl.innerHTML = ''; 
+    document.getElementById('loadingMenu').style.display = 'none';
+
+    if (sortedMenus.length === 0) {
+        listEl.innerHTML = '<li>Belum ada data pesanan.</li>';
+        return;
     }
-});
+
+    sortedMenus.forEach(([name, count], index) => {
+        // Ambil detail isian yang nyata dari database 'menus'
+        let detailString = 'Menu Spesial';
+        if (menuDetails[name] && menuDetails[name].length > 0) {
+            // Gabungkan array isian jadi string (contoh: "Nasi, Ayam, Telur")
+            detailString = menuDetails[name].join(', ');
+        }
+        
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class="menu-meta">
+                <span class="menu-name">#${index + 1} ${name}</span>
+                <span class="menu-desc">${detailString}</span>
+            </div>
+            <span class="menu-qty">${count}</span>
+        `;
+        listEl.appendChild(li);
+    });
+}
+
+// C. Proses Data: Grafik Omzet DP Bulanan
+function processRevenueData() {
+    const monthlyRevenue = new Array(12).fill(0); // [0,0,0...] untuk Jan-Des
+    const monthLabels = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+
+    allReservations.forEach(res => {
+        if (res.date && res.dp) {
+            const date = new Date(res.date);
+            if (!isNaN(date.getTime())) {
+                const monthIndex = date.getMonth(); // 0 = Jan
+                monthlyRevenue[monthIndex] += parseInt(res.dp);
+            }
+        }
+    });
+
+    // Render Chart
+    document.getElementById('loadingRevenue').style.display = 'none';
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    
+    // Config Warna Dark Mode
+    Chart.defaults.color = 'rgba(255,255,255,0.7)';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.1)';
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: monthLabels,
+            datasets: [{
+                label: 'Total DP Masuk (Rp)',
+                data: monthlyRevenue,
+                borderColor: '#00ff99', // Hijau Neon
+                backgroundColor: 'rgba(0, 255, 153, 0.1)',
+                borderWidth: 3,
+                tension: 0.3,
+                fill: true,
+                pointBackgroundColor: '#fff',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.1)' },
+                    ticks: {
+                        callback: function(value) {
+                            return (value / 1000) + 'k'; // Format ribuan
+                        }
+                    }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+// Jalankan saat load
+loadRealData();
+
 </script>
 
 </body>
