@@ -7,12 +7,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+/* =========================================
+   CORE STYLES
+   ========================================= */
 :root{
   --bg:#000;
   --fg:#fff;
   --accent:#00ff99;
   --info:#33ccff; 
   --muted:rgba(255,255,255,.45);
+  --danger:#ff3366;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -27,7 +31,7 @@ body{
 .slide{
   display:none;
   min-height:100vh;
-  padding:clamp(28px,7vw,96px);
+  padding:clamp(20px,5vw,80px);
   text-align:center;
   align-items:center;
   justify-content:center;
@@ -131,44 +135,63 @@ button:hover{background:var(--accent);color:#000}
 }
 @keyframes grow{to{width:var(--w)}}
 
-/* CHART STYLES */
+/* CHART & STATS STYLES */
 .chart-wrapper {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 200px;
 }
 .stat-big {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: var(--accent);
   line-height: 1;
   margin-bottom: 5px;
 }
 .stat-label {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-/* LIST STYLE UNTUK SLIDE BARU */
+/* LIST STYLE UPDATE */
 ul.insight-list {
   text-align: left;
   list-style: none;
   padding: 0;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 ul.insight-list li {
-  padding: 8px 0;
+  padding: 10px 0;
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.9em;
+  font-size: 0.85em;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
-ul.insight-list li span.val {
-  color: var(--accent);
+ul.insight-list li:last-child { border-bottom: none; }
+
+/* Kolom Kiri: Nama & Detail Menu */
+ul.insight-list li .menu-info {
+  display: flex;
+  flex-direction: column;
+}
+ul.insight-list li .menu-name {
   font-weight: 600;
+  color: #fff;
+  font-size: 0.95em;
 }
+ul.insight-list li .menu-detail {
+  font-size: 0.8em;
+  color: var(--muted);
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* Kolom Kanan: Nilai/Rank */
+ul.insight-list li .val { color: var(--accent); font-weight: 700; font-size: 1.1em; }
+ul.insight-list li .loc-icon { margin-right: 8px; color: var(--info); }
 </style>
 </head>
 
@@ -191,6 +214,15 @@ ul.insight-list li span.val {
 </div>
 
 <div class="slide">
+  <h2>Pola Industri</h2>
+  <p>
+    Semua resto wisata mengalaminya.<br>
+    Yang bertahan bukan yang viral,<br>
+    tapi yang <span class="highlight">relevan.</span>
+  </p>
+</div>
+
+<div class="slide">
   <h1>Warung Kinasih</h1>
   <p>Dekat secara lokasi.<br>Berbeda secara model bisnis.</p>
 </div>
@@ -199,15 +231,15 @@ ul.insight-list li span.val {
   <h2>Kenapa Mereka Viral?</h2>
   <div class="grid">
     <div class="card">
-      Harga Murah
+      Harga mudah diviralkan
       <div class="bar"><div class="fill" style="--w:90%"></div></div>
     </div>
     <div class="card">
-      Visual Instan
+      Visual instan
       <div class="bar"><div class="fill" style="--w:85%"></div></div>
     </div>
     <div class="card">
-      Konten Mudah Ditiru
+      Konten mudah ditiru
       <div class="bar"><div class="fill" style="--w:95%"></div></div>
     </div>
   </div>
@@ -233,12 +265,10 @@ ul.insight-list li span.val {
   <h2>Perbandingan Jujur</h2>
   <div class="grid">
     <div class="card">
-      <b>Kinasih</b><br><br>
-      Cepat<br>Padat<br>FOMO<br>Sekali datang
+      <b>Kinasih</b><br><br>Cepat<br>Padat<br>FOMO<br>Sekali datang
     </div>
     <div class="card">
-      <b class="highlight">Dolan Sawah</b><br><br>
-      Luas<br>Santai<br>Experience<br>Repeat tinggi
+      <b class="highlight">Dolan Sawah</b><br><br>Luas<br>Santai<br>Experience<br>Repeat tinggi
     </div>
   </div>
 </div>
@@ -329,7 +359,7 @@ ul.insight-list li span.val {
 
 <div class="slide">
   <h2>Aset Data Internal</h2>
-  <p>Infrastruktur <span class="highlight">Reservasi & Member</span> untuk melacak strategi.</p>
+  <p>Infrastruktur <span class="highlight">Reservasi & Member</span> kami siap melacak performa.</p>
   
   <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:center;">
     <div class="card" style="height: 100%; display:flex; flex-direction:column; justify-content:center;">
@@ -354,41 +384,76 @@ ul.insight-list li span.val {
 
 <div class="slide">
   <h2>Operational Intelligence</h2>
-  <p style="font-size: 16px; margin-bottom: 20px;">Analisis mendalam dari menu <span class="highlight">"Analisis Data"</span> Sistem Reservasi.</p>
+  <p style="font-size: 16px; margin-bottom: 20px;">Analisis <span class="highlight">Menu Manual, Alamat & Retensi</span>.</p>
   
-  <div class="grid" style="margin-top: 0; gap: 15px;">
+  <div class="grid" style="margin-top: 0; gap: 15px; grid-template-columns: 1fr 1fr 1fr;">
     <div class="card" style="padding: 15px;">
-        <div style="font-size: 24px; font-weight: 700; color: var(--accent);">5,840</div>
-        <div style="font-size: 10px; text-transform: uppercase;">Total Tamu (YTD)</div>
+        <div style="font-size: 20px; font-weight: 700; color: var(--accent);">342</div>
+        <div style="font-size: 9px; text-transform: uppercase;">Member Kembali (Repeat)</div>
     </div>
     <div class="card" style="padding: 15px;">
-        <div style="font-size: 24px; font-weight: 700; color: var(--info);">Rp 45.2jt</div>
-        <div style="font-size: 10px; text-transform: uppercase;">Omzet DP Masuk</div>
+        <div style="font-size: 20px; font-weight: 700; color: var(--info);">Rp 45.2jt</div>
+        <div style="font-size: 9px; text-transform: uppercase;">Omzet Transaksi Member</div>
     </div>
     <div class="card" style="padding: 15px;">
-        <div style="font-size: 24px; font-weight: 700; color: #fff;">Minggu</div>
-        <div style="font-size: 10px; text-transform: uppercase;">Hari Tersibuk</div>
+        <div style="font-size: 20px; font-weight: 700; color: #fff;">28%</div>
+        <div style="font-size: 9px; text-transform: uppercase;">Retention Rate</div>
     </div>
   </div>
 
-  <div class="grid" style="grid-template-columns: 2fr 1fr; margin-top: 15px; align-items: start;">
-    <div class="card" style="padding: 20px;">
-        <h3 style="font-size: 16px; text-align: left; margin-bottom: 10px;">Tren Bulanan</h3>
-        <div class="chart-wrapper" style="height: 180px;">
-            <canvas id="analyticsChart"></canvas>
+  <div class="grid" style="grid-template-columns: 1.5fr 1fr; margin-top: 15px; align-items: start; gap: 15px;">
+    <div class="card" style="padding: 15px; height: 100%;">
+        <h3 style="font-size: 14px; text-align: left; margin-bottom: 5px;">Transaksi Member (Per Bulan)</h3>
+        <div class="chart-wrapper" style="height: 160px;">
+            <canvas id="transactionChart"></canvas>
         </div>
     </div>
 
-    <div class="card" style="padding: 20px; text-align: left;">
-        <h3 style="font-size: 16px; margin-bottom: 10px; color: var(--accent);">🔥 Menu Laris</h3>
-        <ul class="insight-list">
-            <li>Gurame Bakar <span class="val">1,204</span></li>
-            <li>Ayam Goreng <span class="val">980</span></li>
-            <li>Es Teh Jumbo <span class="val">2,500</span></li>
-        </ul>
-        <div style="margin-top: 15px; font-size: 12px; color: var(--muted); background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
-            <i class="fas fa-robot"></i> <strong>AI Insight:</strong><br>
-            Banyak grup besar (Avg: 8 pax). Disarankan buat Paket Keluarga baru.
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        
+        <div class="card" style="padding: 15px; text-align: left;">
+            <h3 style="font-size: 14px; margin-bottom: 5px; color: var(--accent);">🔥 Menu Laris (Manual Input)</h3>
+            <ul class="insight-list">
+                <li>
+                    <div class="menu-info">
+                        <span class="menu-name">Paket Liwet (4 Org)</span>
+                        <span class="menu-detail">Nasi Liwet, Ayam Suwir, Areh, Telur</span>
+                    </div>
+                    <span class="val">#1</span>
+                </li>
+                <li>
+                    <div class="menu-info">
+                        <span class="menu-name">Ayam Bakar Madu</span>
+                        <span class="menu-detail">Sambal Korek, Lalapan, Tahu Tempe</span>
+                    </div>
+                    <span class="val">#2</span>
+                </li>
+                <li>
+                    <div class="menu-info">
+                        <span class="menu-name">Snack Platter</span>
+                        <span class="menu-detail">Mendoan, Tahu Walik, Pisang Goreng</span>
+                    </div>
+                    <span class="val">#3</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="card" style="padding: 15px; text-align: left;">
+            <h3 style="font-size: 14px; margin-bottom: 5px; color: var(--info);">📍 Domisili Member</h3>
+            <ul class="insight-list">
+                <li>
+                    <span style="font-size: 0.9em;"><span class="loc-icon">●</span> Kota Semarang</span>
+                    <span style="color:white; font-weight:600;">55%</span>
+                </li>
+                <li>
+                    <span style="font-size: 0.9em;"><span class="loc-icon">●</span> Kab. Semarang</span>
+                    <span style="color:white; font-weight:600;">30%</span>
+                </li>
+                <li>
+                    <span style="font-size: 0.9em;"><span class="loc-icon">●</span> Luar Kota</span>
+                    <span style="color:white; font-weight:600;">15%</span>
+                </li>
+            </ul>
         </div>
     </div>
   </div>
@@ -466,7 +531,7 @@ new Chart(document.getElementById('problemChart').getContext('2d'), {
     }
 });
 
-// 2. Integration Chart (Slide 9 - Aset Data)
+// 2. Integration Chart (Slide 10)
 new Chart(document.getElementById('integrationChart').getContext('2d'), {
     type: 'line',
     data: {
@@ -490,16 +555,16 @@ new Chart(document.getElementById('integrationChart').getContext('2d'), {
     }
 });
 
-// 3. Analytics Deep Dive Chart (Slide 10 - NEW)
-new Chart(document.getElementById('analyticsChart').getContext('2d'), {
+// 3. Transaction Chart (Slide 11 - UPDATED WITH MONTHLY DATA)
+new Chart(document.getElementById('transactionChart').getContext('2d'), {
     type: 'bar',
     data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
         datasets: [{
-            label: 'Total Pax',
-            data: [850, 920, 880, 1100, 1250, 1400],
-            backgroundColor: '#00ff99',
-            borderRadius: 4
+            label: 'Total Transaksi',
+            data: [120, 145, 132, 160, 185, 210], 
+            backgroundColor: '#33ccff',
+            borderRadius: 3
         }]
     },
     options: {
