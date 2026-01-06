@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dolan Sawah — Strategic Data Intelligence System (Production)</title>
+<title>Dolan Sawah — Strategic Data Intelligence System (Production v3.1)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -166,6 +166,24 @@ p {
   margin-top: 15px;
 }
 
+/* UX: Loading Overlay for Charts */
+.chart-loading {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.2);
+    font-size: 14px;
+    color: var(--text-muted);
+    z-index: 5;
+    transition: opacity 0.3s;
+}
+.chart-loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* KPI Boxes (Big Numbers) */
 .kpi-container {
   display: flex;
@@ -280,7 +298,7 @@ ul.data-list li:last-child { border-bottom: none; }
   <h1>Dolan Sawah</h1>
   <p>Strategic Marketing & Competitive Playbook</p>
   <div style="margin-top: 20px; padding: 8px 20px; border: 1px solid var(--text-muted); border-radius: 30px; font-size: 12px;">
-    System Version 3.0 (Full Logic)
+    System Version 3.1 (Enhanced Logic)
   </div>
 </div>
 
@@ -477,6 +495,7 @@ ul.data-list li:last-child { border-bottom: none; }
 
         <div class="card">
             <div class="chart-container">
+                <div id="loader-revenue" class="chart-loading"><span>Sedang Mengunduh Data...</span></div>
                 <canvas id="chartRevenue"></canvas>
             </div>
         </div>
@@ -492,6 +511,7 @@ ul.data-list li:last-child { border-bottom: none; }
             <div class="card">
                 <h3>Menu Terlaris (Top 7)</h3>
                 <div class="chart-container">
+                    <div id="loader-menu" class="chart-loading"><span>Analisis Data Menu...</span></div>
                     <canvas id="chartMenu"></canvas>
                 </div>
             </div>
@@ -499,7 +519,7 @@ ul.data-list li:last-child { border-bottom: none; }
             <div class="card">
                 <h3>Leaderboard</h3>
                 <ul class="data-list" id="listMenu">
-                    <li><span style="color:#666">Mengambil data...</span></li>
+                    <li><span style="color:#666">Menunggu sinkronisasi...</span></li>
                 </ul>
             </div>
         </div>
@@ -514,6 +534,7 @@ ul.data-list li:last-child { border-bottom: none; }
         <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:center;">
             <div class="card">
                 <div class="chart-container" style="height: 300px;">
+                    <div id="loader-source" class="chart-loading"><span>Mengambil Data Member...</span></div>
                     <canvas id="chartSource"></canvas>
                 </div>
             </div>
@@ -560,6 +581,7 @@ ul.data-list li:last-child { border-bottom: none; }
         <div class="card">
             <h3>Visualisasi Sebaran Wilayah</h3>
             <div class="chart-container" style="height: 200px;">
+                <div id="loader-geo" class="chart-loading"><span>Memetakan Lokasi...</span></div>
                 <canvas id="chartGeo"></canvas>
             </div>
         </div>
@@ -628,11 +650,53 @@ const configMember = {
   appId: "1:277683917105:web:d496ee4547f339e2fee010"
 };
 
-// Variabel global untuk menampung instance database
+// Global Variables
 let dbReservasi, dbMember;
+let chartInstances = {}; // Menyimpan instance chart agar bisa di-resize (Point 2B)
 
 // =======================================================
-// 2. SYSTEM INITIALIZATION
+// 2. HELPER FUNCTIONS (Point 2C & Point 4)
+// =======================================================
+
+// Fix 2C: Robust Date Parser (Handle Firestore Timestamp & String)
+function parseDateHelper(dateInput) {
+    if (!dateInput) return null;
+    
+    // Jika input adalah Firestore Timestamp (memiliki method toDate)
+    if (typeof dateInput.toDate === 'function') {
+        return dateInput.toDate();
+    }
+    
+    // Jika input sudah berupa object Date standard
+    if (dateInput instanceof Date) {
+        return dateInput;
+    }
+    
+    // Jika input string/number, coba convert
+    const parsed = new Date(dateInput);
+    if (!isNaN(parsed)) return parsed;
+    
+    return null;
+}
+
+// Fix 4: Professional IDR Formatting
+function formatRupiah(number) {
+    return new Intl.NumberFormat('id-ID', { 
+        style: 'currency', 
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(number);
+}
+
+// UI Helpers: Show/Hide Loaders
+function hideLoader(id) {
+    const el = document.getElementById(id);
+    if(el) el.classList.add('hidden');
+}
+
+// =======================================================
+// 3. SYSTEM INITIALIZATION
 // =======================================================
 
 function initSystem() {
@@ -666,7 +730,7 @@ function updateStatus(text, statusClass) {
 }
 
 // =======================================================
-// 3. DATA FETCHING & PROCESSING
+// 4. DATA FETCHING & PROCESSING
 // =======================================================
 
 async function fetchAllData() {
@@ -680,6 +744,7 @@ async function fetchAllData() {
         
     } catch (e) {
         console.error("Error Reservasi:", e);
+        updateStatus("Error Reading Reservation DB", "error");
     }
 
     // --- STEP B: Fetch Member ---
@@ -692,11 +757,12 @@ async function fetchAllData() {
 
     } catch (e) {
         console.error("Error Member:", e);
+        updateStatus("Error Reading Member DB", "error");
     }
 }
 
 // =======================================================
-// 4. DATA LOGIC PROCESSORS
+// 5. DATA LOGIC PROCESSORS
 // =======================================================
 
 // --- LOGIC 1: Revenue (Chart Line) ---
@@ -707,26 +773,29 @@ function processRevenue(data) {
 
     data.forEach(r => {
         if(r.date && r.dp) {
-            const d = new Date(r.date);
+            // Apply Fix 2C: Gunakan helper date parser
+            const d = parseDateHelper(r.date);
             const val = parseInt(r.dp);
-            if(!isNaN(d)) {
+            
+            if(d && !isNaN(val)) {
                 revenueData[d.getMonth()] += val;
                 totalRev += val;
             }
         }
     });
 
-    // Update KPI
+    // Update KPI (Fix 4: Better Formatting)
     document.getElementById('valTotalRes').innerText = data.length.toLocaleString('id-ID');
-    document.getElementById('valTotalRev').innerText = "Rp " + (totalRev / 1000000).toFixed(1) + " Jt";
+    document.getElementById('valTotalRev').innerText = formatRupiah(totalRev);
 
     // Render Chart
-    new Chart(document.getElementById('chartRevenue'), {
+    hideLoader('loader-revenue');
+    chartInstances.revenue = new Chart(document.getElementById('chartRevenue'), {
         type: 'line',
         data: {
             labels: months,
             datasets: [{
-                label: 'Omzet DP (Rp)',
+                label: 'Omzet DP',
                 data: revenueData,
                 borderColor: '#00ff99',
                 backgroundColor: 'rgba(0, 255, 153, 0.1)',
@@ -754,7 +823,6 @@ function processMenu(data) {
     const menuCount = {};
     
     data.forEach(r => {
-        // Handle format baru (Array)
         if(Array.isArray(r.menus)) {
             r.menus.forEach(m => {
                 const name = m.name;
@@ -762,13 +830,11 @@ function processMenu(data) {
                 menuCount[name] = (menuCount[name] || 0) + qty;
             });
         } 
-        // Handle format lama (String)
         else if (r.menu) {
             menuCount[r.menu] = (menuCount[r.menu] || 0) + 1;
         }
     });
 
-    // Sort Top 7
     const sorted = Object.entries(menuCount).sort((a,b) => b[1]-a[1]).slice(0, 7);
 
     // Update List HTML
@@ -784,7 +850,8 @@ function processMenu(data) {
     });
 
     // Render Chart
-    new Chart(document.getElementById('chartMenu'), {
+    hideLoader('loader-menu');
+    chartInstances.menu = new Chart(document.getElementById('chartMenu'), {
         type: 'bar',
         data: {
             labels: sorted.map(i => i[0].substring(0, 12) + '...'),
@@ -810,12 +877,11 @@ function processMenu(data) {
 
 // --- LOGIC 3: Member Source (Chart Doughnut) ---
 function processMemberStats(data) {
-    document.getElementById('valTotalMember').innerText = data.length.toLocaleString();
+    document.getElementById('valTotalMember').innerText = data.length.toLocaleString('id-ID');
 
     const sources = {};
     data.forEach(m => {
         let s = (m.sumberInfo || "Lainnya").toLowerCase();
-        // Normalisasi Data
         if(s.includes('ig') || s.includes('instagram')) s = 'Instagram';
         else if(s.includes('tik')) s = 'TikTok';
         else if(s.includes('google') || s.includes('maps')) s = 'Google Maps';
@@ -824,7 +890,8 @@ function processMemberStats(data) {
         sources[s] = (sources[s] || 0) + 1;
     });
 
-    new Chart(document.getElementById('chartSource'), {
+    hideLoader('loader-source');
+    chartInstances.source = new Chart(document.getElementById('chartSource'), {
         type: 'doughnut',
         data: {
             labels: Object.keys(sources),
@@ -857,14 +924,13 @@ function processGeo(data) {
         else geo['Luar Kota']++;
     });
 
-    // KPI Percentages
     const total = data.length || 1;
     document.getElementById('geo1').innerText = Math.round((geo['Semarang']/total)*100) + "%";
     document.getElementById('geo2').innerText = Math.round((geo['Kabupaten']/total)*100) + "%";
     document.getElementById('geo3').innerText = Math.round((geo['Luar Kota']/total)*100) + "%";
 
-    // Chart
-    new Chart(document.getElementById('chartGeo'), {
+    hideLoader('loader-geo');
+    chartInstances.geo = new Chart(document.getElementById('chartGeo'), {
         type: 'bar',
         data: {
             labels: ['Kota Semarang', 'Kab. Semarang', 'Luar Kota'],
@@ -887,7 +953,7 @@ function processGeo(data) {
 }
 
 // =======================================================
-// 5. NAVIGATION CONTROLLER
+// 6. NAVIGATION CONTROLLER
 // =======================================================
 let slides = document.querySelectorAll('.slide');
 let currentSlide = 0;
@@ -895,14 +961,27 @@ let currentSlide = 0;
 function showSlide(n) {
     slides.forEach(s => {
         s.classList.remove('active');
-        s.style.display = 'none'; // Force hide
+        s.style.display = 'none'; 
     });
     
     currentSlide = (n + slides.length) % slides.length;
     
-    slides[currentSlide].style.display = 'flex'; // Prepare flex
+    const activeSlide = slides[currentSlide];
+    activeSlide.style.display = 'flex'; 
+    
+    // Trigger animation
     setTimeout(() => {
-        slides[currentSlide].classList.add('active'); // Trigger anim
+        activeSlide.classList.add('active');
+        
+        // Fix 2B: Force Resize Chart pada elemen tersembunyi
+        // Kita loop semua chart, jika canvasnya ada di slide ini, kita resize
+        Object.values(chartInstances).forEach(chart => {
+            if (activeSlide.contains(chart.canvas)) {
+                chart.resize(); 
+                chart.update('none'); // Update tanpa animasi ulang yang mengganggu
+            }
+        });
+
     }, 10);
 }
 
