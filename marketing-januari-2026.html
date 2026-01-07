@@ -2,138 +2,375 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dolan Sawah — Strategic Marketing & Competitive Playbook</title>
+<title>Dolan Sawah — Strategic Data Intelligence System (Production v3.1)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
 <style>
-:root{
-  --bg:#000;
-  --fg:#fff;
-  --accent:#00ff99;
-  --muted:rgba(255,255,255,.45);
+/* ==========================================================================
+   1. GLOBAL VARIABLES & RESET
+   ========================================================================== */
+:root {
+  /* Color Palette - Neon Cyberpunk Style */
+  --bg-color: #000000; /* Deep Black for Jobs Style */
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  
+  /* Brand Colors */
+  --accent-green: #00ff99;  /* Growth/Positive */
+  --accent-blue: #33ccff;   /* Info/Neutral */
+  --accent-red: #ff0050;    /* Alert/Attention */
+  --accent-purple: #bc13fe; /* Premium/Member */
+
+  /* UI Components */
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(20px);
 }
 
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:var(--bg);
-  color:var(--fg);
-  overflow:hidden;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.slide{
-  display:none;
-  min-height:100vh;
-  padding:clamp(28px,7vw,96px);
-  text-align:center;
-  align-items:center;
-  justify-content:center;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  overflow: hidden; 
+  height: 100vh;
+  width: 100vw;
+  perspective: 1000px; /* Essential for 3D effects */
 }
 
-.slide.active{
-  display:flex;
-  flex-direction:column;
-  animation:fade .6s ease;
+/* ==========================================================================
+   2. SLIDE LAYOUT & CINEMATIC ANIMATION (STEVE JOBS STYLE)
+   ========================================================================== */
+.slide {
+  display: none; 
+  height: 100vh;
+  width: 100vw;
+  padding: clamp(20px, 5vw, 60px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  /* Default state pre-animation */
+  transform: scale(1.1) translateY(20px); 
+  filter: blur(10px);
+  transition: 
+    opacity 0.8s ease, 
+    transform 1.0s cubic-bezier(0.19, 1, 0.22, 1), 
+    filter 0.8s ease;
 }
 
-h1{font-size:clamp(38px,7vw,72px);margin-bottom:22px}
-h2{font-size:clamp(26px,5vw,48px);margin-bottom:20px}
-h3{font-size:clamp(20px,4vw,32px);margin-bottom:16px}
-
-p{
-  font-size:clamp(16px,3vw,26px);
-  max-width:980px;
-  line-height:1.55;
-  color:var(--muted);
+/* State Aktif */
+.slide.active {
+  display: flex;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0);
+  z-index: 10;
 }
 
-.highlight{color:var(--accent);font-weight:600}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:26px;
-  width:100%;
-  margin-top:36px;
+/* Staggered Animation for Inner Elements (Cascading Effect) */
+.slide.active h1,
+.slide.active h2,
+.slide.active p,
+.slide.active .grid,
+.slide.active .dashboard-wrapper {
+  animation: appleFadeUp 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-.card{
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:20px;
-  padding:30px;
+/* Delay urutan muncul agar dramatis */
+.slide.active h1 { animation-delay: 0.1s; }
+.slide.active h2 { animation-delay: 0.1s; }
+.slide.active h3 { animation-delay: 0.2s; }
+.slide.active p  { animation-delay: 0.3s; }
+.slide.active .grid { animation-delay: 0.5s; }
+.slide.active .dashboard-wrapper { animation-delay: 0.2s; }
+
+@keyframes appleFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.bar{
-  height:10px;
-  background:rgba(255,255,255,.15);
-  border-radius:6px;
-  margin-top:14px;
-  overflow:hidden;
+/* ==========================================================================
+   3. TYPOGRAPHY
+   ========================================================================== */
+h1 {
+  font-size: clamp(48px, 7vw, 96px); /* Lebih besar untuk impact */
+  margin-bottom: 25px;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  font-weight: 700;
+  background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.fill{
-  height:100%;
-  width:0;
-  background:var(--accent);
-  animation:grow 1.2s ease forwards;
+h2 {
+  font-size: clamp(32px, 5vw, 56px);
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #eeeeee;
+  letter-spacing: -1px;
 }
 
-.controls{
-  position:fixed;
-  bottom:22px;
-  right:22px;
-  display:flex;
-  gap:10px;
+h3 {
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--accent-green);
+  margin-bottom: 20px;
+  width: 100%;
+  font-weight: 600;
 }
 
-button{
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.2);
-  color:#fff;
-  padding:12px 18px;
-  border-radius:28px;
-  cursor:pointer;
+p {
+  font-size: clamp(20px, 2.5vw, 32px);
+  max-width: 1000px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  font-weight: 400;
 }
 
-button:hover{background:var(--accent);color:#000}
+.highlight { color: var(--accent-green); font-weight: 600; }
+.text-blue { color: var(--accent-blue); }
+.text-red { color: var(--accent-red); }
 
-.footer{
-  position:fixed;
-  bottom:22px;
-  left:22px;
-  font-size:12px;
-  opacity:.35;
+/* ==========================================================================
+   4. GRID & CARD SYSTEM
+   ========================================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1300px;
+  margin-top: 40px;
 }
 
-/* Cinematic */
-.cinematic{
-  background-size:cover;
-  background-position:center;
-  position:relative;
+.card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: 24px;
+  padding: 35px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform 0.4s ease, background 0.4s ease;
 }
-.cinematic::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.6);
-}
-.cinematic>*{position:relative;z-index:2}
 
-@keyframes fade{
-  from{opacity:0;transform:translateY(14px)}
-  to{opacity:1;transform:none}
+.card:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-5px);
 }
-@keyframes grow{to{width:var(--w)}}
+
+/* Visual Bar Progress */
+.progress-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent-green);
+  transition: width 2s cubic-bezier(0.22, 1, 0.36, 1); /* Smoother fill */
+  box-shadow: 0 0 10px var(--accent-green);
+}
+
+/* ==========================================================================
+   5. DATA VISUALIZATION SPECIFIC
+   ========================================================================== */
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  text-align: left;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* UX: Loading Overlay for Charts */
+.chart-loading {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.4);
+    font-size: 14px;
+    color: var(--text-muted);
+    z-index: 5;
+    transition: opacity 0.5s;
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+}
+.chart-loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* KPI Boxes (Big Numbers) */
+.kpi-container {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.kpi-box {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.kpi-value {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 5px;
+  letter-spacing: -1px;
+}
+
+.kpi-label {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  font-weight: 500;
+}
+
+/* List Styles for Menu/Ranking */
+ul.data-list {
+  list-style: none;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+ul.data-list::-webkit-scrollbar { width: 5px; }
+ul.data-list::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; }
+
+ul.data-list li {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+}
+ul.data-list li:last-child { border-bottom: none; }
+
+/* ==========================================================================
+   6. NAVIGATION & FOOTER
+   ========================================================================== */
+.controls {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  display: flex;
+  gap: 20px;
+  z-index: 100;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.controls:hover { opacity: 1; }
+
+.btn-nav {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(20,20,20,0.8);
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+.btn-nav:hover {
+  transform: scale(1.1);
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.footer {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 20px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.status-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #555;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+  transition: background 0.3s;
+}
+.status-dot.online { background: var(--accent-green); box-shadow: 0 0 15px var(--accent-green); }
+.status-dot.error { background: var(--accent-red); }
+
+/* Backgrounds */
+.cinematic {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.cinematic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+  z-index: 1;
+}
+.cinematic > * { position: relative; z-index: 2; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
 </style>
 </head>
 
 <body>
 
-<!-- ================= OPENING ================= -->
 <div class="slide active">
   <h1>Dolan Sawah</h1>
   <p>Strategic Marketing & Competitive Playbook</p>
+  <div style="margin-top: 30px; padding: 10px 25px; border: 1px solid var(--text-muted); border-radius: 50px; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
+    System Version 3.1 (Enhanced Logic)
+  </div>
 </div>
 
 <div class="slide">
@@ -154,7 +391,6 @@ button:hover{background:var(--accent);color:#000}
   </p>
 </div>
 
-<!-- ================= KOMPETITOR ================= -->
 <div class="slide">
   <h1>Warung Kinasih</h1>
   <p>Dekat secara lokasi.<br>Berbeda secara model bisnis.</p>
@@ -165,15 +401,15 @@ button:hover{background:var(--accent);color:#000}
   <div class="grid">
     <div class="card">
       Harga mudah diviralkan
-      <div class="bar"><div class="fill" style="--w:90%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
     </div>
     <div class="card">
       Visual instan
-      <div class="bar"><div class="fill" style="--w:85%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
     </div>
     <div class="card">
       Konten mudah ditiru
-      <div class="bar"><div class="fill" style="--w:95%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
     </div>
   </div>
 </div>
@@ -189,30 +425,21 @@ button:hover{background:var(--accent);color:#000}
 <div class="slide">
   <h2>Dampak ke Area</h2>
   <p>
-    Orang datang.<br>
-    Antre.<br>
-    Lelah.<br>
+    Orang datang. Antre. Lelah.<br>
     Mulai mencari <span class="highlight">alternatif.</span>
   </p>
 </div>
 
-<!-- ================= PERBANDINGAN ================= -->
 <div class="slide">
   <h2>Perbandingan Jujur</h2>
   <div class="grid">
     <div class="card">
-      <b>Kinasih</b><br><br>
-      Cepat<br>
-      Padat<br>
-      FOMO<br>
-      Sekali datang
+      <b style="color:var(--accent-red); font-size:1.5rem;">Kinasih</b><br><br>
+      Cepat<br>Padat<br>FOMO<br>Sekali datang
     </div>
-    <div class="card">
-      <b class="highlight">Dolan Sawah</b><br><br>
-      Luas<br>
-      Santai<br>
-      Experience<br>
-      Repeat tinggi
+    <div class="card" style="border-color: var(--accent-green);">
+      <b class="highlight" style="font-size:1.5rem;">Dolan Sawah</b><br><br>
+      Luas<br>Santai<br>Experience<br>Repeat tinggi
     </div>
   </div>
 </div>
@@ -225,7 +452,6 @@ button:hover{background:var(--accent);color:#000}
   </p>
 </div>
 
-<!-- ================= POSITIONING ================= -->
 <div class="slide">
   <h1>Positioning Baru</h1>
   <p class="highlight">“Tempat kembali setelah resto viral.”</p>
@@ -239,7 +465,6 @@ button:hover{background:var(--accent);color:#000}
   </p>
 </div>
 
-<!-- ================= STRATEGI MARKETING ================= -->
 <div class="slide">
   <h1>Strategi Marketing</h1>
   <p>Bukan ramai.<br>Tapi <span class="highlight">relevan di momen tepat.</span></p>
@@ -263,7 +488,6 @@ button:hover{background:var(--accent);color:#000}
   </p>
 </div>
 
-<!-- ================= 30 HARI ================= -->
 <div class="slide">
   <h1>Eksekusi 30 Hari</h1>
   <p>Strategi ini harus terasa<br><span class="highlight">dalam 4 minggu.</span></p>
@@ -305,7 +529,6 @@ button:hover{background:var(--accent);color:#000}
   </p>
 </div>
 
-<!-- ================= KPI ================= -->
 <div class="slide">
   <h1>KPI Marketing</h1>
   <p>Tanpa data,<br>strategi hanya opini.</p>
@@ -314,14 +537,128 @@ button:hover{background:var(--accent);color:#000}
 <div class="slide">
   <h2>KPI Utama</h2>
   <div class="grid">
-    <div class="card">Traffic Weekday<div class="bar"><div class="fill" style="--w:70%"></div></div></div>
-    <div class="card">Avg Transaction<div class="bar"><div class="fill" style="--w:60%"></div></div></div>
-    <div class="card">Repeat Customer<div class="bar"><div class="fill" style="--w:55%"></div></div></div>
-    <div class="card">Google Rating<div class="bar"><div class="fill" style="--w:85%"></div></div></div>
+    <div class="card">Traffic Weekday<div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div></div>
+    <div class="card">Avg Transaction<div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></div>
+    <div class="card">Repeat Customer<div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div></div>
+    <div class="card">Google Rating<div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div></div>
   </div>
 </div>
 
-<!-- ================= BRAND ================= -->
+<div class="slide">
+    <div class="dashboard-wrapper">
+        <h2>📈 Operational Intelligence: Revenue</h2>
+        <p>Analisis tren pendapatan dari Down Payment (DP) reservasi.</p>
+        
+        <div class="kpi-container">
+            <div class="kpi-box">
+                <div class="kpi-label">Total Reservasi (YTD)</div>
+                <div class="kpi-value highlight" id="valTotalRes">0</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-label">Est. Omzet DP</div>
+                <div class="kpi-value text-blue" id="valTotalRev">Rp 0</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-label">Data Status</div>
+                <div class="kpi-value" style="font-size:1.5rem; margin-top:10px; color:#aaa;">Synced</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="chart-container">
+                <div id="loader-revenue" class="chart-loading"><span>Sedang Mengunduh Data...</span></div>
+                <canvas id="chartRevenue"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="dashboard-wrapper">
+        <h2>🍽️ Operational Intelligence: Product</h2>
+        <p>Data preferensi pelanggan berdasarkan riwayat pesanan.</p>
+
+        <div class="grid" style="grid-template-columns: 2fr 1fr;">
+            <div class="card">
+                <h3>Menu Terlaris (Top 7)</h3>
+                <div class="chart-container">
+                    <div id="loader-menu" class="chart-loading"><span>Analisis Data Menu...</span></div>
+                    <canvas id="chartMenu"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Leaderboard</h3>
+                <ul class="data-list" id="listMenu">
+                    <li><span style="color:#666">Menunggu sinkronisasi...</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="dashboard-wrapper">
+        <h2>📢 Growth Engine: Acquisition</h2>
+        <p>Efektivitas kanal marketing dalam mendatangkan member baru.</p>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:center;">
+            <div class="card">
+                <div class="chart-container" style="height: 350px;">
+                    <div id="loader-source" class="chart-loading"><span>Mengambil Data Member...</span></div>
+                    <canvas id="chartSource"></canvas>
+                </div>
+            </div>
+
+            <div style="padding-left: 20px;">
+                <div class="kpi-box" style="margin-bottom:20px;">
+                    <div class="kpi-label">Total Member Terdaftar</div>
+                    <div class="kpi-value text-blue" id="valTotalMember">0</div>
+                </div>
+                
+                <div class="card" style="padding:25px;">
+                    <h3 style="font-size:14px; color:#fff; margin-bottom:15px;">Marketing Insight:</h3>
+                    <p style="font-size:18px; line-height:1.6;">
+                        • Dominasi <span class="highlight">TikTok/IG</span> menandakan konten viral bekerja.<br>
+                        • Dominasi <span class="text-blue">Google Maps</span> menandakan SEO lokal kuat.<br>
+                        • Fokuskan budget iklan pada kanal dengan persentase tertinggi.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="dashboard-wrapper">
+        <h2>📍 Growth Engine: Geo-Location</h2>
+        <p>Peta sebaran domisili pelanggan untuk penargetan iklan.</p>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap:20px; margin-bottom:20px;">
+            <div class="card" style="padding:20px; text-align:center;">
+                <div class="kpi-label">Kota Semarang</div>
+                <div class="kpi-value highlight" id="geo1">0%</div>
+            </div>
+            <div class="card" style="padding:20px; text-align:center;">
+                <div class="kpi-label">Kabupaten</div>
+                <div class="kpi-value text-blue" id="geo2">0%</div>
+            </div>
+            <div class="card" style="padding:20px; text-align:center;">
+                <div class="kpi-label">Luar Kota</div>
+                <div class="kpi-value text-red" id="geo3">0%</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Visualisasi Sebaran Wilayah</h3>
+            <div class="chart-container" style="height: 250px;">
+                <div id="loader-geo" class="chart-loading"><span>Memetakan Lokasi...</span></div>
+                <canvas id="chartGeo"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="slide">
   <h1>Brand Manifesto</h1>
   <p>Kami tidak mengejar viral.</p>
@@ -329,46 +666,430 @@ button:hover{background:var(--accent);color:#000}
 
 <div class="slide">
   <p>
-    Kami percaya makan adalah pengalaman.<br><br>
+    Kami percaya makan adalah pengalaman.<br>
     Ruang untuk keluarga.<br>
     Waktu untuk berbincang.<br>
     Tempat untuk kembali.
   </p>
 </div>
 
-<!-- ================= CINEMATIC ================= -->
-<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1528605248644-14dd04022da1')">
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1572099606223-6e29045d7de3?q=80&w=2070&auto=format&fit=crop');">
   <h1>Dolan Sawah</h1>
   <p>Lebih dari sekadar makan.</p>
 </div>
 
-<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836')">
+<div class="slide cinematic" style="background-image:url('https://images.unsplash.com/photo-1628189445173-9a3d4f4044c3?q=80&w=2070&auto=format&fit=crop');">
   <h1>Penutup</h1>
   <p><span class="highlight">Viral lewat. Experience tinggal.</span></p>
 </div>
 
-<!-- ================= CONTROLS ================= -->
+
 <div class="controls">
-  <button onclick="prev()">◀</button>
-  <button onclick="next()">▶</button>
+  <button class="btn-nav" onclick="prevSlide()">◀</button>
+  <button class="btn-nav" onclick="nextSlide()">▶</button>
 </div>
 
-<div class="footer">Dolan Sawah — Strategic Marketing</div>
+<div class="footer">
+    <span class="status-dot" id="dbIndicator"></span>
+    <span id="dbStatusText">Initializing Database...</span>
+    <span style="opacity:0.3">|</span>
+    <span>Dolan Sawah Intelligence System</span>
+</div>
 
 <script>
-let slides=document.querySelectorAll('.slide');
-let i=0;
-function show(n){
-  slides.forEach(s=>s.classList.remove('active'));
-  slides[n].classList.add('active');
-}
-function next(){i=(i+1)%slides.length;show(i)}
-function prev(){i=(i-1+slides.length)%slides.length;show(i)}
-document.addEventListener('keydown',e=>{
-  if(e.key==="ArrowRight"||e.key===" ")next();
-  if(e.key==="ArrowLeft")prev();
-});
-</script>
+// =======================================================
+// 1. CONFIGURATION: DUAL FIREBASE DATABASE
+// =======================================================
 
+// Konfigurasi Database 1: RESERVASI (Untuk Data Omzet & Menu)
+const configReservasi = {
+  apiKey: "AIzaSyA_c1tU70FM84Qi_f_aSaQ-YVLo_18lCkI",
+  authDomain: "reservasi-dolan-sawah.firebaseapp.com",
+  projectId: "reservasi-dolan-sawah",
+  storageBucket: "reservasi-dolan-sawah.appspot.com",
+  messagingSenderId: "213151400721",
+  appId: "1:213151400721:web:e51b0d8cdd24206cf682b0"
+};
+
+// Konfigurasi Database 2: MEMBER (Untuk Data Member & Source)
+const configMember = {
+  apiKey: "AIzaSyAEzWDI9ZWlc7NnUTDBbx7wednnUVeS9Ao",
+  authDomain: "member-hp-dolansawah.firebaseapp.com",
+  projectId: "member-hp-dolansawah",
+  storageBucket: "member-hp-dolansawah.appspot.com",
+  messagingSenderId: "277683917105",
+  appId: "1:277683917105:web:d496ee4547f339e2fee010"
+};
+
+// Global Variables
+let dbReservasi, dbMember;
+let chartInstances = {}; // Menyimpan instance chart agar bisa di-resize
+
+// =======================================================
+// 2. HELPER FUNCTIONS
+// =======================================================
+
+// Robust Date Parser (Handle Firestore Timestamp & String)
+function parseDateHelper(dateInput) {
+    if (!dateInput) return null;
+    
+    // Jika input adalah Firestore Timestamp (memiliki method toDate)
+    if (typeof dateInput.toDate === 'function') {
+        return dateInput.toDate();
+    }
+    
+    // Jika input sudah berupa object Date standard
+    if (dateInput instanceof Date) {
+        return dateInput;
+    }
+    
+    // Jika input string/number, coba convert
+    const parsed = new Date(dateInput);
+    if (!isNaN(parsed)) return parsed;
+    
+    return null;
+}
+
+// Professional IDR Formatting
+function formatRupiah(number) {
+    return new Intl.NumberFormat('id-ID', { 
+        style: 'currency', 
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(number);
+}
+
+// UI Helpers: Show/Hide Loaders
+function hideLoader(id) {
+    const el = document.getElementById(id);
+    if(el) el.classList.add('hidden');
+}
+
+// =======================================================
+// 3. SYSTEM INITIALIZATION
+// =======================================================
+
+function initSystem() {
+    try {
+        // Inisialisasi App Reservasi
+        const appRes = firebase.initializeApp(configReservasi, "AppReservasi");
+        dbReservasi = appRes.firestore();
+        
+        // Inisialisasi App Member
+        const appMem = firebase.initializeApp(configMember, "AppMember");
+        dbMember = appMem.firestore();
+        
+        // Update UI Status
+        updateStatus("Online: Connected to Dual DB", "online");
+        
+        // Mulai Tarik Data
+        fetchAllData();
+
+    } catch (error) {
+        console.error("Initialization Failed:", error);
+        updateStatus("Connection Failed!", "error");
+    }
+}
+
+function updateStatus(text, statusClass) {
+    const dot = document.getElementById('dbIndicator');
+    const txt = document.getElementById('dbStatusText');
+    
+    dot.className = "status-dot " + statusClass;
+    txt.innerText = text;
+}
+
+// =======================================================
+// 4. DATA FETCHING & PROCESSING
+// =======================================================
+
+async function fetchAllData() {
+    // --- STEP A: Fetch Reservasi ---
+    try {
+        const snapRes = await dbReservasi.collection('reservations').get();
+        const dataRes = snapRes.docs.map(doc => doc.data());
+        
+        processRevenue(dataRes);
+        processMenu(dataRes);
+        
+    } catch (e) {
+        console.error("Error Reservasi:", e);
+        updateStatus("Error Reading Reservation DB", "error");
+    }
+
+    // --- STEP B: Fetch Member ---
+    try {
+        const snapMem = await dbMember.collection('members').get();
+        const dataMem = snapMem.docs.map(doc => doc.data());
+        
+        processMemberStats(dataMem);
+        processGeo(dataMem);
+
+    } catch (e) {
+        console.error("Error Member:", e);
+        updateStatus("Error Reading Member DB", "error");
+    }
+}
+
+// =======================================================
+// 5. DATA LOGIC PROCESSORS
+// =======================================================
+
+// --- LOGIC 1: Revenue (Chart Line) ---
+function processRevenue(data) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+    const revenueData = new Array(12).fill(0);
+    let totalRev = 0;
+
+    data.forEach(r => {
+        if(r.date && r.dp) {
+            const d = parseDateHelper(r.date);
+            const val = parseInt(r.dp);
+            
+            if(d && !isNaN(val)) {
+                revenueData[d.getMonth()] += val;
+                totalRev += val;
+            }
+        }
+    });
+
+    // Update KPI
+    document.getElementById('valTotalRes').innerText = data.length.toLocaleString('id-ID');
+    document.getElementById('valTotalRev').innerText = formatRupiah(totalRev);
+
+    // Render Chart
+    hideLoader('loader-revenue');
+    chartInstances.revenue = new Chart(document.getElementById('chartRevenue'), {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Omzet DP',
+                data: revenueData,
+                borderColor: '#00ff99',
+                backgroundColor: 'rgba(0, 255, 153, 0.15)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 5,
+                pointHoverRadius: 8,
+                pointBackgroundColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: {display: false} },
+            scales: {
+                y: { grid: {color:'rgba(255,255,255,0.05)'}, ticks: {callback: v => (v/1000) + 'k', color:'#888'} },
+                x: { grid: {display:false}, ticks: {color:'#ccc'} }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+}
+
+// --- LOGIC 2: Menu (Chart Bar Horizontal) ---
+function processMenu(data) {
+    const menuCount = {};
+    
+    data.forEach(r => {
+        if(Array.isArray(r.menus)) {
+            r.menus.forEach(m => {
+                const name = m.name;
+                const qty = parseInt(m.quantity) || 1;
+                menuCount[name] = (menuCount[name] || 0) + qty;
+            });
+        } 
+        else if (r.menu) {
+            menuCount[r.menu] = (menuCount[r.menu] || 0) + 1;
+        }
+    });
+
+    const sorted = Object.entries(menuCount).sort((a,b) => b[1]-a[1]).slice(0, 7);
+
+    // Update List HTML
+    const listEl = document.getElementById('listMenu');
+    listEl.innerHTML = "";
+    sorted.forEach(([name, count]) => {
+        listEl.innerHTML += `
+            <li>
+                <span style="font-weight:500;">${name}</span>
+                <span class="highlight">${count}</span>
+            </li>
+        `;
+    });
+
+    // Render Chart
+    hideLoader('loader-menu');
+    chartInstances.menu = new Chart(document.getElementById('chartMenu'), {
+        type: 'bar',
+        data: {
+            labels: sorted.map(i => i[0].substring(0, 15) + (i[0].length>15 ? '...' : '')),
+            datasets: [{
+                label: 'Qty',
+                data: sorted.map(i => i[1]),
+                backgroundColor: '#33ccff',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: {display: false} },
+            scales: {
+                x: { grid: {color:'rgba(255,255,255,0.05)'}, ticks: {color:'#888'} },
+                y: { grid: {display:false}, ticks: {color:'#fff', font:{size:11}} }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+}
+
+// --- LOGIC 3: Member Source (Chart Doughnut) ---
+function processMemberStats(data) {
+    document.getElementById('valTotalMember').innerText = data.length.toLocaleString('id-ID');
+
+    const sources = {};
+    data.forEach(m => {
+        let s = (m.sumberInfo || "Lainnya").toLowerCase();
+        if(s.includes('ig') || s.includes('instagram')) s = 'Instagram';
+        else if(s.includes('tik')) s = 'TikTok';
+        else if(s.includes('google') || s.includes('maps')) s = 'Google Maps';
+        else s = 'Lainnya';
+        
+        sources[s] = (sources[s] || 0) + 1;
+    });
+
+    hideLoader('loader-source');
+    chartInstances.source = new Chart(document.getElementById('chartSource'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(sources),
+            datasets: [{
+                data: Object.values(sources),
+                backgroundColor: ['#E1306C', '#000000', '#4285F4', '#888'],
+                borderColor: '#222',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: {color:'#fff', padding:20, usePointStyle:true} }
+            },
+            layout: { padding: 10 },
+            cutout: '60%',
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        }
+    });
+}
+
+// --- LOGIC 4: Geo Location (Chart Bar + KPI) ---
+function processGeo(data) {
+    const geo = { 'Semarang': 0, 'Kabupaten': 0, 'Luar Kota': 0 };
+    
+    data.forEach(m => {
+        const addr = (m.alamat || "").toLowerCase();
+        if(addr.includes('semarang') && !addr.includes('kab')) geo['Semarang']++;
+        else if(addr.includes('kab') && addr.includes('semarang')) geo['Kabupaten']++;
+        else geo['Luar Kota']++;
+    });
+
+    const total = data.length || 1;
+    document.getElementById('geo1').innerText = Math.round((geo['Semarang']/total)*100) + "%";
+    document.getElementById('geo2').innerText = Math.round((geo['Kabupaten']/total)*100) + "%";
+    document.getElementById('geo3').innerText = Math.round((geo['Luar Kota']/total)*100) + "%";
+
+    hideLoader('loader-geo');
+    chartInstances.geo = new Chart(document.getElementById('chartGeo'), {
+        type: 'bar',
+        data: {
+            labels: ['Kota Semarang', 'Kab. Semarang', 'Luar Kota'],
+            datasets: [{
+                data: [geo['Semarang'], geo['Kabupaten'], geo['Luar Kota']],
+                backgroundColor: ['#00ff99', '#33ccff', '#ff0050'],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: {display: false} },
+            scales: {
+                y: { grid: {color:'rgba(255,255,255,0.05)'}, ticks: {color:'#888'} },
+                x: { grid: {display:false}, ticks: {color:'#fff'} }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutBack'
+            }
+        }
+    });
+}
+
+// =======================================================
+// 6. NAVIGATION CONTROLLER
+// =======================================================
+let slides = document.querySelectorAll('.slide');
+let currentSlide = 0;
+
+function showSlide(n) {
+    slides.forEach(s => {
+        s.classList.remove('active');
+        
+        // Delay display none agar transisi keluar (fade out) sempat terlihat
+        // Namun untuk kesederhanaan logika flow, kita set display none setelah delay CSS
+        setTimeout(() => {
+             if (!s.classList.contains('active')) s.style.display = 'none';
+        }, 800); 
+    });
+    
+    currentSlide = (n + slides.length) % slides.length;
+    
+    const activeSlide = slides[currentSlide];
+    activeSlide.style.display = 'flex'; 
+    
+    // Trigger animation frame
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            activeSlide.classList.add('active');
+            
+            // Force Resize Chart pada elemen tersembunyi
+            Object.values(chartInstances).forEach(chart => {
+                if (activeSlide.contains(chart.canvas)) {
+                    chart.resize(); 
+                    chart.update('none'); 
+                }
+            });
+        }, 50); // Small delay to ensure display:flex is registered
+    });
+}
+
+function nextSlide() { showSlide(currentSlide + 1); }
+function prevSlide() { showSlide(currentSlide - 1); }
+
+// Keyboard Listener
+document.addEventListener('keydown', (e) => {
+    if(e.key === "ArrowRight" || e.key === " " || e.key === "Enter") nextSlide();
+    if(e.key === "ArrowLeft") prevSlide();
+});
+
+// Jalankan Sistem
+initSystem();
+
+</script>
 </body>
 </html>
