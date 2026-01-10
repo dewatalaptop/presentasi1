@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Marketing Strategy - Dolan Sawah</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/beige.css" id="theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE THEME & VARIABLES --- */
+        :root {
+            --primary-dark: #283618;  /* Dark Green */
+            --primary-light: #606c38; /* Olive */
+            --accent: #bc6c25;        /* Earth Orange */
+            --cream: #fefae0;         /* Background */
+            --soft-brown: #dda15e;
+        }
+
+        body { background-color: var(--cream); }
+        .reveal { font-family: 'Lato', sans-serif; color: var(--primary-dark); }
+        
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 { 
+            font-family: 'Playfair Display', serif; 
+            text-transform: none; 
+            color: var(--primary-dark);
+            margin-bottom: 0.5em;
+        }
+
+        /* --- 2. LAYOUT & RESPONSIVENESS FIXES --- */
+        .reveal .slides > section {
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .reveal .slides > section {
+                height: 100dvh !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch;
+                padding-top: 40px;
+                padding-bottom: 100px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .reveal .slides { text-align: left; }
+            .container-flex { flex-direction: column; width: 100%; }
+            .reveal h1 { font-size: 2.2rem !important; }
+            .reveal h2 { font-size: 1.8rem !important; }
+            .reveal h3 { font-size: 1.5rem !important; }
+            .reveal p, .reveal li { font-size: 1rem !important; line-height: 1.5 !important; }
+            .small-text { font-size: 0.9rem !important; }
+            .med-text { font-size: 1rem !important; }
+        }
+
+        /* --- 3. CUSTOM FLOATING NAVIGATION --- */
+        .nav-btn {
+            position: fixed;
+            z-index: 9999;
+            background: rgba(40, 54, 24, 0.8); 
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--cream);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+        }
+        .nav-btn:hover { background: var(--accent); transform: scale(1.1); }
+        #prev-btn { top: 50%; left: 30px; transform: translateY(-50%); }
+        #next-btn { top: 50%; right: 30px; transform: translateY(-50%); }
+        @media (max-width: 768px) {
+            #prev-btn { top: auto; bottom: 30px; left: 30px; transform: none; }
+            #next-btn { top: auto; bottom: 30px; right: 30px; transform: none; }
+        }
+
+        /* --- 4. CONTENT STYLING --- */
+        .container-flex { display: flex; gap: 20px; justify-content: center; align-items: stretch; width: 100%; }
+        .col { flex: 1; min-width: 300px; }
+        .card {
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(40, 54, 24, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .highlight-text { color: var(--accent); font-weight: bold; }
+        .small-text { font-size: 0.7em; line-height: 1.4; margin: 0; }
+        .med-text { font-size: 0.85em; }
+        ul.dna-list { list-style: none; padding: 0; margin: 0; text-align: left;}
+        ul.dna-list li { margin-bottom: 12px; display: flex; align-items: flex-start; }
+        ul.dna-list li i { margin-right: 15px; color: var(--accent); min-width: 25px; margin-top: 5px; }
+        
+        /* Funnel Visual */
+        .funnel-container { width: 100%; max-width: 800px; }
+        .funnel-step {
+            padding: 12px 20px; margin: 8px auto; color: white; border-radius: 8px; width: 80%; font-size: 0.8em; text-align: center;
+        }
+        @media (max-width: 768px) { .funnel-step { width: 100% !important; box-sizing: border-box; } }
+
+        /* Table */
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 20px; border-radius: 10px;}
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.7em; background: white; white-space: nowrap; }
+        .data-table th { background: var(--primary-dark); color: white; padding: 15px; text-align: left; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; color: #333; text-align: left; }
+
+        /* KPI Circles */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-top: 20px; width: 100%; }
+        .kpi-circle {
+            background: var(--primary-light); color: white; padding: 20px 10px; border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 100px;
+        }
+        .kpi-circle i { font-size: 1.8em; margin-bottom: 10px; color: var(--cream); }
+        .kpi-circle span { font-size: 0.8em; font-weight: bold; line-height: 1.2; }
+
+        /* Do's and Don'ts */
+        .split-box { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; text-align: left; }
+        @media (max-width: 768px) { .split-box { grid-template-columns: 1fr; } }
+        .dont-box { background: #fae1dd; color: #9d0208; padding: 20px; border-radius: 10px; }
+        .do-box { background: #d8f3dc; color: #081c15; padding: 20px; border-radius: 10px; }
+
+        /* --- NEW STYLES FOR WORKFLOW --- */
+        .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: 15px; }
+        .role-card { background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent); text-align: left; }
+        .role-card h5 { margin: 0 0 5px 0; font-size: 0.9em; color: var(--primary-dark); }
+        .role-card p { font-size: 0.7em; margin: 0; color: #666; }
+        
+        .timeline-item { display: flex; align-items: flex-start; margin-bottom: 15px; text-align: left; width: 100%; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 10px; }
+        .time-badge { background: var(--primary-light); color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.7em; min-width: 80px; text-align: center; margin-right: 15px; font-weight: bold; }
+        .time-content strong { color: var(--primary-dark); display: block; font-size: 0.9em; }
+        .time-content span { font-size: 0.75em; color: #444; }
+
+        .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .quadrant-box { background: #fdfdfd; padding: 15px; border-radius: 10px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .quadrant-box h5 { margin: 0 0 8px 0; font-size: 0.85em; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div id="prev-btn" class="nav-btn" onclick="Reveal.prev()"><i class="fas fa-chevron-left"></i></div>
+    <div id="next-btn" class="nav-btn" onclick="Reveal.next()"><i class="fas fa-chevron-right"></i></div>
+    <div class="reveal">
+        <div class="slides">
+            <section data-background-image="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1920&auto=format&fit=crop" data-background-opacity="0.6">
+                <div style="background: rgba(254, 250, 224, 0.95); padding: 40px 20px; border-radius: 20px; display: inline-block; max-width: 90%;">
+                    <h3 style="letter-spacing: 3px; font-size: 1rem; text-transform: uppercase; color: var(--accent); margin-bottom: 10px;">Meeting Marketing</h3>
+                    <h1 style="margin: 10px 0; line-height: 1.1;">Dolan Sawah</h1>
+                    <div style="width: 80px; height: 4px; background: var(--primary-dark); margin: 20px auto;"></div>
+                    <p style="font-style: italic; margin-top: 10px;">"Menjual Rasa Pulang"</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>🌾 Karakter Inti</h3>
+                <div class="container-flex">
+                    <div class="col card">
+                        <h4>DNA Dolan Sawah</h4>
+                        <ul class="dna-list med-text">
+                            <li><i class="fas fa-leaf"></i> <span>Alami & Membumi <br><small>(Sawah, Angin, Senja)</small></span></li>
+                            <li><i class="fas fa-users"></i> <span>Ramah Keluarga & Lintas Generasi</span></li>
+                            <li><i class="fas fa-camera"></i> <span>Visual Experience <br><small>(Tenang, Luas)</small></span></li>
+                            <li><i class="fas fa-door-open"></i> <span>Pelarian Kota <br><small>(Bukan sekadar makan)</small></span></li>
+                            <li><i class="fas fa-heart"></i> <span>Hangat & Manusiawi</span></li>
+                        </ul>
+                    </div>
+                    <div class="col card" style="background-color: var(--primary-dark); color: var(--cream);">
+                        <h4 style="color: var(--accent);">👉 Kesimpulan Penting</h4>
+                        <p class="med-text" style="line-height: 1.6;">
+                            Marketing Dolan Sawah bukan jual menu, tapi <br>
+                            <span style="font-size: 1.3em; font-weight: bold; color: white; display: block; margin-top: 10px;">JUAL RASA PULANG.</span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>🎯 1. Posisi Brand</h3>
+                <div style="margin-bottom: 20px; background: white; padding: 10px; border-radius: 10px; display: inline-block;">
+                    <p class="highlight-text" style="margin:0;">“Tempat orang kota ingat cara bernapas.”</p>
+                </div>
+                <div class="split-box med-text">
+                    <div class="dont-box">
+                        <strong>❌ BUKAN:</strong>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Resto Viral</li>
+                            <li>Resto Fancy</li>
+                            <li>Resto Murah</li>
+                        </ul>
+                    </div>
+                    <div class="do-box">
+                        <strong>✅ TAPI:</strong>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Resto Berjiwa</li>
+                            <li>Tempat Kembali</li>
+                            <li>Ruang Jeda</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>2️⃣ Funnel Khas</h3>
+                <p class="small-text">(Berbeda dengan resto kota)</p>
+                <div class="funnel-container">
+                    <div class="funnel-step fragment fade-up" style="background: #aacc00; color: #333; width: 95%;">
+                        <strong>1. Awareness:</strong><br>Orang lelah → lihat konten tenang
+                    </div>
+                    <div class="funnel-step fragment fade-up" style="background: #80b918; width: 85%;">
+                        <strong>2. Consideration:</strong><br>“Enak buat keluarga ya?”
+                    </div>
+                    <div class="funnel-step fragment fade-up" style="background: #55a630; width: 75%;">
+                        <strong>3. Visit:</strong><br>Datang bukan sendirian
+                    </div>
+                    <div class="funnel-step fragment fade-up" style="background: #2b9348; width: 65%;">
+                        <strong>4. Experience:</strong><br>Anak main, orang tua santai
+                    </div>
+                    <div class="funnel-step fragment fade-up" style="background: #007f5f; width: 55%;">
+                        <strong>5. Repeat:</strong><br>Jadi tempat langganan
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>📊 Data Relevan</h3>
+                <div class="card" style="margin-bottom: 15px; padding: 15px; background: #ffe5d9; border: none;">
+                    <p class="small-text" style="color:#9d0208">❌ <strong>Data KURANG Relevan:</strong><br>Jam nongkrong malam, Tren TikTok joget, Promo flash sale.</p>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Area</th>
+                                <th>Data KUNCI Dolan Sawah ✅</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Waktu</strong></td>
+                                <td>Jam keluarga & senja</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tamu</strong></td>
+                                <td>Keluarga vs rombongan</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Menu</strong></td>
+                                <td>Sharing & comfort food</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Momen</strong></td>
+                                <td>Sunset, hujan, anak bermain</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section>
+                <h3>🎥 SOP Konten (1/2)</h3>
+                <div class="container-flex">
+                    <div class="col card fragment">
+                        <h4 style="color: var(--primary-light);">A. Konten Napas</h4>
+                        <p class="small-text"><em>Pelan, tenang, natural</em></p>
+                        <ul class="small-text" style="padding-left: 20px; margin-top:5px;">
+                            <li>Angin sawah</li>
+                            <li>Air mengalir</li>
+                            <li>Senja turun</li>
+                        </ul>
+                        <hr style="opacity: 0.3;">
+                        <p class="small-text"><strong>🎯 Tujuan: Menenangkan</strong></p>
+                    </div>
+                    <div class="col card fragment">
+                        <h4 style="color: var(--primary-light);">B. Konten Manusia</h4>
+                        <ul class="small-text" style="padding-left: 20px; margin-top:5px;">
+                            <li>Anak tertawa</li>
+                            <li>Keluarga makan bareng</li>
+                            <li>Pegawai menyapa</li>
+                        </ul>
+                        <hr style="opacity: 0.3;">
+                        <p class="small-text"><strong>🎯 Tujuan: Hangat & Dekat</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>🎥 SOP Konten (2/2)</h3>
+                <div class="container-flex">
+                    <div class="col card fragment">
+                        <h4 style="color: var(--accent);">C. Konten Cerita</h4>
+                        <ul class="small-text" style="padding-left: 20px; margin-top:5px;">
+                            <li>“Tamu ini datang tiap bulan…”</li>
+                            <li>“Kenapa menu ini selalu habis?”</li>
+                        </ul>
+                        <hr style="opacity: 0.3;">
+                        <p class="small-text"><strong>🎯 Tujuan: Emosional</strong></p>
+                    </div>
+                    <div class="col card fragment">
+                        <h4 style="color: var(--accent);">D. Konten Momentum</h4>
+                        <ul class="small-text" style="padding-left: 20px; margin-top:5px;">
+                            <li>Hujan turun</li>
+                            <li>Panen</li>
+                            <li>Libur sekolah</li>
+                        </ul>
+                        <hr style="opacity: 0.3;">
+                        <p class="small-text"><strong>🎯 Tujuan: Relevansi waktu</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>2️⃣ Aturan Emas</h3>
+                <div class="split-box med-text">
+                    <div class="do-box">
+                        <h4>✅ SELALU:</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li><i class="fas fa-check-circle"></i> Ada manusia</li>
+                            <li><i class="fas fa-check-circle"></i> Cahaya alami</li>
+                            <li><i class="fas fa-check-circle"></i> Suara asli (angin, langkah)</li>
+                        </ul>
+                    </div>
+                    <div class="dont-box">
+                        <h4>❌ HINDARI:</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li><i class="fas fa-times-circle"></i> Terlalu cepat</li>
+                            <li><i class="fas fa-times-circle"></i> Terlalu ramai teks</li>
+                            <li><i class="fas fa-times-circle"></i> Terlalu "jualan"</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>🧭 SOP Mindset</h3>
+                <div class="card" style="border-left: 5px solid var(--accent);">
+                    <h5 style="margin:0;">1️⃣ Cara Berpikir Tim</h5>
+                    <p class="small-text" style="margin-top:5px; color: #999; text-decoration: line-through;">❌ “Posting biar rame”</p>
+                    <p class="med-text" style="color: var(--primary-dark); font-weight: bold; margin-top: 5px;">✅ “Posting biar orang pengen datang dan diam”</p>
+                </div>
+                <div class="card" style="margin-top: 15px;">
+                    <h5 style="margin:0;">2️⃣ SOP Harian</h5>
+                    <ul class="med-text" style="margin-top: 10px; padding-left: 20px;">
+                        <li>Ambil 1 momen jujur</li>
+                        <li>Catat: Jam, Cuaca, Jenis tamu</li>
+                        <li>Upload dengan cerita pendek</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3>📅 SOP Mingguan</h3>
+                <div class="container-flex">
+                    <div class="col card">
+                        <h5>Rapat 30 Menit</h5>
+                        <ul class="small-text" style="padding-left: 15px;">
+                            <li>Konten paling menenangkan</li>
+                            <li>Hari paling hidup</li>
+                            <li>Menu paling sering dipesan keluarga</li>
+                            <li>Insight lapangan</li>
+                        </ul>
+                    </div>
+                    <div class="col card" style="background: #fefee3;">
+                        <h5>4️⃣ Laporan Khas</h5>
+                        <p class="small-text">Bukan hanya angka, tapi: <br><strong>Data, Makna, Peluang.</strong></p>
+                        <div style="background: white; padding: 10px; border-radius: 5px; font-style: italic; font-size: 0.6em; color: #555; margin-top: 10px;">
+                            Contoh:<br>
+                            “Selasa sepi, tapi yang datang keluarga lama. Cocok untuk soft event.”
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>📏 KPI Khas</h3>
+                <div class="kpi-grid">
+                    <div class="kpi-circle">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Repeat Keluarga</span>
+                    </div>
+                    <div class="kpi-circle">
+                        <i class="fas fa-clock"></i>
+                        <span>Durasi Duduk</span>
+                    </div>
+                    <div class="kpi-circle">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Saved Content</span>
+                    </div>
+                    <div class="kpi-circle">
+                        <i class="fas fa-envelope"></i>
+                        <span>DM "Ramah Anak?"</span>
+                    </div>
+                    <div class="kpi-circle">
+                        <i class="fas fa-star"></i>
+                        <span>Review Suasana</span>
+                    </div>
+                </div>
+            </section>
+            <section data-background-image="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1920&auto=format&fit=crop" data-background-opacity="0.6">
+                 <div style="background: rgba(254, 250, 224, 0.95); padding: 30px; border-radius: 20px; display: inline-block;">
+                    <i class="fas fa-running" style="font-size: 2.5em; color: var(--accent); margin-bottom: 10px;"></i>
+                    <h2 style="margin: 0; color: var(--primary-dark);">Alur Kerja Tim</h2>
+                    <p style="font-style: italic; margin-top: 10px;">"Ritme kerja yang menumbuhkan, bukan memburu."</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>🌱 Struktur Tim</h3>
+                <p class="small-text" style="margin-bottom: 5px;">(Bisa 2-4 orang, peran bisa rangkap)</p>
+                <div class="role-grid">
+                    <div class="role-card">
+                        <h5><i class="fas fa-eye"></i> Penjaga Suasana</h5>
+                        <p>Mengamati tamu, momen emosional, & cuaca.</p>
+                    </div>
+                    <div class="role-card">
+                        <h5><i class="fas fa-camera"></i> Perekam Cerita</h5>
+                        <p>Mengambil visual jujur & menulis caption pendek.</p>
+                    </div>
+                    <div class="role-card">
+                        <h5><i class="fas fa-pen-fancy"></i> Penjaga Makna</h5>
+                        <p>Menyaring konten agar tetap punya "rasa pulang".</p>
+                    </div>
+                    <div class="role-card">
+                        <h5><i class="fas fa-comments"></i> Penghubung</h5>
+                        <p>Balas DM dengan nada "menyambut tamu", bukan bot.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>🔁 Ritme Harian</h3>
+                <p class="small-text">Total waktu efektif: 45-60 menit/hari</p>
+                
+                <div style="width: 100%; max-width: 600px; margin-top: 20px;">
+                    <div class="timeline-item fragment fade-up">
+                        <div class="time-badge">PAGI</div>
+                        <div class="time-content">
+                            <strong>Kalibrasi Rasa (10')</strong>
+                            <span>Cek cuaca. Tentukan mood: Napas / Manusia / Cerita. <br><i style="color:var(--accent)">*Jangan bahas angka dulu.</i></span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item fragment fade-up">
+                        <div class="time-badge">OPS</div>
+                        <div class="time-content">
+                            <strong>Tangkap Momen (20')</strong>
+                            <span>Ambil 1-3 klip jujur. Catat: Jam, Cuaca, Reaksi anak/keluarga.</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item fragment fade-up">
+                        <div class="time-badge">SORE</div>
+                        <div class="time-content">
+                            <strong>Posting Sadar (15')</strong>
+                            <span>Upload 1 konten. Visual tenang, caption bercerita.</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item fragment fade-up">
+                        <div class="time-badge">DM</div>
+                        <div class="time-content">
+                            <strong>Tuan Rumah (10')</strong>
+                            <span>Balas komentar & DM seperti menyambut tamu di pintu depan.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>📅 Ritme Mingguan</h3>
+                <div class="container-flex">
+                    <div class="col card">
+                        <h4 style="font-size: 1.1em; color: var(--primary-light);">🪑 Rapat Duduk Tenang</h4>
+                        <p class="small-text" style="color:red; margin-bottom: 10px;">(Wajib Off-Laptop)</p>
+                        <ul class="dna-list small-text">
+                            <li><i class="fas fa-comment-dots"></i> <span><strong>Cerita:</strong> Momen paling "hidup" minggu ini?</span></li>
+                            <li><i class="fas fa-chart-pie"></i> <span><strong>Data Khas:</strong> Jam terlama duduk? Menu favorit keluarga?</span></li>
+                            <li><i class="fas fa-lightbulb"></i> <span><strong>Makna:</strong> Kenapa orang betah minggu ini?</span></li>
+                            <li><i class="fas fa-gavel"></i> <span><strong>Keputusan:</strong> "Minggu depan fokus senja & anak."</span></li>
+                        </ul>
+                    </div>
+                    <div class="col card" style="background: #f4f4f9;">
+                        <h4 style="font-size: 1.1em; color: var(--accent);">📄 Laporan 1 Halaman</h4>
+                        <div style="text-align: left; padding: 10px; font-size: 0.75em; line-height: 1.5;">
+                            <p><strong>1. Fakta:</strong> Apa yang terjadi?</p>
+                            <p><strong>2. Makna:</strong> Kenapa itu penting?</p>
+                            <p><strong>3. Peluang:</strong> Apa yang ditanam minggu depan?</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>🌾 Ritme Bulanan</h3>
+                <p class="small-text" style="margin-bottom: 20px;">"Menanam, bukan mengejar."</p>
+                <div class="quadrant-grid">
+                    <div class="quadrant-box">
+                        <h5>1. Evaluasi RASA</h5>
+                        <p class="small-text">Cek repeat order keluarga & review suasana. Apakah "rasa pulang" tersampaikan?</p>
+                    </div>
+                    <div class="quadrant-box">
+                        <h5>2. Tema Emosional</h5>
+                        <p class="small-text">Tentukan tema bulan depan (misal: "Bulan Teduh" saat hujan). Semua konten satu suara.</p>
+                    </div>
+                    <div class="quadrant-box">
+                        <h5>3. Refinement SOP</h5>
+                        <p class="small-text">Pilih 1 hal untuk DIHENTIKAN dan 1 hal untuk DIPERDALAM.</p>
+                    </div>
+                    <div class="quadrant-box">
+                        <h5>4. Internal Alignment</h5>
+                        <p class="small-text">Tanya tim: "Kalau kita jadi tamu, apakah konten kita bikin ingin duduk lama?"</p>
+                    </div>
+                </div>
+            </section>
+
+             <section>
+                <div class="card" style="background: var(--primary-dark); color: white; border: none; padding: 40px;">
+                    <i class="fas fa-compass" style="font-size: 3em; color: var(--soft-brown); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--cream);">Kompas Tim</h3>
+                    <hr style="opacity: 0.2; margin: 20px 0;">
+                    <blockquote style="font-family: 'Playfair Display'; font-size: 1.5em; line-height: 1.4; border:none; padding:0; box-shadow:none; font-style: italic;">
+                        "Tugas kita bukan bikin orang datang hari ini.<br>
+                        Tapi bikin mereka <span style="color: var(--soft-brown);">ingin kembali.</span>"
+                    </blockquote>
+                </div>
+            </section>
+
+            <section data-background-image="https://images.unsplash.com/photo-1621516997036-79774574944d?q=80&w=1920&auto=format&fit=crop" data-background-opacity="0.5">
+                <div style="text-align: center; color: white; padding: 20px;">
+                    <i class="fas fa-seedling" style="font-size: 3em; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></i>
+                    <h2 style="color: #fefae0;">Budaya Marketing</h2>
+                    <hr style="width: 50%; border-color: #fefae0; opacity: 0.5; margin: 20px auto;">
+                    <blockquote style="font-size: 1.4em; line-height: 1.4; border: none; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; backdrop-filter: blur(2px);">
+                        ❝ Kita tidak mengejar viral.<br>
+                        <strong>Kita menanam.</strong> ❞
+                    </blockquote>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: false, 
+            progress: true,
+            center: true, 
+            hash: true,
+            width: "100%",
+            height: "100%",
+            margin: 0,
+            minScale: 1,
+            maxScale: 1,
+            disableLayout: false, 
+            transition: 'slide',
+            backgroundTransition: 'fade'
+        });
+    </script>
+</body>
+</html>
