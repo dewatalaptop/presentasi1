@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Operational Excellence</title>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -27,10 +28,10 @@ body {
   overflow: hidden;
 }
 
+/* ===== SLIDE ===== */
 .slide {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   padding: 8vw;
   display: flex;
   flex-direction: column;
@@ -38,14 +39,17 @@ body {
   opacity: 0;
   transform: scale(1.05);
   transition: all 1s cubic-bezier(.19,1,.22,1);
+  pointer-events: none; /* FIX */
 }
 
 .slide.active {
   opacity: 1;
   transform: scale(1);
   z-index: 1;
+  pointer-events: auto;
 }
 
+/* ===== TYPO ===== */
 h1 {
   font-size: clamp(2.5rem, 6vw, 5rem);
   margin-bottom: 1rem;
@@ -69,23 +73,26 @@ ul { padding-left: 1.2em; }
   font-weight: bold;
 }
 
+/* ===== NAVIGATION (FIXED & CLICKABLE) ===== */
 .nav {
   position: fixed;
   bottom: 30px;
   right: 30px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  z-index: 9999;          /* FIX UTAMA */
+  pointer-events: auto;
 }
 
 button {
   background: rgba(255,255,255,0.1);
   border: 1px solid var(--accent);
   color: var(--text);
-  padding: 10px 18px;
+  padding: 10px 20px;
   font-size: 1rem;
   cursor: pointer;
   border-radius: 30px;
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 button:hover {
@@ -93,19 +100,21 @@ button:hover {
   color: #000;
 }
 
+/* ===== FOOTER ===== */
 .footer {
   position: fixed;
-  bottom: 20px;
+  bottom: 22px;
   left: 30px;
   font-size: 0.9rem;
   color: var(--muted);
+  z-index: 9999;
 }
 </style>
 </head>
 
 <body>
 
-<!-- SLIDE 1 OVERVIEW -->
+<!-- SLIDE 1 -->
 <section class="slide active">
   <h1>Overview Operasional</h1>
   <h2>Masalah Kecil. Dampak Besar.</h2>
@@ -117,43 +126,43 @@ button:hover {
   </ul>
 </section>
 
-<!-- SLIDE 2 TEMUAN -->
+<!-- SLIDE 2 -->
 <section class="slide">
   <h1>Temuan Lapangan</h1>
   <ul>
     <li>Kasir duduk & makan saat ada tamu</li>
     <li>Waiters merokok di area tamu</li>
     <li>Karyawan menghilang di 1 jam awal shift</li>
-    <li>Greeter meninggalkan station tanpa konfirmasi</li>
-    <li>Dapur sore bekerja minim intensitas</li>
+    <li>Greeter meninggalkan station</li>
+    <li>Dapur sore intensitas rendah</li>
   </ul>
 </section>
 
-<!-- SLIDE 3 GRAFIK -->
+<!-- SLIDE 3 -->
 <section class="slide">
   <h1>Distribusi Masalah</h1>
   <canvas id="issueChart" style="max-width:700px"></canvas>
 </section>
 
-<!-- SLIDE 4 PEMBUKA -->
+<!-- SLIDE 4 -->
 <section class="slide">
-  <h1>Kenapa Meeting Ini Penting?</h1>
-  <p>Apa yang kita anggap sepele,<br>
+  <h1>Kenapa Kita Meeting?</h1>
+  <p>Apa yang kita anggap biasa,<br>
   <span class="highlight">tamu tidak.</span></p>
 </section>
 
-<!-- SLIDE 5 AGENDA -->
+<!-- SLIDE 5 -->
 <section class="slide">
   <h1>Apa yang Akan Dibahas</h1>
   <ul>
-    <li>Standar kerja semua divisi</li>
+    <li>Standar kerja per divisi</li>
     <li>Tanggung jawab per shift</li>
     <li>Konsekuensi pelanggaran</li>
     <li>Apresiasi karyawan terbaik</li>
   </ul>
 </section>
 
-<!-- SLIDE 6 WAITERS -->
+<!-- SLIDE 6 -->
 <section class="slide">
   <h1>WAITERS</h1>
   <ul>
@@ -165,19 +174,19 @@ button:hover {
   </ul>
 </section>
 
-<!-- SLIDE 7 KASIR -->
+<!-- SLIDE 7 -->
 <section class="slide">
   <h1>KASIR</h1>
   <ul>
     <li>SOP opening, closing & shift</li>
-    <li>Kebersihan bagian dari kerja</li>
+    <li>Kebersihan bagian dari tugas</li>
     <li><span class="highlight">Tamu datang = tidak duduk</span></li>
     <li>Dilarang makan di counter</li>
-    <li>Wajib menyapa & gestur profesional</li>
+    <li>Wajib menyapa</li>
   </ul>
 </section>
 
-<!-- SLIDE 8 CHECKER -->
+<!-- SLIDE 8 -->
 <section class="slide">
   <h1>CHECKER</h1>
   <ul>
@@ -189,7 +198,7 @@ button:hover {
   </ul>
 </section>
 
-<!-- SLIDE 9 BAR -->
+<!-- SLIDE 9 -->
 <section class="slide">
   <h1>BAR</h1>
   <ul>
@@ -200,7 +209,7 @@ button:hover {
   </ul>
 </section>
 
-<!-- SLIDE 10 KONSEKUENSI -->
+<!-- SLIDE 10 -->
 <section class="slide">
   <h1>Konsekuensi</h1>
   <ul>
@@ -210,14 +219,14 @@ button:hover {
   </ul>
 </section>
 
-<!-- SLIDE 11 APRESIASI -->
+<!-- SLIDE 11 -->
 <section class="slide">
   <h1>Apresiasi</h1>
   <p>Karyawan terbaik semua divisi<br>
   <span class="highlight">Rp100.000</span></p>
 </section>
 
-<!-- SLIDE 12 PENUTUP -->
+<!-- SLIDE 12 -->
 <section class="slide">
   <h1>Kita Naik Level</h1>
   <h2>Satu Standar. Satu Arah.</h2>
@@ -225,6 +234,7 @@ button:hover {
   <span class="highlight">melindungi yang bekerja benar.</span></p>
 </section>
 
+<!-- NAV -->
 <div class="nav">
   <button onclick="prev()">◀ Prev</button>
   <button onclick="next()">Next ▶</button>
@@ -236,17 +246,17 @@ button:hover {
 const slides = document.querySelectorAll('.slide');
 let index = 0;
 
-function showSlide(i){
+function showSlide(i) {
   slides.forEach(s => s.classList.remove('active'));
   slides[i].classList.add('active');
 }
 
-function next(){
+function next() {
   index = Math.min(index + 1, slides.length - 1);
   showSlide(index);
 }
 
-function prev(){
+function prev() {
   index = Math.max(index - 1, 0);
   showSlide(index);
 }
