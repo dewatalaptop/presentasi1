@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operational Excellence Meeting</title>
+<title>Operational Excellence</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -63,9 +62,7 @@ p, li {
   line-height: 1.6;
 }
 
-ul {
-  padding-left: 1.2em;
-}
+ul { padding-left: 1.2em; }
 
 .highlight {
   color: var(--accent);
@@ -78,7 +75,6 @@ ul {
   right: 30px;
   display: flex;
   gap: 10px;
-  z-index: 10;
 }
 
 button {
@@ -109,133 +105,148 @@ button:hover {
 
 <body>
 
-<!-- SLIDE 1 -->
+<!-- SLIDE 1 OVERVIEW -->
 <section class="slide active">
-  <h1>Operational Excellence</h1>
-  <h2>Satu Standar. Satu Arah. Satu Tujuan.</h2>
-  <p>Meeting seluruh perwakilan divisi<br>
-  <span class="highlight">Profesional • Disiplin • Bertanggung Jawab</span></p>
-</section>
-
-<!-- SLIDE 2 -->
-<section class="slide">
-  <h1>Kenapa Kita Berubah?</h1>
-  <p>Masalah kecil di operasional <br>
-  <span class="highlight">berdampak besar ke tamu.</span></p>
-</section>
-
-<!-- SLIDE 3 -->
-<section class="slide">
-  <h1>Fokus Meeting Hari Ini</h1>
+  <h1>Overview Operasional</h1>
+  <h2>Masalah Kecil. Dampak Besar.</h2>
   <ul>
-    <li>Standar kerja per divisi</li>
-    <li>Disiplin & tanggung jawab</li>
-    <li>Evaluasi pelanggaran</li>
-    <li>Konsekuensi & apresiasi</li>
+    <li>Disiplin tidak konsisten</li>
+    <li>Standar kerja berbeda tiap shift</li>
+    <li>Area kerja sering tidak ter-handle</li>
+    <li>Pelayanan tamu menurun</li>
   </ul>
 </section>
 
-<!-- SLIDE 4 -->
+<!-- SLIDE 2 TEMUAN -->
+<section class="slide">
+  <h1>Temuan Lapangan</h1>
+  <ul>
+    <li>Kasir duduk & makan saat ada tamu</li>
+    <li>Waiters merokok di area tamu</li>
+    <li>Karyawan menghilang di 1 jam awal shift</li>
+    <li>Greeter meninggalkan station tanpa konfirmasi</li>
+    <li>Dapur sore bekerja minim intensitas</li>
+  </ul>
+</section>
+
+<!-- SLIDE 3 GRAFIK -->
+<section class="slide">
+  <h1>Distribusi Masalah</h1>
+  <canvas id="issueChart" style="max-width:700px"></canvas>
+</section>
+
+<!-- SLIDE 4 PEMBUKA -->
+<section class="slide">
+  <h1>Kenapa Meeting Ini Penting?</h1>
+  <p>Apa yang kita anggap sepele,<br>
+  <span class="highlight">tamu tidak.</span></p>
+</section>
+
+<!-- SLIDE 5 AGENDA -->
+<section class="slide">
+  <h1>Apa yang Akan Dibahas</h1>
+  <ul>
+    <li>Standar kerja semua divisi</li>
+    <li>Tanggung jawab per shift</li>
+    <li>Konsekuensi pelanggaran</li>
+    <li>Apresiasi karyawan terbaik</li>
+  </ul>
+</section>
+
+<!-- SLIDE 6 WAITERS -->
 <section class="slide">
   <h1>WAITERS</h1>
   <ul>
     <li>Checklist opening & closing <span class="highlight">(WAJIB)</span></li>
     <li>Atribut kerja tanpa toleransi</li>
-    <li>Waktu opening & closing harus maksimal</li>
+    <li>Jam kerja dimaksimalkan</li>
     <li>Foto kegiatan ke grup</li>
     <li>Briefing pergantian shift</li>
   </ul>
 </section>
 
-<!-- SLIDE 5 -->
+<!-- SLIDE 7 KASIR -->
 <section class="slide">
   <h1>KASIR</h1>
   <ul>
-    <li>SOP opening, closing & pergantian shift</li>
-    <li>Kebersihan bagian dari tugas kasir</li>
+    <li>SOP opening, closing & shift</li>
+    <li>Kebersihan bagian dari kerja</li>
     <li><span class="highlight">Tamu datang = tidak duduk</span></li>
     <li>Dilarang makan di counter</li>
-    <li>Gestur profesional & wajib menyapa</li>
+    <li>Wajib menyapa & gestur profesional</li>
   </ul>
 </section>
 
-<!-- SLIDE 6 -->
+<!-- SLIDE 8 CHECKER -->
 <section class="slide">
   <h1>CHECKER</h1>
   <ul>
     <li>Standby dapur & display saat opening</li>
-    <li>Pastikan piring rotan bersih</li>
+    <li>Piring rotan harus bersih</li>
     <li>Lap & semprot semua nampan</li>
-    <li>Dilarang main HP di area display</li>
-    <li>Pembersihan chiller tiap Minggu</li>
+    <li>Dilarang main HP di display</li>
+    <li>Chiller dibersihkan tiap Minggu</li>
   </ul>
 </section>
 
-<!-- SLIDE 7 -->
+<!-- SLIDE 9 BAR -->
 <section class="slide">
   <h1>BAR</h1>
   <ul>
     <li>Sapu & sikat area bar tiap closing</li>
-    <li>Inventaris gelas & cup tanggung jawab bar</li>
-    <li>Dilarang pinjam alat minum untuk pribadi</li>
-    <li>Cup plastik/kertas → bayar <span class="highlight">Rp2.000</span></li>
+    <li>Inventaris gelas & cup</li>
+    <li>Dilarang pinjam alat minum</li>
+    <li>Cup → bayar <span class="highlight">Rp2.000</span></li>
   </ul>
 </section>
 
-<!-- SLIDE 8 -->
-<section class="slide">
-  <h1>Temuan Pelanggaran</h1>
-  <canvas id="issueChart" style="max-width:700px"></canvas>
-</section>
-
-<!-- SLIDE 9 -->
+<!-- SLIDE 10 KONSEKUENSI -->
 <section class="slide">
   <h1>Konsekuensi</h1>
   <ul>
     <li>Izin mendadak → 1 poin</li>
-    <li>1 SP = potongan gaji <span class="highlight">Rp50.000</span></li>
-    <li>3 SP → disiapkan kandidat pengganti</li>
+    <li>1 SP = potongan Rp50.000</li>
+    <li>3 SP → kandidat pengganti</li>
   </ul>
 </section>
 
-<!-- SLIDE 10 -->
+<!-- SLIDE 11 APRESIASI -->
 <section class="slide">
   <h1>Apresiasi</h1>
   <p>Karyawan terbaik semua divisi<br>
   <span class="highlight">Rp100.000</span></p>
 </section>
 
-<!-- SLIDE 11 -->
+<!-- SLIDE 12 PENUTUP -->
 <section class="slide">
-  <h1>Penutup</h1>
-  <h2>Kita Naik Level.</h2>
-  <p>Aturan ini bukan untuk memberatkan.<br>
-  Tapi untuk <span class="highlight">melindungi yang bekerja benar.</span></p>
+  <h1>Kita Naik Level</h1>
+  <h2>Satu Standar. Satu Arah.</h2>
+  <p>Aturan ini dibuat untuk<br>
+  <span class="highlight">melindungi yang bekerja benar.</span></p>
 </section>
 
-<!-- NAVIGATION -->
 <div class="nav">
   <button onclick="prev()">◀ Prev</button>
   <button onclick="next()">Next ▶</button>
 </div>
 
-<div class="footer">Gunakan tombol ← → atau klik</div>
+<div class="footer">Gunakan ← → atau tombol</div>
 
 <script>
 const slides = document.querySelectorAll('.slide');
 let index = 0;
 
-function showSlide(i) {
+function showSlide(i){
   slides.forEach(s => s.classList.remove('active'));
   slides[i].classList.add('active');
 }
 
-function next() {
+function next(){
   index = Math.min(index + 1, slides.length - 1);
   showSlide(index);
 }
 
-function prev() {
+function prev(){
   index = Math.max(index - 1, 0);
   showSlide(index);
 }
@@ -245,23 +256,18 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') prev();
 });
 
-// Chart
-const ctx = document.getElementById('issueChart');
-new Chart(ctx, {
+new Chart(document.getElementById('issueChart'), {
   type: 'bar',
   data: {
-    labels: ['Kasir', 'Waiters', 'Checker', 'Greeter', 'Dapur'],
+    labels: ['Kasir','Waiters','Checker','Greeter','Dapur'],
     datasets: [{
-      label: 'Jumlah Temuan',
-      data: [5, 7, 3, 4, 6],
+      data: [5,7,3,4,6],
       backgroundColor: '#00ffcc'
     }]
   },
   options: {
     plugins: { legend: { display: false } },
-    scales: {
-      y: { beginAtZero: true }
-    }
+    scales: { y: { beginAtZero: true } }
   }
 });
 </script>
