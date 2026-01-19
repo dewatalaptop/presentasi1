@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operational Excellence Meeting</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --bg: #000;
+  --text: #fff;
+  --accent: #00ffcc;
+  --muted: #888;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 8vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: all 1s cubic-bezier(.19,1,.22,1);
+}
+
+.slide.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: 2rem;
+  color: var(--accent);
+}
+
+p, li {
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  line-height: 1.6;
+}
+
+ul {
+  padding-left: 1.2em;
+}
+
+.highlight {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.nav {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  left: 30px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<!-- SLIDE 1 -->
+<section class="slide active">
+  <h1>Operational Excellence</h1>
+  <h2>Satu Standar. Satu Arah. Satu Tujuan.</h2>
+  <p>Meeting seluruh perwakilan divisi<br>
+  <span class="highlight">Profesional • Disiplin • Bertanggung Jawab</span></p>
+</section>
+
+<!-- SLIDE 2 -->
+<section class="slide">
+  <h1>Kenapa Kita Berubah?</h1>
+  <p>Masalah kecil di operasional <br>
+  <span class="highlight">berdampak besar ke tamu.</span></p>
+</section>
+
+<!-- SLIDE 3 -->
+<section class="slide">
+  <h1>Fokus Meeting Hari Ini</h1>
+  <ul>
+    <li>Standar kerja per divisi</li>
+    <li>Disiplin & tanggung jawab</li>
+    <li>Evaluasi pelanggaran</li>
+    <li>Konsekuensi & apresiasi</li>
+  </ul>
+</section>
+
+<!-- SLIDE 4 -->
+<section class="slide">
+  <h1>WAITERS</h1>
+  <ul>
+    <li>Checklist opening & closing <span class="highlight">(WAJIB)</span></li>
+    <li>Atribut kerja tanpa toleransi</li>
+    <li>Waktu opening & closing harus maksimal</li>
+    <li>Foto kegiatan ke grup</li>
+    <li>Briefing pergantian shift</li>
+  </ul>
+</section>
+
+<!-- SLIDE 5 -->
+<section class="slide">
+  <h1>KASIR</h1>
+  <ul>
+    <li>SOP opening, closing & pergantian shift</li>
+    <li>Kebersihan bagian dari tugas kasir</li>
+    <li><span class="highlight">Tamu datang = tidak duduk</span></li>
+    <li>Dilarang makan di counter</li>
+    <li>Gestur profesional & wajib menyapa</li>
+  </ul>
+</section>
+
+<!-- SLIDE 6 -->
+<section class="slide">
+  <h1>CHECKER</h1>
+  <ul>
+    <li>Standby dapur & display saat opening</li>
+    <li>Pastikan piring rotan bersih</li>
+    <li>Lap & semprot semua nampan</li>
+    <li>Dilarang main HP di area display</li>
+    <li>Pembersihan chiller tiap Minggu</li>
+  </ul>
+</section>
+
+<!-- SLIDE 7 -->
+<section class="slide">
+  <h1>BAR</h1>
+  <ul>
+    <li>Sapu & sikat area bar tiap closing</li>
+    <li>Inventaris gelas & cup tanggung jawab bar</li>
+    <li>Dilarang pinjam alat minum untuk pribadi</li>
+    <li>Cup plastik/kertas → bayar <span class="highlight">Rp2.000</span></li>
+  </ul>
+</section>
+
+<!-- SLIDE 8 -->
+<section class="slide">
+  <h1>Temuan Pelanggaran</h1>
+  <canvas id="issueChart" style="max-width:700px"></canvas>
+</section>
+
+<!-- SLIDE 9 -->
+<section class="slide">
+  <h1>Konsekuensi</h1>
+  <ul>
+    <li>Izin mendadak → 1 poin</li>
+    <li>1 SP = potongan gaji <span class="highlight">Rp50.000</span></li>
+    <li>3 SP → disiapkan kandidat pengganti</li>
+  </ul>
+</section>
+
+<!-- SLIDE 10 -->
+<section class="slide">
+  <h1>Apresiasi</h1>
+  <p>Karyawan terbaik semua divisi<br>
+  <span class="highlight">Rp100.000</span></p>
+</section>
+
+<!-- SLIDE 11 -->
+<section class="slide">
+  <h1>Penutup</h1>
+  <h2>Kita Naik Level.</h2>
+  <p>Aturan ini bukan untuk memberatkan.<br>
+  Tapi untuk <span class="highlight">melindungi yang bekerja benar.</span></p>
+</section>
+
+<!-- NAVIGATION -->
+<div class="nav">
+  <button onclick="prev()">◀ Prev</button>
+  <button onclick="next()">Next ▶</button>
+</div>
+
+<div class="footer">Gunakan tombol ← → atau klik</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let index = 0;
+
+function showSlide(i) {
+  slides.forEach(s => s.classList.remove('active'));
+  slides[i].classList.add('active');
+}
+
+function next() {
+  index = Math.min(index + 1, slides.length - 1);
+  showSlide(index);
+}
+
+function prev() {
+  index = Math.max(index - 1, 0);
+  showSlide(index);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+});
+
+// Chart
+const ctx = document.getElementById('issueChart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Kasir', 'Waiters', 'Checker', 'Greeter', 'Dapur'],
+    datasets: [{
+      label: 'Jumlah Temuan',
+      data: [5, 7, 3, 4, 6],
+      backgroundColor: '#00ffcc'
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
