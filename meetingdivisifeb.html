@@ -1,285 +1,323 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operational Excellence</title>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dolan Sawah – Arah & Disiplin</title>
 
 <style>
-:root {
-  --bg: #000;
-  --text: #fff;
-  --accent: #00ffcc;
-  --muted: #888;
-}
-
 * {
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: radial-gradient(circle at center, #1a1a1a, #000);
+  color: #fff;
   overflow: hidden;
 }
 
-/* ===== SLIDE ===== */
+/* SLIDE CONTAINER */
+#slides {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* SLIDE */
 .slide {
   position: absolute;
-  inset: 0;
-  padding: 8vw;
-  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 8vh 8vw;
+  display: none;
   flex-direction: column;
   justify-content: center;
-  opacity: 0;
-  transform: scale(1.05);
-  transition: all 1s cubic-bezier(.19,1,.22,1);
-  pointer-events: none; /* FIX */
+  align-items: center;
+  text-align: center;
+  animation: fadeIn 1.2s ease;
 }
 
 .slide.active {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 1;
-  pointer-events: auto;
+  display: flex;
 }
 
-/* ===== TYPO ===== */
+/* TEXT STYLES */
 h1 {
   font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
   margin-bottom: 1rem;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  margin-bottom: 2rem;
-  color: var(--accent);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 0.8rem;
 }
 
-p, li {
-  font-size: clamp(1rem, 2.2vw, 1.5rem);
-  line-height: 1.6;
+p {
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  opacity: 0.85;
 }
 
-ul { padding-left: 1.2em; }
-
-.highlight {
-  color: var(--accent);
-  font-weight: bold;
+/* DRAMATIC EFFECTS */
+.fade {
+  animation: fadeUp 1.5s ease forwards;
 }
 
-/* ===== NAVIGATION (FIXED & CLICKABLE) ===== */
+.zoom {
+  animation: zoomIn 1.5s ease forwards;
+}
+
+.shake {
+  animation: shake 0.6s ease;
+}
+
+.crossed {
+  position: relative;
+  color: #aaa;
+}
+.crossed::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  width: 120%;
+  height: 4px;
+  background: red;
+  transform: rotate(-5deg);
+}
+
+/* RANDOM TEXT (SLIDE 8) */
+.scatter span {
+  position: absolute;
+  opacity: 0;
+  animation: appear 1s ease forwards;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  color: #ffdddd;
+}
+
+/* NAV BUTTONS */
 .nav {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 20px;
+  right: 20px;
   display: flex;
-  gap: 12px;
-  z-index: 9999;          /* FIX UTAMA */
-  pointer-events: auto;
+  gap: 10px;
 }
 
 button {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid var(--accent);
-  color: var(--text);
-  padding: 10px 20px;
-  font-size: 1rem;
+  padding: 10px 18px;
+  background: #111;
+  color: #fff;
+  border: 1px solid #444;
   cursor: pointer;
-  border-radius: 30px;
-  transition: 0.3s ease;
+  font-size: 14px;
 }
 
 button:hover {
-  background: var(--accent);
-  color: #000;
+  background: #222;
 }
 
-/* ===== FOOTER ===== */
-.footer {
-  position: fixed;
-  bottom: 22px;
-  left: 30px;
-  font-size: 0.9rem;
-  color: var(--muted);
-  z-index: 9999;
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes appear {
+  to { opacity: 1; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- SLIDE 1 -->
-<section class="slide active">
-  <h1>Overview Operasional</h1>
-  <h2>Masalah Kecil. Dampak Besar.</h2>
-  <ul>
-    <li>Disiplin tidak konsisten</li>
-    <li>Standar kerja berbeda tiap shift</li>
-    <li>Area kerja sering tidak ter-handle</li>
-    <li>Pelayanan tamu menurun</li>
-  </ul>
-</section>
+<div id="slides">
 
-<!-- SLIDE 2 -->
-<section class="slide">
-  <h1>Temuan Lapangan</h1>
-  <ul>
-    <li>Kasir duduk & makan saat ada tamu</li>
-    <li>Waiters merokok di area tamu</li>
-    <li>Karyawan menghilang di 1 jam awal shift</li>
-    <li>Greeter meninggalkan station</li>
-    <li>Dapur sore intensitas rendah</li>
-  </ul>
-</section>
+  <!-- SLIDE 1 -->
+  <div class="slide active">
+    <h1 class="zoom">Pekerjaan = Kerja</h1>
+    <p class="fade">Bukan sekadar datang dan pulang</p>
+  </div>
 
-<!-- SLIDE 3 -->
-<section class="slide">
-  <h1>Distribusi Masalah</h1>
-  <canvas id="issueChart" style="max-width:700px"></canvas>
-</section>
+  <!-- SLIDE 2 -->
+  <div class="slide">
+    <h2 class="fade">Industri = Barang atau Jasa</h2>
+    <h2 class="fade">Resto = Barang + Jasa</h2>
+    <h1 class="zoom">Kita Jual Pengalaman</h1>
+  </div>
 
-<!-- SLIDE 4 -->
-<section class="slide">
-  <h1>Kenapa Kita Meeting?</h1>
-  <p>Apa yang kita anggap biasa,<br>
-  <span class="highlight">tamu tidak.</span></p>
-</section>
+  <!-- SLIDE 3 -->
+  <div class="slide">
+    <h2 class="fade">Tidak ada pengalaman</h2>
+    <h1 class="shake">RESTO TUTUP</h1>
+  </div>
 
-<!-- SLIDE 5 -->
-<section class="slide">
-  <h1>Apa yang Akan Dibahas</h1>
-  <ul>
-    <li>Standar kerja per divisi</li>
-    <li>Tanggung jawab per shift</li>
-    <li>Konsekuensi pelanggaran</li>
-    <li>Apresiasi karyawan terbaik</li>
-  </ul>
-</section>
+  <!-- SLIDE 4 -->
+  <div class="slide">
+    <p class="fade">Larut dalam operasional</p>
+    <p class="fade">Hilang arah</p>
+    <h1 class="shake">Perusahaan Tutup</h1>
+  </div>
 
-<!-- SLIDE 6 -->
-<section class="slide">
-  <h1>WAITERS</h1>
-  <ul>
-    <li>Checklist opening & closing <span class="highlight">(WAJIB)</span></li>
-    <li>Atribut kerja tanpa toleransi</li>
-    <li>Jam kerja dimaksimalkan</li>
-    <li>Foto kegiatan ke grup</li>
-    <li>Briefing pergantian shift</li>
-  </ul>
-</section>
+  <!-- SLIDE 5 -->
+  <div class="slide">
+    <h1 class="zoom">Dolan Sawah</h1>
+    <p>Resto dengan omset tertinggi di Kabupaten Semarang 2025</p>
+    <p>(data insert bizz)</p>
+    <p class="fade">Bukan karena kebetulan.</p>
+  </div>
 
-<!-- SLIDE 7 -->
-<section class="slide">
-  <h1>KASIR</h1>
-  <ul>
-    <li>SOP opening, closing & shift</li>
-    <li>Kebersihan bagian dari tugas</li>
-    <li><span class="highlight">Tamu datang = tidak duduk</span></li>
-    <li>Dilarang makan di counter</li>
-    <li>Wajib menyapa</li>
-  </ul>
-</section>
+  <!-- SLIDE 6 -->
+  <div class="slide" id="slide6">
+    <h1 id="kompetitor">Kompetitor jatuh perlahan</h1>
+    <p>(untuk saat ini)</p>
+  </div>
 
-<!-- SLIDE 8 -->
-<section class="slide">
-  <h1>CHECKER</h1>
-  <ul>
-    <li>Standby dapur & display saat opening</li>
-    <li>Piring rotan harus bersih</li>
-    <li>Lap & semprot semua nampan</li>
-    <li>Dilarang main HP di display</li>
-    <li>Chiller dibersihkan tiap Minggu</li>
-  </ul>
-</section>
+  <!-- SLIDE 7 -->
+  <div class="slide">
+    <h1 class="shake">Kita hancur dari dalam</h1>
+  </div>
 
-<!-- SLIDE 9 -->
-<section class="slide">
-  <h1>BAR</h1>
-  <ul>
-    <li>Sapu & sikat area bar tiap closing</li>
-    <li>Inventaris gelas & cup</li>
-    <li>Dilarang pinjam alat minum</li>
-    <li>Cup → bayar <span class="highlight">Rp2.000</span></li>
-  </ul>
-</section>
+  <!-- SLIDE 8 -->
+  <div class="slide scatter" id="scatter"></div>
 
-<!-- SLIDE 10 -->
-<section class="slide">
-  <h1>Konsekuensi</h1>
-  <ul>
-    <li>Izin mendadak → 1 poin</li>
-    <li>1 SP = potongan Rp50.000</li>
-    <li>3 SP → kandidat pengganti</li>
-  </ul>
-</section>
+  <!-- SLIDE 9 -->
+  <div class="slide" id="slide9">
+    <h2 id="solusiHalus">Solusi halus dan persuasif</h2>
+  </div>
 
-<!-- SLIDE 11 -->
-<section class="slide">
-  <h1>Apresiasi</h1>
-  <p>Karyawan terbaik semua divisi<br>
-  <span class="highlight">Rp100.000</span></p>
-</section>
+  <!-- SLIDE 10 -->
+  <div class="slide">
+    <h2>Hospitality</h2>
+    <p>Aturan baku tertulis 300 halaman</p>
+    <h1 class="fade">Ini kerja, bukan kuliah</h1>
+  </div>
 
-<!-- SLIDE 12 -->
-<section class="slide">
-  <h1>Kita Naik Level</h1>
-  <h2>Satu Standar. Satu Arah.</h2>
-  <p>Aturan ini dibuat untuk<br>
-  <span class="highlight">melindungi yang bekerja benar.</span></p>
-</section>
+  <!-- SLIDE 11 -->
+  <div class="slide">
+    <h2>Leader adalah pengarah aturan utama</h2>
+    <p>Leader divisi adalah penyampai aturan sah</p>
+  </div>
 
-<!-- NAV -->
-<div class="nav">
-  <button onclick="prev()">◀ Prev</button>
-  <button onclick="next()">Next ▶</button>
+  <!-- SLIDE 12 -->
+  <div class="slide">
+    <h1>SP (Surat Peringatan)</h1>
+    <p class="fade">Bukan untuk menghukum yang salah</p>
+    <p class="fade">Tapi melindungi yang bekerja dengan baik</p>
+    <p class="fade">Standarisasi kinerja adalah poin utama</p>
+  </div>
+
+  <!-- SLIDE 13 -->
+  <div class="slide">
+    <h1 class="fade">Menemukan Jalan</h1>
+    <p>Mengelola bisnis besar membutuhkan arah</p>
+  </div>
+
+  <!-- SLIDE 14 -->
+  <div class="slide">
+    <p>1 SP – waktu untuk berbenah</p>
+    <p>2 SP – tidak ada jalan kecuali berubah</p>
+    <h2>3 SP – pengganti disiapkan</h2>
+  </div>
+
+  <!-- SLIDE 15 -->
+  <div class="slide">
+    <h2>Kasir</h2>
+    <h2>Dapur</h2>
+    <h2>Bar</h2>
+    <h2>Checker</h2>
+    <h1>Waiters</h1>
+  </div>
+
+  <!-- SLIDE 16 -->
+  <div class="slide">
+    <h1>Dolan Sawah</h1>
+  </div>
+
 </div>
 
-<div class="footer">Gunakan ← → atau tombol</div>
+<div class="nav">
+  <button onclick="prevSlide()">Prev</button>
+  <button onclick="nextSlide()">Next</button>
+</div>
 
 <script>
-const slides = document.querySelectorAll('.slide');
 let index = 0;
+const slides = document.querySelectorAll(".slide");
+
+/* SLIDE 8 CONTENT */
+const scatterTexts = [
+  "Berdiam diri 1 jam awal shift",
+  "Bersantai akhir shift",
+  "Mencuri aset & lauk",
+  "Datang terlambat",
+  "Alasan absensi mendadak",
+  "Merokok saat kerja",
+  "Keluar tanpa izin",
+  "Makan di area tamu",
+  "Tidak koordinasi leader",
+  "Tidak pakai atribut",
+  "Melawan perintah",
+  "Sikap buruk",
+  "Bercanda berlebihan",
+  "Meninggalkan area kerja",
+  "Tidak menjalankan perintah"
+];
+
+const scatter = document.getElementById("scatter");
+scatterTexts.forEach((text, i) => {
+  const span = document.createElement("span");
+  span.innerText = text;
+  span.style.top = Math.random() * 80 + "%";
+  span.style.left = Math.random() * 80 + "%";
+  span.style.animationDelay = i * 0.3 + "s";
+  scatter.appendChild(span);
+});
 
 function showSlide(i) {
-  slides.forEach(s => s.classList.remove('active'));
-  slides[i].classList.add('active');
-}
+  slides.forEach(s => s.classList.remove("active"));
+  slides[i].classList.add("active");
 
-function next() {
-  index = Math.min(index + 1, slides.length - 1);
-  showSlide(index);
-}
-
-function prev() {
-  index = Math.max(index - 1, 0);
-  showSlide(index);
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') next();
-  if (e.key === 'ArrowLeft') prev();
-});
-
-new Chart(document.getElementById('issueChart'), {
-  type: 'bar',
-  data: {
-    labels: ['Kasir','Waiters','Checker','Greeter','Dapur'],
-    datasets: [{
-      data: [5,7,3,4,6],
-      backgroundColor: '#00ffcc'
-    }]
-  },
-  options: {
-    plugins: { legend: { display: false } },
-    scales: { y: { beginAtZero: true } }
+  if (i === 6) {
+    document.getElementById("kompetitor").classList.remove("crossed");
   }
-});
+
+  if (i === 8) {
+    document.getElementById("solusiHalus").classList.add("crossed");
+    document.getElementById("solusiHalus").innerText = "Solusi tangan besi";
+  }
+}
+
+function nextSlide() {
+  if (index < slides.length - 1) index++;
+  showSlide(index);
+}
+
+function prevSlide() {
+  if (index > 0) index--;
+  showSlide(index);
+}
 </script>
 
 </body>
