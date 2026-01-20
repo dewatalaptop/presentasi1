@@ -65,7 +65,7 @@ p{font-size:clamp(1.2rem,2.2vw,1.6rem);opacity:.75}
   100%{transform:translateX(0)}
 }
 
-/* CORETA TANGAN */
+/* CORETA */
 .crossed{
   position:relative;
   opacity:.7;
@@ -79,7 +79,7 @@ p{font-size:clamp(1.2rem,2.2vw,1.6rem);opacity:.75}
   height:5px;
   background:var(--red);
   transform:rotate(-6deg);
-  animation:draw 0.7s ease forwards;
+  animation:draw .7s ease forwards;
 }
 @keyframes draw{to{width:120%}}
 
@@ -112,28 +112,33 @@ button:hover{background:#222}
 
 <div id="slides">
 
+<!-- SLIDE 1 -->
 <div class="slide active">
   <h1 class="zoomIn">Pekerjaan = Kerja</h1>
   <p class="fadeUp" style="animation-delay:.4s">Bukan sekadar datang dan pulang</p>
 </div>
 
+<!-- SLIDE 2 -->
 <div class="slide">
-  <h2 class="fadeUp">Industri = Barang atau Jasa</h2>
-  <h2 class="fadeUp" style="animation-delay:.3s">Resto = Barang + Jasa</h2>
-  <h1 class="zoomIn" style="animation-delay:.6s">Kita Jual Pengalaman</h1>
+  <h2 id="s2a">Industri = Barang atau Jasa</h2>
+  <h2 id="s2b" style="display:none">Resto = Barang dan Jasa</h2>
+  <h1 id="s2c" style="display:none">KITA JUAL PENGALAMAN</h1>
 </div>
 
+<!-- SLIDE 3 -->
 <div class="slide">
   <p class="fadeUp">Tidak ada pengalaman</p>
   <h1 class="shake">RESTO TUTUP</h1>
 </div>
 
+<!-- SLIDE 4 -->
 <div class="slide">
   <p class="fadeUp">Larut dalam operasional</p>
   <p class="fadeUp" style="animation-delay:.4s">Hilang arah</p>
   <h1 class="shake" style="animation-delay:.8s">Perusahaan Tutup</h1>
 </div>
 
+<!-- SLIDE 5 -->
 <div class="slide">
   <h1 class="zoomIn">Dolan Sawah</h1>
   <p>Resto dengan omset tertinggi Kab. Semarang 2025</p>
@@ -141,31 +146,36 @@ button:hover{background:#222}
   <p class="fadeUp" style="animation-delay:.6s">Bukan karena kebetulan</p>
 </div>
 
+<!-- SLIDE 6 -->
 <div class="slide">
   <h1 id="kompetitor">Kompetitor jatuh perlahan</h1>
   <p>(untuk saat ini)</p>
 </div>
 
+<!-- SLIDE 7 -->
 <div class="slide">
   <h1>Kita hancur dari dalam</h1>
 </div>
 
+<!-- SLIDE 8 -->
 <div class="slide scatter" id="scatter"></div>
 
 <!-- SLIDE 9 -->
 <div class="slide">
   <h2 id="solusiHalus">Solusi halus dan persuasif</h2>
-  <h1 id="solusiKeras" style="display:none;color:#fff;margin-top:40px">
+  <h1 id="solusiKeras" style="display:none;margin-top:40px">
     SOLUSI TANGAN BESI
   </h1>
 </div>
 
+<!-- SLIDE 10 -->
 <div class="slide">
   <h2>Hospitality</h2>
   <p>Aturan baku tertulis 300 halaman</p>
   <h1>Ini kerja, bukan kuliah</h1>
 </div>
 
+<!-- SLIDE 11 -->
 <div class="slide">
   <h1>Leader Utama</h1>
   <p>Pengarah aturan tertinggi</p>
@@ -173,6 +183,7 @@ button:hover{background:#222}
   <p>Penyampai aturan sah</p>
 </div>
 
+<!-- SLIDE 12 -->
 <div class="slide">
   <h1>SP</h1>
   <p>Bukan menghukum</p>
@@ -180,17 +191,20 @@ button:hover{background:#222}
   <p>Standarisasi adalah kunci</p>
 </div>
 
+<!-- SLIDE 13 -->
 <div class="slide">
   <h1>Menemukan Jalan</h1>
   <p>Mengelola bisnis besar butuh arah</p>
 </div>
 
+<!-- SLIDE 14 -->
 <div class="slide">
   <p>1 SP — waktu berbenah</p>
   <p>2 SP — harus berubah</p>
   <h2>3 SP — pengganti disiapkan</h2>
 </div>
 
+<!-- SLIDE 15 -->
 <div class="slide">
   <h2>Kasir</h2>
   <h2>Dapur</h2>
@@ -199,6 +213,7 @@ button:hover{background:#222}
   <h1>Waiters</h1>
 </div>
 
+<!-- SLIDE 16 -->
 <div class="slide">
   <h1>Dolan Sawah</h1>
 </div>
@@ -212,11 +227,14 @@ button:hover{background:#222}
 
 <script>
 let index=0;
+let stage2=0;
 let stage6=false;
 let stage9=0;
+
 const slides=document.querySelectorAll(".slide");
 const bg=document.getElementById("slides");
 
+/* SLIDE 8 DATA */
 const texts=[
 "Berdiam diri 1 jam awal shift","Bersantai akhir shift","Mencuri aset & lauk",
 "Datang terlambat","Absensi mendadak","Merokok",
@@ -244,34 +262,52 @@ function show(i){
     i<9?"radial-gradient(circle,#080808,#000)":
     "radial-gradient(circle,#141414,#000)";
 
-  if(i===5){stage6=false;document.getElementById("kompetitor").classList.remove("crossed")}
+  if(i===1){
+    stage2=0;
+    s2a.style.display="block";
+    s2b.style.display="none";
+    s2c.style.display="none";
+  }
+  if(i===5){
+    stage6=false;
+    kompetitor.classList.remove("crossed");
+  }
   if(i===8){
     stage9=0;
-    document.getElementById("solusiHalus").classList.remove("crossed");
-    document.getElementById("solusiKeras").style.display="none";
+    solusiHalus.classList.remove("crossed");
+    solusiKeras.style.display="none";
   }
 }
 
 function next(){
+  if(index===1){
+    if(stage2===0){s2b.style.display="block";stage2=1;return;}
+    if(stage2===1){
+      s2a.style.display="none";
+      s2b.style.display="none";
+      s2c.style.display="block";
+      s2c.classList.add("zoomIn");
+      stage2=2;return;
+    }
+  }
   if(index===5 && !stage6){
-    document.getElementById("kompetitor").classList.add("crossed");
+    kompetitor.classList.add("crossed");
     stage6=true;return;
   }
   if(index===8){
-    if(stage9===0){
-      document.getElementById("solusiHalus").classList.add("crossed");
-      stage9=1;return;
-    }
+    if(stage9===0){solusiHalus.classList.add("crossed");stage9=1;return;}
     if(stage9===1){
-      const k=document.getElementById("solusiKeras");
-      k.style.display="block";
-      k.classList.add("zoomIn","shake");
+      solusiKeras.style.display="block";
+      solusiKeras.classList.add("zoomIn","shake");
       stage9=2;return;
     }
   }
-  if(index<slides.length-1){index++;show(index)}
+  if(index<slides.length-1){index++;show(index);}
 }
-function prev(){if(index>0){index--;show(index)}}
+
+function prev(){
+  if(index>0){index--;show(index);}
+}
 
 document.addEventListener("keydown",e=>{
   if(e.key==="ArrowRight"||e.key===" ")next();
