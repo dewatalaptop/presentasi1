@@ -1,152 +1,127 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dolan Sawah – Arah & Disiplin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dolan Sawah — Arah & Disiplin</title>
 
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root{
+  --bg-dark:#050505;
+  --bg-mid:#0d0d0d;
+  --bg-soft:#1a1a1a;
+  --red:#b30000;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
   font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg-dark);
+  color:#fff;
+  overflow:hidden;
 }
 
-body {
-  background: radial-gradient(circle at center, #1a1a1a, #000);
-  color: #fff;
-  overflow: hidden;
+/* SLIDES */
+#slides{
+  width:100vw;
+  height:100vh;
+  position:relative;
+  transition:background 1.2s ease;
+}
+.slide{
+  position:absolute;
+  inset:0;
+  padding:8vh 8vw;
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+.slide.active{display:flex}
+
+/* TEXT */
+h1{
+  font-size:clamp(2.5rem,6vw,5rem);
+  font-weight:700;
+  letter-spacing:1px;
+}
+h2{
+  font-size:clamp(1.8rem,4vw,3rem);
+  opacity:.9;
+}
+p{
+  font-size:clamp(1.2rem,2.2vw,1.6rem);
+  opacity:.75;
+  max-width:900px;
 }
 
-/* SLIDE CONTAINER */
-#slides {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
+/* ANIMATION */
+.fadeUp{animation:fadeUp 1.3s ease forwards}
+.zoomIn{animation:zoomIn 1.4s ease forwards}
+.shake{animation:shake .6s ease}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes zoomIn{
+  from{opacity:0;transform:scale(.85)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
 }
 
-/* SLIDE */
-.slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding: 8vh 8vw;
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  animation: fadeIn 1.2s ease;
+/* CORETA TANGAN */
+.crossed{
+  position:relative;
+}
+.crossed::after{
+  content:"";
+  position:absolute;
+  left:-10%;
+  top:50%;
+  width:0;
+  height:5px;
+  background:var(--red);
+  animation:crossDraw .7s ease forwards;
+  transform:rotate(-6deg);
+}
+@keyframes crossDraw{
+  to{width:120%}
 }
 
-.slide.active {
-  display: flex;
+/* SLIDE 8 */
+.scatter span{
+  position:absolute;
+  font-size:clamp(.9rem,2vw,1.2rem);
+  color:#ffcccc;
+  opacity:0;
+  animation:appear 1s ease forwards;
 }
+@keyframes appear{to{opacity:.85}}
 
-/* TEXT STYLES */
-h1 {
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  font-weight: 700;
-  margin-bottom: 1rem;
+/* NAV */
+.nav{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  display:flex;
+  gap:10px;
 }
-
-h2 {
-  font-size: clamp(1.8rem, 4vw, 3rem);
-  margin-bottom: 0.8rem;
+button{
+  padding:10px 18px;
+  background:#111;
+  border:1px solid #444;
+  color:#fff;
+  cursor:pointer;
 }
-
-p {
-  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
-  opacity: 0.85;
-}
-
-/* DRAMATIC EFFECTS */
-.fade {
-  animation: fadeUp 1.5s ease forwards;
-}
-
-.zoom {
-  animation: zoomIn 1.5s ease forwards;
-}
-
-.shake {
-  animation: shake 0.6s ease;
-}
-
-.crossed {
-  position: relative;
-  color: #aaa;
-}
-.crossed::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -10%;
-  width: 120%;
-  height: 4px;
-  background: red;
-  transform: rotate(-5deg);
-}
-
-/* RANDOM TEXT (SLIDE 8) */
-.scatter span {
-  position: absolute;
-  opacity: 0;
-  animation: appear 1s ease forwards;
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
-  color: #ffdddd;
-}
-
-/* NAV BUTTONS */
-.nav {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-button {
-  padding: 10px 18px;
-  background: #111;
-  color: #fff;
-  border: 1px solid #444;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-button:hover {
-  background: #222;
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-  from { opacity: 0 }
-  to { opacity: 1 }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes zoomIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  50% { transform: translateX(8px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
-}
-
-@keyframes appear {
-  to { opacity: 1; }
-}
+button:hover{background:#222}
 </style>
 </head>
 
@@ -154,170 +129,175 @@ button:hover {
 
 <div id="slides">
 
-  <!-- SLIDE 1 -->
-  <div class="slide active">
-    <h1 class="zoom">Pekerjaan = Kerja</h1>
-    <p class="fade">Bukan sekadar datang dan pulang</p>
-  </div>
+<!-- 1 -->
+<div class="slide active">
+  <h1 class="zoomIn">Pekerjaan = Kerja</h1>
+  <p class="fadeUp" style="animation-delay:.4s">Bukan sekadar datang dan pulang</p>
+</div>
 
-  <!-- SLIDE 2 -->
-  <div class="slide">
-    <h2 class="fade">Industri = Barang atau Jasa</h2>
-    <h2 class="fade">Resto = Barang + Jasa</h2>
-    <h1 class="zoom">Kita Jual Pengalaman</h1>
-  </div>
+<!-- 2 -->
+<div class="slide">
+  <h2 class="fadeUp">Industri = Barang atau Jasa</h2>
+  <h2 class="fadeUp" style="animation-delay:.3s">Resto = Barang + Jasa</h2>
+  <h1 class="zoomIn" style="animation-delay:.6s">Kita Jual Pengalaman</h1>
+</div>
 
-  <!-- SLIDE 3 -->
-  <div class="slide">
-    <h2 class="fade">Tidak ada pengalaman</h2>
-    <h1 class="shake">RESTO TUTUP</h1>
-  </div>
+<!-- 3 -->
+<div class="slide">
+  <p class="fadeUp">Tidak ada pengalaman</p>
+  <h1 class="shake" style="margin-top:20px">RESTO TUTUP</h1>
+</div>
 
-  <!-- SLIDE 4 -->
-  <div class="slide">
-    <p class="fade">Larut dalam operasional</p>
-    <p class="fade">Hilang arah</p>
-    <h1 class="shake">Perusahaan Tutup</h1>
-  </div>
+<!-- 4 -->
+<div class="slide">
+  <p class="fadeUp">Larut dalam operasional</p>
+  <p class="fadeUp" style="animation-delay:.4s">Hilang arah</p>
+  <h1 class="shake" style="animation-delay:.8s">Perusahaan Tutup</h1>
+</div>
 
-  <!-- SLIDE 5 -->
-  <div class="slide">
-    <h1 class="zoom">Dolan Sawah</h1>
-    <p>Resto dengan omset tertinggi di Kabupaten Semarang 2025</p>
-    <p>(data insert bizz)</p>
-    <p class="fade">Bukan karena kebetulan.</p>
-  </div>
+<!-- 5 -->
+<div class="slide">
+  <h1 class="zoomIn">Dolan Sawah</h1>
+  <p>Resto dengan omset tertinggi Kab. Semarang 2025</p>
+  <p>(data insert bizz)</p>
+  <p class="fadeUp" style="animation-delay:.6s">Bukan karena kebetulan</p>
+</div>
 
-  <!-- SLIDE 6 -->
-  <div class="slide" id="slide6">
-    <h1 id="kompetitor">Kompetitor jatuh perlahan</h1>
-    <p>(untuk saat ini)</p>
-  </div>
+<!-- 6 -->
+<div class="slide">
+  <h1 id="kompetitor">Kompetitor jatuh perlahan</h1>
+  <p>(untuk saat ini)</p>
+</div>
 
-  <!-- SLIDE 7 -->
-  <div class="slide">
-    <h1 class="shake">Kita hancur dari dalam</h1>
-  </div>
+<!-- 7 -->
+<div class="slide">
+  <h1>Kita hancur dari dalam</h1>
+</div>
 
-  <!-- SLIDE 8 -->
-  <div class="slide scatter" id="scatter"></div>
+<!-- 8 -->
+<div class="slide scatter" id="scatter"></div>
 
-  <!-- SLIDE 9 -->
-  <div class="slide" id="slide9">
-    <h2 id="solusiHalus">Solusi halus dan persuasif</h2>
-  </div>
+<!-- 9 -->
+<div class="slide">
+  <h2 id="solusi">Solusi halus dan persuasif</h2>
+</div>
 
-  <!-- SLIDE 10 -->
-  <div class="slide">
-    <h2>Hospitality</h2>
-    <p>Aturan baku tertulis 300 halaman</p>
-    <h1 class="fade">Ini kerja, bukan kuliah</h1>
-  </div>
+<!-- 10 -->
+<div class="slide">
+  <h2>Hospitality</h2>
+  <p>Aturan baku tertulis 300 halaman</p>
+  <h1>Ini kerja, bukan kuliah</h1>
+</div>
 
-  <!-- SLIDE 11 -->
-  <div class="slide">
-    <h2>Leader adalah pengarah aturan utama</h2>
-    <p>Leader divisi adalah penyampai aturan sah</p>
-  </div>
+<!-- 11 -->
+<div class="slide">
+  <h1>Leader Utama</h1>
+  <p>Pengarah aturan tertinggi</p>
+  <h2 style="margin-top:40px">Leader Divisi</h2>
+  <p>Penyampai aturan sah</p>
+</div>
 
-  <!-- SLIDE 12 -->
-  <div class="slide">
-    <h1>SP (Surat Peringatan)</h1>
-    <p class="fade">Bukan untuk menghukum yang salah</p>
-    <p class="fade">Tapi melindungi yang bekerja dengan baik</p>
-    <p class="fade">Standarisasi kinerja adalah poin utama</p>
-  </div>
+<!-- 12 -->
+<div class="slide">
+  <h1>SP</h1>
+  <p>Bukan menghukum</p>
+  <p>Melindungi yang bekerja dengan baik</p>
+  <p>Standarisasi adalah kunci</p>
+</div>
 
-  <!-- SLIDE 13 -->
-  <div class="slide">
-    <h1 class="fade">Menemukan Jalan</h1>
-    <p>Mengelola bisnis besar membutuhkan arah</p>
-  </div>
+<!-- 13 -->
+<div class="slide">
+  <h1>Menemukan Jalan</h1>
+  <p>Mengelola bisnis besar butuh arah</p>
+</div>
 
-  <!-- SLIDE 14 -->
-  <div class="slide">
-    <p>1 SP – waktu untuk berbenah</p>
-    <p>2 SP – tidak ada jalan kecuali berubah</p>
-    <h2>3 SP – pengganti disiapkan</h2>
-  </div>
+<!-- 14 -->
+<div class="slide">
+  <p>1 SP — waktu berbenah</p>
+  <p>2 SP — harus berubah</p>
+  <h2>3 SP — pengganti disiapkan</h2>
+</div>
 
-  <!-- SLIDE 15 -->
-  <div class="slide">
-    <h2>Kasir</h2>
-    <h2>Dapur</h2>
-    <h2>Bar</h2>
-    <h2>Checker</h2>
-    <h1>Waiters</h1>
-  </div>
+<!-- 15 -->
+<div class="slide">
+  <h2>Kasir</h2>
+  <h2>Dapur</h2>
+  <h2>Bar</h2>
+  <h2>Checker</h2>
+  <h1>Waiters</h1>
+</div>
 
-  <!-- SLIDE 16 -->
-  <div class="slide">
-    <h1>Dolan Sawah</h1>
-  </div>
+<!-- 16 -->
+<div class="slide">
+  <h1>Dolan Sawah</h1>
+</div>
 
 </div>
 
 <div class="nav">
-  <button onclick="prevSlide()">Prev</button>
-  <button onclick="nextSlide()">Next</button>
+<button onclick="prev()">Prev</button>
+<button onclick="next()">Next</button>
 </div>
 
 <script>
-let index = 0;
-const slides = document.querySelectorAll(".slide");
+let index=0;
+let stage6=false;
+let stage9=false;
+const slides=document.querySelectorAll(".slide");
+const bg=document.getElementById("slides");
 
-/* SLIDE 8 CONTENT */
-const scatterTexts = [
-  "Berdiam diri 1 jam awal shift",
-  "Bersantai akhir shift",
-  "Mencuri aset & lauk",
-  "Datang terlambat",
-  "Alasan absensi mendadak",
-  "Merokok saat kerja",
-  "Keluar tanpa izin",
-  "Makan di area tamu",
-  "Tidak koordinasi leader",
-  "Tidak pakai atribut",
-  "Melawan perintah",
-  "Sikap buruk",
-  "Bercanda berlebihan",
-  "Meninggalkan area kerja",
-  "Tidak menjalankan perintah"
+/* SLIDE 8 DATA */
+const texts=[
+"Berdiam diri 1 jam awal shift","Bersantai akhir shift","Mencuri aset & lauk",
+"Datang terlambat","Absensi mendadak","Merokok",
+"Keluar tanpa izin","Makan di area tamu","Tidak koordinasi leader",
+"Tidak pakai atribut","Melawan perintah","Sikap buruk",
+"Bercanda berlebihan","Meninggalkan area kerja","Mengabaikan perintah"
 ];
-
-const scatter = document.getElementById("scatter");
-scatterTexts.forEach((text, i) => {
-  const span = document.createElement("span");
-  span.innerText = text;
-  span.style.top = Math.random() * 80 + "%";
-  span.style.left = Math.random() * 80 + "%";
-  span.style.animationDelay = i * 0.3 + "s";
-  scatter.appendChild(span);
+const scatter=document.getElementById("scatter");
+texts.forEach((t,i)=>{
+  const s=document.createElement("span");
+  s.innerText=t;
+  s.style.top=Math.random()*80+"%";
+  s.style.left=Math.random()*80+"%";
+  s.style.animationDelay=i*.25+"s";
+  scatter.appendChild(s);
 });
 
-function showSlide(i) {
-  slides.forEach(s => s.classList.remove("active"));
+function show(i){
+  slides.forEach(s=>s.classList.remove("active"));
   slides[i].classList.add("active");
 
-  if (i === 6) {
-    document.getElementById("kompetitor").classList.remove("crossed");
+  // background mood
+  bg.style.background =
+    i<4 ? "radial-gradient(circle,#1a1a1a,#000)" :
+    i<7 ? "radial-gradient(circle,#111,#000)" :
+    i<9 ? "radial-gradient(circle,#080808,#000)" :
+    "radial-gradient(circle,#141414,#000)";
+
+  if(i===5){stage6=false;document.getElementById("kompetitor").classList.remove("crossed")}
+  if(i===8){stage9=false;document.getElementById("solusi").innerText="Solusi halus dan persuasif"}
+}
+
+function next(){
+  if(index===5 && !stage6){
+    document.getElementById("kompetitor").classList.add("crossed");
+    stage6=true; return;
   }
-
-  if (i === 8) {
-    document.getElementById("solusiHalus").classList.add("crossed");
-    document.getElementById("solusiHalus").innerText = "Solusi tangan besi";
+  if(index===8 && !stage9){
+    const s=document.getElementById("solusi");
+    s.classList.add("crossed");
+    s.innerText="Solusi tangan besi";
+    stage9=true; return;
   }
+  if(index<slides.length-1){index++;show(index)}
 }
+function prev(){if(index>0){index--;show(index)}}
 
-function nextSlide() {
-  if (index < slides.length - 1) index++;
-  showSlide(index);
-}
-
-function prevSlide() {
-  if (index > 0) index--;
-  showSlide(index);
-}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" ")next();
+  if(e.key==="ArrowLeft")prev();
+});
 </script>
 
 </body>
