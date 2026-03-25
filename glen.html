@@ -3,844 +3,570 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0d1a">
 <title>MOLE MASH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* ═══════ RESET ═══════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 
-:root {
-–dirt:      #7B4F2E;
-–dirt-dark: #5A3620;
-–grass:     #4CAF50;
-–grass-d:   #2E7D32;
-–sky:       #1a1a2e;
-–sky2:      #16213e;
-–pixel:     4px;
-–gold:      #FFD700;
-–red:       #FF3333;
-–green:     #00FF88;
-–blue:      #00AAFF;
-–white:     #F0F0F0;
-}
+:root{
+–bg:#0d0d1a;–bg2:#13132a;–border:#2a2a4a;
+–gold:#ffd700;–gold-d:#7a5000;
+–green:#00ff88;–red:#ff4455;–blue:#44aaff;
+–dirt:#7b4f2e;–dirt-d:#4a2e18;
+–grass:#3a9e3a;–grass-d:#2a7a2a;
+–mole:#8b5513;–belly:#c8845a;
+–font:‘Press Start 2P’,monospace;
 
-- { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
+/* fluid hole size: fits 3 across with gaps on any screen */
+–hole: clamp(72px, calc((100vw - 80px) / 3), 130px);
+–gap:  clamp(6px, 2vw, 18px);
 
-body {
-font-family: ‘Press Start 2P’, monospace;
-background: var(–sky);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-overflow-x: hidden;
-position: relative;
+–hud-fs:   clamp(14px, 3.8vw, 22px);
+–title-fs: clamp(13px, 4.2vw, 30px);
+–lbl-fs:   clamp(5px, 1.4vw, 8px);
+–btn-fs:   clamp(8px, 1.9vw, 12px);
+
+–safe-top:    env(safe-area-inset-top, 0px);
+–safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ── STARS ── */
-.stars {
-position: fixed;
-inset: 0;
-pointer-events: none;
-z-index: 0;
-}
-.star {
-position: absolute;
-background: white;
-animation: twinkle 2s infinite alternate;
-}
-@keyframes twinkle { from { opacity:.2 } to { opacity:1 } }
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 
-/* ── TITLE ── */
-.title-wrap {
-position: relative;
-z-index: 1;
-margin: 28px 0 10px;
-text-align: center;
-}
-.title {
-font-size: clamp(18px, 4vw, 32px);
-color: var(–gold);
-text-shadow:
-4px 4px 0 #7a5800,
--2px -2px 0 #000,
-0 0 30px #ffaa00aa;
-letter-spacing: 4px;
-animation: pulse-title 2s ease-in-out infinite alternate;
-}
-@keyframes pulse-title {
-from { text-shadow: 4px 4px 0 #7a5800,-2px -2px 0 #000, 0 0 10px #ffaa0060; }
-to   { text-shadow: 4px 4px 0 #7a5800,-2px -2px 0 #000, 0 0 40px #ffaa00cc; }
-}
-.subtitle {
-font-size: 8px;
-color: #888;
-margin-top: 6px;
-letter-spacing: 2px;
+body{
+font-family:var(–font);
+background:var(–bg);
+color:#fff;
+height:100dvh;
+display:flex;flex-direction:column;align-items:center;
+position:relative;
+padding:var(–safe-top) 0 var(–safe-bottom);
 }
 
-/* ── HUD ── */
-.hud {
-position: relative;
-z-index: 1;
-display: flex;
-gap: 12px;
-margin-bottom: 16px;
-flex-wrap: wrap;
-justify-content: center;
-}
-.hud-box {
-background: #0d0d1a;
-border: 3px solid #333;
-box-shadow: 0 0 0 2px #000, 4px 4px 0 #000;
-padding: 8px 14px;
-text-align: center;
-min-width: 120px;
-}
-.hud-label {
-font-size: 7px;
-color: #666;
-margin-bottom: 4px;
-letter-spacing: 1px;
-}
-.hud-value {
-font-size: 20px;
-color: var(–green);
-text-shadow: 0 0 10px var(–green);
-transition: transform .1s;
-}
-.hud-value.pop { animation: pop .15s ease-out; }
-@keyframes pop {
-0%   { transform: scale(1) }
-50%  { transform: scale(1.4) }
-100% { transform: scale(1) }
-}
-#timer-val { color: var(–gold); text-shadow: 0 0 10px var(–gold); }
-#timer-val.urgent { color: var(–red); text-shadow: 0 0 14px var(–red); animation: blink .4s step-start infinite; }
-@keyframes blink { 50% { opacity: .3 } }
-#level-val { color: var(–blue); text-shadow: 0 0 10px var(–blue); }
-
-/* ── GRID ── */
-.game-wrap {
-position: relative;
-z-index: 1;
-}
-.game {
-display: grid;
-grid-template-columns: repeat(3, 110px);
-gap: 16px;
-padding: 16px;
-background: rgba(0,0,0,.35);
-border: 3px solid #333;
-box-shadow: 0 0 0 2px #000, 6px 6px 0 #000;
-}
-
-/* ── HOLE ── */
-.hole {
-width: 110px;
-height: 110px;
-position: relative;
-cursor: crosshair;
-overflow: hidden;
+/* ═══════ BG ═══════ */
+body::before{
+content:’’;position:fixed;inset:0;pointer-events:none;z-index:0;
 background:
-linear-gradient(to bottom, #3d2010 0%, #5a3620 60%, #7B4F2E 100%);
-border: 3px solid #000;
-box-shadow: inset 0 8px 16px rgba(0,0,0,.6);
+radial-gradient(ellipse 70% 45% at 15% 8%,  #1c1c50 0%,transparent 65%),
+radial-gradient(ellipse 55% 40% at 85% 92%, #0a2a0a 0%,transparent 65%);
+}
+body::after{
+content:’’;position:fixed;inset:0;pointer-events:none;z-index:0;
+background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.1) 3px,rgba(0,0,0,.1) 4px);
 }
 
-/* Grass rim */
-.hole::after {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0;
-height: 14px;
-background: var(–grass);
-border-bottom: 3px solid var(–grass-d);
-z-index: 3;
+/* ═══════ STARS ═══════ */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.s{position:absolute;border-radius:50%;background:#fff;animation:tw var(–d,2s) var(–dl,0s) infinite alternate ease-in-out}
+@keyframes tw{from{opacity:.1}to{opacity:.9}}
+
+/* ═══════ LAYOUT ═══════ */
+.layout{
+position:relative;z-index:1;
+width:100%;height:100%;
+display:flex;flex-direction:column;align-items:center;
+justify-content:space-evenly;
+padding:clamp(4px,1.2vh,10px) clamp(8px,3vw,24px);
+gap:clamp(3px,.8vh,8px);
 }
 
-/* ── MOLE ── */
-.mole {
-position: absolute;
-bottom: -100%;
-left: 50%;
-transform: translateX(-50%);
-width: 72px;
-height: 80px;
-z-index: 2;
-transition: bottom 0.15s cubic-bezier(0.34,1.56,0.64,1);
-user-select: none;
+/* ═══════ TITLE ═══════ */
+.title{font-size:var(–title-fs);color:var(–gold);letter-spacing:clamp(2px,.6vw,5px);
+text-shadow:3px 3px 0 var(–gold-d),-1px -1px 0 #000,0 0 20px #ffaa0088;
+animation:glow 2.5s ease-in-out infinite alternate;text-align:center;line-height:1.2}
+.subtitle{font-size:var(–lbl-fs);color:#445;letter-spacing:2px;text-align:center;margin-top:3px}
+@keyframes glow{
+from{text-shadow:3px 3px 0 var(–gold-d),-1px -1px 0 #000,0 0 6px #ffaa0044}
+to  {text-shadow:3px 3px 0 var(–gold-d),-1px -1px 0 #000,0 0 26px #ffaa00bb}
 }
 
-/* Body */
-.mole .body {
-position: absolute;
-bottom: 0;
-left: 50%;
-transform: translateX(-50%);
-width: 64px;
-height: 68px;
-background: #8B4513;
-border: 3px solid #000;
-border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+/* ═══════ HUD ═══════ */
+.hud{
+display:flex;gap:clamp(5px,1.5vw,12px);
+width:100%;max-width:calc(var(–hole)*3 + var(–gap)*2 + 32px);
+justify-content:center;flex-shrink:0
 }
-/* Belly */
-.mole .body::after {
-content: ‘’;
-position: absolute;
-bottom: 6px; left: 50%;
-transform: translateX(-50%);
-width: 32px; height: 28px;
-background: #c8845a;
-border: 2px solid #000;
-border-radius: 50%;
+.hc{
+flex:1;min-width:0;
+background:var(–bg2);border:2px solid var(–border);
+box-shadow:0 0 0 1px #000,3px 3px 0 #000;
+padding:clamp(4px,1vh,9px) clamp(4px,.8vw,8px);
+text-align:center
 }
-/* Face */
-.mole .face {
-position: absolute;
-bottom: 36px;
-left: 50%;
-transform: translateX(-50%);
-width: 64px;
-height: 40px;
-}
-/* Eyes */
-.mole .eye {
-position: absolute;
-top: 4px;
-width: 12px; height: 12px;
-background: #000;
-border-radius: 50%;
-border: 2px solid #fff;
-}
-.mole .eye::after {
-content: ‘’;
-position: absolute;
-top: 2px; left: 3px;
-width: 4px; height: 4px;
-background: #fff;
-border-radius: 50%;
-}
-.mole .eye.left  { left: 10px }
-.mole .eye.right { right: 10px }
+.hl{font-size:var(–lbl-fs);color:#446;letter-spacing:1px;margin-bottom:3px;white-space:nowrap}
+.hv{font-size:var(–hud-fs);line-height:1;transition:transform .1s}
+.hv.sc{color:var(–green);text-shadow:0 0 10px var(–green)}
+.hv.tc{color:var(–gold); text-shadow:0 0 10px var(–gold)}
+.hv.lc{color:var(–blue); text-shadow:0 0 10px var(–blue)}
+.hv.bc{color:var(–gold); text-shadow:0 0 10px var(–gold)}
+.hv.pop{animation:cpop .15s ease-out}
+@keyframes cpop{0%{transform:scale(1)}50%{transform:scale(1.38)}100%{transform:scale(1)}}
+#tv.urgent{color:var(–red)!important;text-shadow:0 0 14px var(–red)!important;animation:blink .4s step-start infinite}
+@keyframes blink{50%{opacity:.2}}
 
-/* Nose */
-.mole .nose {
-position: absolute;
-top: 18px; left: 50%;
-transform: translateX(-50%);
-width: 14px; height: 10px;
-background: #ff7777;
-border: 2px solid #000;
-border-radius: 50%;
+/* ═══════ META ROW ═══════ */
+.meta{
+width:100%;max-width:calc(var(–hole)*3 + var(–gap)*2 + 32px);
+flex-shrink:0;display:flex;flex-direction:column;gap:3px
 }
-/* Mouth */
-.mole .mouth {
-position: absolute;
-top: 28px; left: 50%;
-transform: translateX(-50%);
-width: 24px; height: 8px;
-border-bottom: 3px solid #000;
-border-left: 3px solid #000;
-border-right: 3px solid #000;
-border-radius: 0 0 12px 12px;
+.ptrack{height:clamp(6px,1.2vw,10px);background:#090914;border:2px solid var(–border);overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(–green),var(–gold));box-shadow:0 0 6px var(–green);width:0%;transition:width .3s ease}
+.cline{font-size:clamp(6px,1.6vw,10px);color:var(–red);text-shadow:0 0 8px var(–red);text-align:center;min-height:14px;letter-spacing:1px}
+
+/* ═══════ GRID SHELL ═══════ */
+.shell{
+flex-shrink:0;
+background:rgba(0,0,0,.42);
+border:2px solid var(–border);
+box-shadow:0 0 0 1px #000,5px 5px 0 #000;
+padding:clamp(8px,2vw,14px)
 }
-/* Ears */
-.mole .ear {
-position: absolute;
-top: -6px;
-width: 16px; height: 18px;
-background: #8B4513;
-border: 3px solid #000;
-border-radius: 50% 50% 0 0;
+.grid{
+display:grid;
+grid-template-columns:repeat(3,var(–hole));
+grid-template-rows:repeat(3,var(–hole));
+gap:var(–gap)
 }
-.mole .ear.left  { left: 6px }
-.mole .ear.right { right: 6px }
-.mole .ear::after {
-content: ‘’;
-position: absolute;
-top: 3px; left: 50%;
-transform: translateX(-50%);
-width: 6px; height: 8px;
-background: #c8845a;
-border-radius: 50% 50% 0 0;
+
+/* ═══════ HOLE ═══════ */
+.hole{
+width:var(–hole);height:var(–hole);
+position:relative;overflow:hidden;cursor:crosshair;
+background:radial-gradient(ellipse at 50% 80%,var(–dirt) 0%,var(–dirt-d) 100%);
+border:2px solid #000;
+box-shadow:inset 0 6px 16px rgba(0,0,0,.65);
+-webkit-user-select:none;user-select:none;
 }
-/* Paws */
-.mole .paw {
-position: absolute;
-bottom: -6px;
-width: 20px; height: 12px;
-background: #8B4513;
-border: 3px solid #000;
-border-radius: 50% 50% 40% 40%;
+/* grass rim */
+.hole::after{
+content:’’;position:absolute;top:0;left:0;right:0;height:14%;
+background:linear-gradient(180deg,#55c855 0%,var(–grass) 55%,var(–grass-d) 100%);
+border-bottom:2px solid #1a5a1a;z-index:4
 }
-.mole .paw.left  { left: 4px }
-.mole .paw.right { right: 4px }
+/* dirt specks */
+.hole::before{
+content:’’;position:absolute;inset:0;z-index:1;
+background-image:
+radial-gradient(1.5px 1.5px at 22% 58%,rgba(0,0,0,.35) 0%,transparent 100%),
+radial-gradient(1.5px 1.5px at 68% 72%,rgba(0,0,0,.35) 0%,transparent 100%),
+radial-gradient(1.5px 1.5px at 48% 88%,rgba(0,0,0,.25) 0%,transparent 100%)
+}
+
+/* ═══════ MOLE ═══════ */
+.mole{
+position:absolute;
+bottom:-108%;left:50%;transform:translateX(-50%);
+width:68%;height:76%;z-index:2;pointer-events:none;
+transition:bottom .17s cubic-bezier(.34,1.45,.64,1)
+}
+/* body */
+.mb{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+width:88%;height:82%;background:var(–mole);border:2px solid #000;
+border-radius:44% 44% 30% 30%/54% 54% 46% 46%}
+.mb::after{content:’’;position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
+width:46%;height:36%;background:var(–belly);border:2px solid #000;border-radius:50%}
+/* ears */
+.me{position:absolute;top:-12%;width:24%;height:26%;
+background:var(–mole);border:2px solid #000;border-radius:50% 50% 0 0;z-index:3}
+.me::after{content:’’;position:absolute;top:20%;left:50%;transform:translateX(-50%);
+width:44%;height:48%;background:var(–belly);border-radius:50%}
+.me.l{left:8%}.me.r{right:8%}
+/* face */
+.mf{position:absolute;bottom:38%;left:50%;transform:translateX(-50%);width:88%;height:44%}
+/* eyes */
+.mey{position:absolute;top:10%;width:20%;height:28%;
+background:#111;border-radius:50%;border:2px solid #000}
+.mey::after{content:’’;position:absolute;top:14%;left:38%;
+width:36%;height:36%;background:#fff;border-radius:50%}
+.mey.l{left:12%}.mey.r{right:12%}
+/* nose */
+.mn{position:absolute;top:42%;left:50%;transform:translateX(-50%);
+width:26%;height:22%;background:#ff8888;border:2px solid #000;border-radius:50%}
+/* mouth */
+.mm{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
+width:42%;height:18%;
+border-bottom:2px solid #000;border-left:2px solid #000;border-right:2px solid #000;
+border-radius:0 0 50% 50%}
+/* paws */
+.mp{position:absolute;bottom:-8%;width:28%;height:16%;
+background:var(–mole);border:2px solid #000;border-radius:50% 50% 40% 40%;z-index:3}
+.mp.l{left:4%}.mp.r{right:4%}
 
 /* ACTIVE */
-.hole.active .mole { bottom: 8px; }
+.hole.active .mole{bottom:6%}
+/* WHACKED */
+.hole.whacked .mole{filter:brightness(.55) sepia(.5)}
+.hole.whacked .mf::after{
+content:‘✕’;position:absolute;top:-12%;left:50%;transform:translateX(-50%);
+font-size:clamp(9px,2.8vw,18px);color:var(–red);text-shadow:1px 1px 0 #000}
+/* MISS */
+.hole.miss{animation:mshake .28s ease}
+@keyframes mshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
-/* WHACKED state */
-.hole.whacked .mole .face::before {
-content: ‘✕’;
-position: absolute;
-top: 4px; left: 50%;
-transform: translateX(-50%);
-font-size: 24px;
-color: var(–red);
+/* ═══════ FLOAT LABEL ═══════ */
+.flbl{
+position:absolute;top:16%;left:50%;transform:translateX(-50%);
+font-size:clamp(6px,1.8vw,10px);
+color:var(–gold);text-shadow:1px 1px 0 #000,0 0 6px var(–gold);
+pointer-events:none;z-index:10;white-space:nowrap;
+animation:fup .65s ease-out forwards
 }
-.hole.whacked .mole { filter: brightness(.7) hue-rotate(20deg); }
-
-/* MISS shake */
-.hole.miss { animation: shake .3s ease; }
-@keyframes shake {
-0%,100% { transform: translateX(0) }
-25%      { transform: translateX(-5px) }
-75%      { transform: translateX(5px) }
-}
-
-/* ── HIT POPUP ── */
-.hit-label {
-position: absolute;
-top: 20px; left: 50%;
-transform: translateX(-50%);
-font-size: 10px;
-color: var(–gold);
-text-shadow: 2px 2px 0 #000;
-pointer-events: none;
-z-index: 10;
-animation: floatUp .6s ease-out forwards;
-white-space: nowrap;
-}
-@keyframes floatUp {
-0%   { opacity: 1; transform: translateX(-50%) translateY(0) }
-100% { opacity: 0; transform: translateX(-50%) translateY(-36px) }
+@keyframes fup{
+0%  {opacity:1;transform:translateX(-50%) translateY(0)   scale(1)}
+100%{opacity:0;transform:translateX(-50%) translateY(-44%) scale(.8)}
 }
 
-/* ── CONTROLS ── */
-.controls {
-position: relative;
-z-index: 1;
-display: flex;
-gap: 12px;
-margin: 16px 0 24px;
-flex-wrap: wrap;
-justify-content: center;
+/* ═══════ CONTROLS ═══════ */
+.controls{display:flex;gap:clamp(7px,2vw,12px);flex-shrink:0;align-items:center}
+.btn{
+font-family:var(–font);font-size:var(–btn-fs);
+padding:clamp(8px,1.8vh,12px) clamp(10px,2.5vw,18px);
+border:2px solid #000;cursor:pointer;
+box-shadow:3px 3px 0 #000;
+transition:transform .1s,box-shadow .1s;
+letter-spacing:1px;line-height:1;
+-webkit-user-select:none;user-select:none
 }
-.btn {
-font-family: ‘Press Start 2P’, monospace;
-font-size: 11px;
-padding: 10px 18px;
-border: 3px solid #000;
-cursor: pointer;
-box-shadow: 4px 4px 0 #000;
-transition: transform .1s, box-shadow .1s;
-letter-spacing: 1px;
-}
-.btn:active {
-transform: translate(4px,4px);
-box-shadow: none;
-}
-.btn-start  { background: var(–green); color: #000; }
-.btn-reset  { background: var(–red);   color: #fff; }
-.btn-sound  { background: #333; color: var(–gold); font-size: 16px; padding: 8px 14px; }
+.btn:active,.btn.pr{transform:translate(3px,3px);box-shadow:none}
+.bst{background:var(–green);color:#000}
+.brs{background:var(–red);color:#fff}
+.bsn{background:#15152a;color:var(–gold);border-color:var(–border);
+font-size:clamp(14px,3.5vw,20px);padding:clamp(6px,1.3vh,10px) clamp(8px,2vw,12px)}
 
-/* ── OVERLAY ── */
-.overlay {
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,.85);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-z-index: 100;
-gap: 16px;
+/* ═══════ OVERLAY ═══════ */
+.ov{
+position:fixed;inset:0;
+background:rgba(0,0,0,.88);
+display:flex;align-items:center;justify-content:center;
+z-index:200;
+padding:calc(16px + var(–safe-top)) 16px calc(16px + var(–safe-bottom));
+opacity:1;transition:opacity .2s
 }
-.overlay.hidden { display: none; }
-.overlay-box {
-background: #0d0d1a;
-border: 4px solid var(–gold);
-box-shadow: 0 0 0 2px #000, 8px 8px 0 #000, 0 0 40px #ffaa0066;
-padding: 32px 40px;
-text-align: center;
-max-width: 360px;
-width: 90%;
+.ov.hidden{opacity:0;pointer-events:none}
+.ovb{
+background:var(–bg2);
+border:3px solid var(–gold);
+box-shadow:0 0 0 2px #000,6px 6px 0 #000,0 0 36px #ffaa0033;
+padding:clamp(18px,4.5vw,36px) clamp(18px,5.5vw,44px);
+text-align:center;
+width:100%;max-width:clamp(260px,82vw,370px);
+display:flex;flex-direction:column;align-items:center;
+gap:clamp(7px,1.8vh,14px)
 }
-.overlay-title { font-size: 22px; color: var(–gold); margin-bottom: 12px; }
-.overlay-score { font-size: 32px; color: var(–green); text-shadow: 0 0 16px var(–green); margin: 8px 0; }
-.overlay-sub   { font-size: 8px; color: #888; line-height: 1.8; }
-.overlay-hi    { font-size: 10px; color: var(–blue); margin-top: 6px; }
+.ov-title{font-size:clamp(14px,4.5vw,24px);color:var(–gold);text-shadow:3px 3px 0 var(–gold-d),0 0 18px #ffaa0088}
+.ov-score{font-size:clamp(26px,7.5vw,46px);color:var(–green);text-shadow:0 0 18px var(–green);line-height:1}
+.ov-best{font-size:clamp(7px,1.8vw,10px);color:var(–blue);text-shadow:0 0 8px var(–blue)}
+.ov-msg{font-size:clamp(6px,1.6vw,8px);color:#667;line-height:2;max-width:24ch}
+.ov-btn{width:100%;font-size:clamp(9px,2.2vw,13px);padding:clamp(10px,2.2vh,15px)}
 
-/* ── COMBO ── */
-.combo-display {
-position: relative;
-z-index: 1;
-min-height: 28px;
-font-size: 11px;
-color: var(–red);
-text-shadow: 0 0 10px var(–red);
-letter-spacing: 2px;
-text-align: center;
-margin-bottom: 4px;
+/* ═══════ LEVEL BADGE ═══════ */
+#badge{
+position:fixed;top:50%;left:50%;
+transform:translate(-50%,-50%);
+font-size:clamp(20px,5.5vw,38px);
+color:var(–gold);text-shadow:0 0 36px var(–gold),4px 4px 0 #000;
+pointer-events:none;z-index:300;opacity:0;white-space:nowrap
+}
+#badge.show{animation:bpop .9s ease-out forwards}
+@keyframes bpop{
+0%  {opacity:0;transform:translate(-50%,-50%) scale(.35)}
+25% {opacity:1;transform:translate(-50%,-50%) scale(1.25)}
+65% {opacity:1;transform:translate(-50%,-50%) scale(1)}
+100%{opacity:0;transform:translate(-50%,-50%) scale(1)}
 }
 
-/* ── PROGRESS BAR ── */
-.progress-wrap {
-position: relative;
-z-index: 1;
-width: clamp(300px, 80vw, 400px);
-height: 12px;
-background: #0d0d1a;
-border: 2px solid #333;
-box-shadow: 0 0 0 1px #000;
-margin-bottom: 10px;
+/* ═══════ LANDSCAPE PHONE ═══════ */
+@media(max-height:500px) and (orientation:landscape){
+:root{
+–hole:min(21vw,26vh);
+–gap:min(1.4vw,1.4vh);
+–hud-fs:clamp(11px,2.8vh,17px);
+–title-fs:clamp(10px,2.6vh,18px)
 }
-.progress-bar {
-height: 100%;
-background: linear-gradient(90deg, var(–green), var(–gold));
-box-shadow: 0 0 8px var(–green);
-transition: width .3s ease;
+.subtitle{display:none}
+.layout{justify-content:space-between;padding:3px 10px;gap:2px}
 }
 
-/* ── LEVEL BADGE ── */
-.level-badge {
-position: fixed;
-top: 50%; left: 50%;
-transform: translate(-50%,-50%);
-font-size: 28px;
-color: var(–gold);
-text-shadow: 0 0 30px var(–gold), 4px 4px 0 #000;
-pointer-events: none;
-z-index: 200;
-opacity: 0;
+/* ═══════ VERY SMALL ═══════ */
+@media(max-width:330px){
+:root{–hole:calc((100vw - 60px)/3);–gap:5px}
 }
-.level-badge.show {
-animation: levelPop .9s ease-out forwards;
+
+/* ═══════ TABLET / DESKTOP ═══════ */
+@media(min-width:600px){
+:root{–hole:clamp(110px,14vw,130px);–gap:clamp(14px,2vw,20px)}
 }
-@keyframes levelPop {
-0%   { opacity:0; transform: translate(-50%,-50%) scale(.5) }
-20%  { opacity:1; transform: translate(-50%,-50%) scale(1.3) }
-60%  { opacity:1; transform: translate(-50%,-50%) scale(1) }
-100% { opacity:0; transform: translate(-50%,-50%) scale(1) }
+@media(min-width:900px){
+:root{–hole:130px;–gap:20px}
 }
 </style>
 
 </head>
 <body>
 
-<!-- Stars -->
+<div id="stars"></div>
+<div id="badge"></div>
 
-<div class="stars" id="stars"></div>
+<div class="layout">
 
-<!-- Level badge -->
-
-<div class="level-badge" id="level-badge"></div>
-
-<!-- Title -->
-
-<div class="title-wrap">
-  <div class="title">⛏ MOLE MASH ⛏</div>
-  <div class="subtitle">PUKUL TIKUSNYA!</div>
-</div>
-
-<!-- HUD -->
-
-<div class="hud">
-  <div class="hud-box">
-    <div class="hud-label">SCORE</div>
-    <div class="hud-value" id="score-val">0</div>
+  <div>
+    <div class="title">⛏ MOLE MASH ⛏</div>
+    <div class="subtitle">PUKUL TIKUSNYA!</div>
   </div>
-  <div class="hud-box">
-    <div class="hud-label">WAKTU</div>
-    <div class="hud-value" id="timer-val">30</div>
+
+  <div class="hud">
+    <div class="hc"><div class="hl">SCORE</div><div class="hv sc" id="sv">0</div></div>
+    <div class="hc"><div class="hl">WAKTU</div><div class="hv tc" id="tv">30</div></div>
+    <div class="hc"><div class="hl">LEVEL</div><div class="hv lc" id="lv">1</div></div>
+    <div class="hc"><div class="hl">BEST</div> <div class="hv bc" id="bv">0</div></div>
   </div>
-  <div class="hud-box">
-    <div class="hud-label">LEVEL</div>
-    <div class="hud-value" id="level-val">1</div>
+
+  <div class="meta">
+    <div class="ptrack"><div class="pfill" id="pf"></div></div>
+    <div class="cline" id="cl"></div>
   </div>
-  <div class="hud-box">
-    <div class="hud-label">BEST</div>
-    <div class="hud-value" id="best-val" style="color:#FFD700;text-shadow:0 0 10px #FFD700">0</div>
+
+  <div class="shell">
+    <div class="grid" id="grid"></div>
   </div>
-</div>
 
-<!-- Progress to next level -->
+  <div class="controls">
+    <button class="btn bst" id="bs">&#9654; MULAI</button>
+    <button class="btn brs" id="br">&#8634; RESET</button>
+    <button class="btn bsn" id="bn" aria-label="Suara">&#128266;</button>
+  </div>
 
-<div class="progress-wrap">
-  <div class="progress-bar" id="progress-bar" style="width:0%"></div>
-</div>
-
-<!-- Combo display -->
-
-<div class="combo-display" id="combo-display"></div>
-
-<!-- Game Grid -->
-
-<div class="game-wrap">
-  <div class="game" id="game"></div>
-</div>
-
-<!-- Controls -->
-
-<div class="controls">
-  <button class="btn btn-start" id="btn-start">▶ MULAI</button>
-  <button class="btn btn-reset" id="btn-reset">↺ RESET</button>
-  <button class="btn btn-sound" id="btn-sound" title="Sound">🔊</button>
 </div>
 
 <!-- Overlay -->
 
-<div class="overlay" id="overlay">
-  <div class="overlay-box">
-    <div class="overlay-title" id="overlay-title">MOLE MASH</div>
-    <div class="overlay-score" id="overlay-score"></div>
-    <div class="overlay-hi" id="overlay-hi"></div>
-    <div class="overlay-sub" id="overlay-sub">Tekan MULAI untuk bermain!<br>Pukul tikus secepat mungkin.</div>
-    <br>
-    <button class="btn btn-start" id="overlay-btn" style="width:100%">▶ MAIN SEKARANG</button>
+<div class="ov" id="ov">
+  <div class="ovb">
+    <div class="ov-title" id="ot">MOLE MASH</div>
+    <div class="ov-score" id="os" style="display:none"></div>
+    <div class="ov-best"  id="ob"></div>
+    <div class="ov-msg"   id="om">Pukul tikus<br>secepat mungkin!</div>
+    <button class="btn bst ov-btn" id="ob2">&#9654; MAIN SEKARANG</button>
   </div>
 </div>
 
 <script>
 /* ── STARS ── */
-const starsEl = document.getElementById('stars');
-for (let i = 0; i < 80; i++) {
-  const s = document.createElement('div');
-  s.className = 'star';
-  const sz = Math.random() * 3 + 1;
-  s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
-  starsEl.appendChild(s);
-}
+(()=>{
+  const c=document.getElementById('stars'),f=document.createDocumentFragment();
+  for(let i=0;i<70;i++){
+    const s=document.createElement('div');s.className='s';
+    const z=Math.random()*2.5+.5;
+    s.style.cssText=`width:${z}px;height:${z}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(1.2+Math.random()*2).toFixed(1)}s;--dl:${(Math.random()*3).toFixed(1)}s`;
+    f.appendChild(s);
+  }
+  c.appendChild(f);
+})();
 
 /* ── AUDIO ── */
-let soundOn = true;
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let ctx;
-function getCtx() {
-  if (!ctx) ctx = new AudioCtx();
-  return ctx;
+let snd=true,actx=null;
+function getAC(){if(!actx){const C=window.AudioContext||window.webkitAudioContext;if(C)actx=new C();}return actx;}
+function beep(o){
+  if(!snd)return;const ac=getAC();if(!ac)return;
+  const osc=ac.createOscillator(),g=ac.createGain();
+  osc.connect(g);g.connect(ac.destination);
+  osc.type=o.t||'square';
+  const t=ac.currentTime+(o.dl||0);
+  osc.frequency.setValueAtTime(o.f,t);
+  if(o.ef)osc.frequency.exponentialRampToValueAtTime(o.ef,t+(o.d||.15));
+  g.gain.setValueAtTime(o.v||.25,t);
+  g.gain.exponentialRampToValueAtTime(.001,t+(o.d||.15));
+  osc.start(t);osc.stop(t+(o.d||.15));
 }
-function playHit() {
-  if (!soundOn) return;
-  const ac = getCtx();
-  const o = ac.createOscillator();
-  const g = ac.createGain();
-  o.connect(g); g.connect(ac.destination);
-  o.type = 'square';
-  o.frequency.setValueAtTime(440, ac.currentTime);
-  o.frequency.exponentialRampToValueAtTime(880, ac.currentTime + .05);
-  g.gain.setValueAtTime(.3, ac.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .15);
-  o.start(); o.stop(ac.currentTime + .15);
-}
-function playMiss() {
-  if (!soundOn) return;
-  const ac = getCtx();
-  const o = ac.createOscillator();
-  const g = ac.createGain();
-  o.connect(g); g.connect(ac.destination);
-  o.type = 'sawtooth';
-  o.frequency.setValueAtTime(200, ac.currentTime);
-  o.frequency.exponentialRampToValueAtTime(80, ac.currentTime + .2);
-  g.gain.setValueAtTime(.2, ac.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + .2);
-  o.start(); o.stop(ac.currentTime + .2);
-}
-function playLevelUp() {
-  if (!soundOn) return;
-  const ac = getCtx();
-  [523,659,784,1047].forEach((f, i) => {
-    const o = ac.createOscillator();
-    const g = ac.createGain();
-    o.connect(g); g.connect(ac.destination);
-    o.type = 'square';
-    o.frequency.value = f;
-    g.gain.setValueAtTime(.2, ac.currentTime + i*.1);
-    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + i*.1 + .18);
-    o.start(ac.currentTime + i*.1);
-    o.stop(ac.currentTime + i*.1 + .18);
-  });
-}
-function playEnd() {
-  if (!soundOn) return;
-  const ac = getCtx();
-  [400,300,200,150].forEach((f, i) => {
-    const o = ac.createOscillator();
-    const g = ac.createGain();
-    o.connect(g); g.connect(ac.destination);
-    o.type = 'sawtooth';
-    o.frequency.value = f;
-    g.gain.setValueAtTime(.2, ac.currentTime + i*.1);
-    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + i*.1 + .2);
-    o.start(ac.currentTime + i*.1);
-    o.stop(ac.currentTime + i*.1 + .2);
-  });
-}
+const SFX={
+  hit() {beep({f:440,ef:880,d:.12,v:.28})},
+  combo(){beep({f:660,ef:1200,d:.15,v:.3})},
+  miss() {beep({t:'sawtooth',f:220,ef:80,d:.18,v:.15})},
+  up()   {[523,659,784,1047].forEach((f,i)=>beep({f,d:.16,dl:i*.1,v:.2}))},
+  end()  {[350,280,210,140].forEach((f,i)=>beep({t:'sawtooth',f,d:.18,dl:i*.1,v:.18}))},
+};
 
-/* ── GAME STATE ── */
-let score = 0;
-let timeLeft = 30;
-let level = 1;
-let combo = 0;
-let highScore = parseInt(localStorage.getItem('moleBest') || '0');
-let running = false;
-let moleTimer, countTimer, activeMole = null;
-
-const LEVEL_SCORES = [0,8,20,36,56,80]; // score threshold per level
-const LEVEL_SPEEDS = [900,700,550,420,320,240]; // ms per mole
+/* ── CONSTANTS ── */
+const TOTAL=30;
+const LVL_THR=[0,8,20,36,56,80];
+const LVL_SPD=[900,700,530,400,300,220];
+const LVL_VIS=[1400,1200,1000,800,640,500];
 
 /* ── DOM ── */
-const gameEl    = document.getElementById('game');
-const scoreEl   = document.getElementById('score-val');
-const timerEl   = document.getElementById('timer-val');
-const levelEl   = document.getElementById('level-val');
-const bestEl    = document.getElementById('best-val');
-const progressEl= document.getElementById('progress-bar');
-const comboEl   = document.getElementById('combo-display');
-const overlay   = document.getElementById('overlay');
-const ovTitle   = document.getElementById('overlay-title');
-const ovScore   = document.getElementById('overlay-score');
-const ovHi      = document.getElementById('overlay-hi');
-const ovSub     = document.getElementById('overlay-sub');
-const ovBtn     = document.getElementById('overlay-btn');
-const badgeEl   = document.getElementById('level-badge');
-const soundBtn  = document.getElementById('btn-sound');
+const $=id=>document.getElementById(id);
+const svEl=$('sv'),tvEl=$('tv'),lvEl=$('lv'),bvEl=$('bv');
+const pfEl=$('pf'),clEl=$('cl');
+const gridEl=$('grid');
+const ovEl=$('ov'),otEl=$('ot'),osEl=$('os'),obEl=$('ob'),omEl=$('om'),ob2El=$('ob2');
+const badgeEl=$('badge');
+const bsEl=$('bs'),brEl=$('br'),bnEl=$('bn');
 
-bestEl.textContent = highScore;
+/* ── STATE ── */
+let score=0,tLeft=TOTAL,level=1,combo=0,running=false;
+let hi=parseInt(localStorage.getItem('moleBest')||'0',10);
+let mTmr=null,cTmr=null,active=null;
+bvEl.textContent=hi;obEl.textContent='BEST: '+hi;
 
 /* ── BUILD GRID ── */
-function makeMole() {
-  const mole = document.createElement('div');
-  mole.className = 'mole';
-  mole.innerHTML = `
-    <div class="ear left"></div>
-    <div class="ear right"></div>
-    <div class="body"></div>
-    <div class="face">
-      <div class="eye left"></div>
-      <div class="eye right"></div>
-      <div class="nose"></div>
-      <div class="mouth"></div>
-    </div>
-    <div class="paw left"></div>
-    <div class="paw right"></div>
-  `;
-  return mole;
-}
+const holes=[];
+(()=>{
+  const f=document.createDocumentFragment();
+  for(let i=0;i<9;i++){
+    const h=document.createElement('div');
+    h.className='hole';
+    h.innerHTML=`<div class="mole"><div class="me l"></div><div class="me r"></div><div class="mb"></div><div class="mf"><div class="mey l"></div><div class="mey r"></div><div class="mn"></div><div class="mm"></div></div><div class="mp l"></div><div class="mp r"></div></div>`;
+    h.addEventListener('pointerdown',e=>{e.preventDefault();if(running)hit(h);},{passive:false});
+    f.appendChild(h);holes.push(h);
+  }
+  gridEl.appendChild(f);
+})();
 
-const holes = [];
-for (let i = 0; i < 9; i++) {
-  const hole = document.createElement('div');
-  hole.className = 'hole';
-  hole.appendChild(makeMole());
-  hole.addEventListener('click', () => onHoleClick(hole));
-  gameEl.appendChild(hole);
-  holes.push(hole);
-}
-
-function onHoleClick(hole) {
-  if (!running) return;
-  if (hole === activeMole) {
-    // HIT
+/* ── HIT ── */
+function hit(h){
+  if(h===active){
     combo++;
-    const pts = combo >= 3 ? 2 : 1;
-    score += pts;
-    updateHUD();
-    playHit();
-    hole.classList.remove('active');
-    hole.classList.add('whacked');
-    showHitLabel(hole, combo >= 3 ? `+${pts} COMBO!` : `+${pts}`);
-    setTimeout(() => hole.classList.remove('whacked'), 300);
-    activeMole = null;
-    clearTimeout(moleTimer);
-    scheduleMole();
+    const pts=combo>=5?3:combo>=3?2:1;
+    score+=pts;
+    SFX[combo>=3?'combo':'hit']();
+    clearTimeout(mTmr);active=null;
+    h.classList.remove('active');h.classList.add('whacked');
+    setTimeout(()=>h.classList.remove('whacked'),320);
+    floatLabel(h,combo>=3?`+${pts} COMBO!`:`+${pts}`);
+    updateHUD();scheduleMole();
   } else {
-    // MISS on empty
-    combo = 0;
-    playMiss();
-    hole.classList.add('miss');
-    setTimeout(() => hole.classList.remove('miss'), 300);
+    combo=0;SFX.miss();
+    h.classList.add('miss');setTimeout(()=>h.classList.remove('miss'),280);
     updateCombo();
   }
 }
-
-function showHitLabel(hole, text) {
-  const lbl = document.createElement('div');
-  lbl.className = 'hit-label';
-  lbl.textContent = text;
-  hole.appendChild(lbl);
-  setTimeout(() => lbl.remove(), 700);
+function floatLabel(h,txt){
+  const d=document.createElement('div');d.className='flbl';d.textContent=txt;
+  h.appendChild(d);setTimeout(()=>d.remove(),700);
 }
 
-/* ── LEVEL LOGIC ── */
-function getLevel() {
-  for (let i = LEVEL_SCORES.length - 1; i >= 0; i--) {
-    if (score >= LEVEL_SCORES[i]) return i + 1;
-  }
-  return 1;
-}
-function getSpeed() {
-  const idx = Math.min(level - 1, LEVEL_SPEEDS.length - 1);
-  return LEVEL_SPEEDS[idx];
-}
-function getProgress() {
-  const cur = LEVEL_SCORES[level - 1] || 0;
-  const next = LEVEL_SCORES[level] || LEVEL_SCORES[LEVEL_SCORES.length - 1] + 30;
-  return Math.min(100, ((score - cur) / (next - cur)) * 100);
-}
-
-/* ── UPDATE HUD ── */
-function updateHUD() {
-  // Score
-  scoreEl.textContent = score;
-  scoreEl.classList.remove('pop');
-  void scoreEl.offsetWidth;
-  scoreEl.classList.add('pop');
-
-  // Level
-  const newLevel = getLevel();
-  if (newLevel > level) {
-    level = newLevel;
-    levelEl.textContent = level;
-    showLevelBadge();
-    playLevelUp();
-  }
-  progressEl.style.width = getProgress() + '%';
-
-  // Combo
-  updateCombo();
-
-  // Timer colour
-  if (timeLeft <= 5) {
-    timerEl.classList.add('urgent');
-  } else {
-    timerEl.classList.remove('urgent');
-  }
-
-  // High score
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem('moleBest', highScore);
-    bestEl.textContent = highScore;
-  }
-}
-
-function updateCombo() {
-  if (combo >= 3) {
-    comboEl.textContent = `🔥 COMBO x${combo}!`;
-  } else if (combo >= 2) {
-    comboEl.textContent = `⚡ COMBO x${combo}`;
-  } else {
-    comboEl.textContent = '';
-  }
-}
-
-function showLevelBadge() {
-  badgeEl.textContent = `LEVEL ${level}!`;
-  badgeEl.classList.remove('show');
-  void badgeEl.offsetWidth;
-  badgeEl.classList.add('show');
-  setTimeout(() => badgeEl.classList.remove('show'), 900);
-}
-
-/* ── MOLE SCHEDULER ── */
-function scheduleMole() {
-  const delay = getSpeed();
-  moleTimer = setTimeout(showMole, delay);
-}
-
-function showMole() {
-  if (!running) return;
-  // Hide previous
-  holes.forEach(h => h.classList.remove('active'));
-  if (activeMole) { combo = 0; updateCombo(); }
-
-  const idx = Math.floor(Math.random() * holes.length);
-  activeMole = holes[idx];
-  activeMole.classList.add('active');
-
-  // Auto-hide after 1.5x speed
-  moleTimer = setTimeout(() => {
-    if (activeMole) {
-      activeMole.classList.remove('active');
-      activeMole = null;
-      combo = 0;
-      updateCombo();
-    }
+/* ── MOLE ── */
+function spd(){return Math.min(level-1,LVL_SPD.length-1)}
+function scheduleMole(){if(!running)return;clearTimeout(mTmr);mTmr=setTimeout(popMole,LVL_SPD[spd()]);}
+function popMole(){
+  if(!running)return;
+  if(active){active.classList.remove('active');combo=0;updateCombo();}
+  let idx;
+  do{idx=Math.floor(Math.random()*holes.length);}while(holes[idx]===active&&holes.length>1);
+  active=holes[idx];active.classList.add('active');
+  mTmr=setTimeout(()=>{
+    if(active){active.classList.remove('active');active=null;combo=0;updateCombo();}
     scheduleMole();
-  }, getSpeed() * 1.5);
+  },LVL_VIS[spd()]);
 }
+
+/* ── HUD ── */
+function updateHUD(){
+  svEl.textContent=score;pop(svEl);
+  const nl=computeLevel();
+  if(nl>level){
+    level=nl;lvEl.textContent=level;pop(lvEl);
+    showBadge('LEVEL '+level+'!');SFX.up();
+  }
+  pfEl.style.width=computeProg()+'%';
+  updateCombo();
+  if(score>hi){hi=score;localStorage.setItem('moleBest',hi);bvEl.textContent=hi;pop(bvEl);}
+}
+function updateCombo(){
+  if(combo>=5)     clEl.textContent='🔥🔥 COMBO x'+combo+'!!';
+  else if(combo>=3)clEl.textContent='🔥 COMBO x'+combo+'!';
+  else if(combo>=2)clEl.textContent='⚡ COMBO x'+combo;
+  else             clEl.textContent='';
+}
+function computeLevel(){for(let i=LVL_THR.length-1;i>=0;i--)if(score>=LVL_THR[i])return i+1;return 1;}
+function computeProg(){
+  const c=LVL_THR[level-1]||0,n=LVL_THR[level]||(LVL_THR[LVL_THR.length-1]+40);
+  return Math.min(100,((score-c)/(n-c))*100);
+}
+function pop(el){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}
+function showBadge(t){badgeEl.textContent=t;badgeEl.classList.remove('show');void badgeEl.offsetWidth;badgeEl.classList.add('show');}
 
 /* ── TIMER ── */
-function startCountdown() {
-  clearInterval(countTimer);
-  countTimer = setInterval(() => {
-    timeLeft--;
-    timerEl.textContent = timeLeft;
-    updateHUD();
-    if (timeLeft <= 0) endGame();
-  }, 1000);
+function startCountdown(){
+  clearInterval(cTmr);
+  cTmr=setInterval(()=>{
+    tLeft--;tvEl.textContent=tLeft;
+    if(tLeft<=5)tvEl.classList.add('urgent');
+    if(tLeft<=0)endGame();
+  },1000);
 }
 
-/* ── START / END / RESET ── */
-function startGame() {
-  score = 0; timeLeft = 30; level = 1; combo = 0;
-  running = true;
-  overlay.classList.add('hidden');
-  scoreEl.textContent = '0';
-  timerEl.textContent = '30';
-  timerEl.classList.remove('urgent');
-  levelEl.textContent = '1';
-  progressEl.style.width = '0%';
-  comboEl.textContent = '';
-  holes.forEach(h => { h.classList.remove('active','whacked','miss'); });
-  clearTimeout(moleTimer);
-  clearInterval(countTimer);
-  scheduleMole();
-  startCountdown();
+/* ── GAME FLOW ── */
+function startGame(){
+  const ac=getAC();if(ac&&ac.state==='suspended')ac.resume();
+  score=0;tLeft=TOTAL;level=1;combo=0;running=true;
+  svEl.textContent='0';tvEl.textContent=TOTAL;
+  tvEl.classList.remove('urgent');lvEl.textContent='1';
+  pfEl.style.width='0%';clEl.textContent='';
+  holes.forEach(h=>h.classList.remove('active','whacked','miss'));
+  active=null;clearTimeout(mTmr);clearInterval(cTmr);
+  ovEl.classList.add('hidden');scheduleMole();startCountdown();
 }
-
-function endGame() {
-  running = false;
-  clearTimeout(moleTimer);
-  clearInterval(countTimer);
-  holes.forEach(h => h.classList.remove('active'));
-  activeMole = null;
-  playEnd();
-
-  ovTitle.textContent = 'GAME OVER!';
-  ovScore.textContent = score;
-  ovHi.textContent = `BEST: ${highScore}`;
-  ovSub.innerHTML = score >= highScore
-    ? '🏆 REKOR BARU! Luar biasa!'
-    : 'Coba lagi untuk mengalahkan rekormu!';
-  ovBtn.textContent = '▶ MAIN LAGI';
-  overlay.classList.remove('hidden');
+function endGame(){
+  running=false;clearTimeout(mTmr);clearInterval(cTmr);
+  holes.forEach(h=>h.classList.remove('active'));active=null;SFX.end();
+  otEl.textContent='GAME OVER!';
+  osEl.textContent=score;osEl.style.display='';
+  obEl.textContent='BEST: '+hi;
+  omEl.innerHTML=score>=hi?'🏆 REKOR BARU!<br>Luar biasa!':'Coba lagi untuk<br>mengalahkan rekormu!';
+  ob2El.textContent='▶ MAIN LAGI';
+  ovEl.classList.remove('hidden');
+}
+function toMenu(){
+  running=false;clearTimeout(mTmr);clearInterval(cTmr);
+  holes.forEach(h=>h.classList.remove('active','whacked','miss'));active=null;
+  otEl.textContent='MOLE MASH';osEl.style.display='none';
+  obEl.textContent='BEST: '+hi;
+  omEl.innerHTML='Pukul tikus<br>secepat mungkin!';
+  ob2El.textContent='▶ MAIN SEKARANG';
+  ovEl.classList.remove('hidden');
 }
 
 /* ── BUTTONS ── */
-document.getElementById('btn-start').addEventListener('click', startGame);
-document.getElementById('btn-reset').addEventListener('click', () => {
-  running = false;
-  clearTimeout(moleTimer);
-  clearInterval(countTimer);
-  holes.forEach(h => h.classList.remove('active','whacked','miss'));
-  ovTitle.textContent = 'MOLE MASH';
-  ovScore.textContent = '';
-  ovHi.textContent = `BEST: ${highScore}`;
-  ovSub.innerHTML = 'Tekan MULAI untuk bermain!<br>Pukul tikus secepat mungkin.';
-  ovBtn.textContent = '▶ MAIN SEKARANG';
-  overlay.classList.remove('hidden');
-});
-ovBtn.addEventListener('click', startGame);
-
-soundBtn.addEventListener('click', () => {
-  soundOn = !soundOn;
-  soundBtn.textContent = soundOn ? '🔊' : '🔇';
+function mkBtn(el,fn){
+  el.addEventListener('pointerdown',()=>el.classList.add('pr'));
+  el.addEventListener('pointerup',()=>{el.classList.remove('pr');fn();});
+  el.addEventListener('pointerleave',()=>el.classList.remove('pr'));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});
+}
+mkBtn(bsEl,startGame);mkBtn(brEl,toMenu);mkBtn(ob2El,startGame);
+bnEl.addEventListener('pointerdown',()=>{
+  snd=!snd;bnEl.textContent=snd?'🔊':'🔇';
+  if(snd){const ac=getAC();if(ac&&ac.state==='suspended')ac.resume();}
 });
 
-/* Init overlay */
-ovHi.textContent = `BEST: ${highScore}`;
+/* ── KEYBOARD ── */
+document.addEventListener('keydown',e=>{
+  if((e.key===' '||e.key==='Enter')&&!ovEl.classList.contains('hidden'))startGame();
+  if(e.key==='r'||e.key==='R')toMenu();
+});
+
+/* ── NO CONTEXT MENU ── */
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ── VISIBILITY: PAUSE ── */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&running){
+    clearTimeout(mTmr);clearInterval(cTmr);
+    holes.forEach(h=>h.classList.remove('active'));active=null;running=false;
+    otEl.textContent='PAUSED';osEl.style.display='none';
+    obEl.textContent='BEST: '+hi;
+    omEl.innerHTML='Kembali ke tab untuk<br>melanjutkan.';
+    ob2El.textContent='▶ LANJUTKAN';
+    ovEl.classList.remove('hidden');
+  }
+});
 </script>
 
 </body>
